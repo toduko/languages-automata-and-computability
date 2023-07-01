@@ -1,7 +1,217 @@
 \chapter{Въведение}
 
+Основното нещо, което се прави в този курс, е да се класифицират езици.
+За да можем да класифицираме един език, първо трябва знаем какво точно представлява един език.
+
 \section{Основни понятия}
+
+\begin{definition}
+    \textbf{Азбука} ще наричаме всяко крайно множество.
+    Елементите на азбуката ще наричаме \textbf{букви}.
+\end{definition}
+
+Обикновено ще си бележим азбуквата със $\Sigma$.
+Също така, ако никъде не е споменато друго, $\Sigma = \{a, b \}$.
+Тук буквите ще бъдат $a$ и $b$.
+
+\begin{definition}
+    \textbf{Дума} над азбуката $\Sigma$ ще наричаме всяка крайна редица от букви от $\Sigma$.
+    Дължината на дума $\alpha$ над $\Sigma$ ще бележим с $|\alpha|$.
+\end{definition}
+
+При азбуката $\Sigma = \{0, 1\}$, примерна дума ще бъде $\alpha = 000101$.
+Ясно е, че $|\alpha| = 6$.
+
+\begin{definition}
+    \textbf{Празната дума} ще наричаме единствената дума с дължина 0.
+    Бележим я с $\varepsilon$.
+\end{definition}
+
+\begin{remark}
+    Важно е да се отбележи, че празното множество и празната дума са различни неща.
+    Възможно е да се вземе такава дефиниция за редица, в която те да съвпадат, но това не е съществено.
+    За нас думите ще бъдат едни неща, а множествата други.
+    \textbf{TLDR:} $\varepsilon \neq \O$
+\end{remark}
+
+\begin{definition}
+    Със $\Sigma^*$ ще бележим множеството от всички думи над $\Sigma$.
+    $L$ ще наричаме \textbf{език} над $\Sigma$, ако $L \subseteq \Sigma$.
+\end{definition}
+
+Тук нащият универсум ще бъде $\Sigma^*$.
+Така че за $L \subseteq \Sigma^*$, под $\overline{L}$ ще имаме предвид $\Sigma^* \setminus L$.
+
+\section{Операции върху думи и езици}
+
+\begin{definition}
+    Ще дефинираме \textbf{конкатенацията} (слепването) на две думи $\alpha$ и $\beta$
+    и ще го бележим с $\alpha \cdot \beta$
+    \begin{itemize}
+        \item $\alpha \cdot \varepsilon = \alpha$ (Базов случай)
+        \item $\alpha \cdot (\beta x) = (\alpha \cdot \beta)x$ (Свеждане до по-малка ``задача'')
+    \end{itemize}
+\end{definition}
+
+На пръв поглед такава дефиниция изглежда безсмислена,
+но това далеч не е така.
+После тя ще се използва постоянно в доказателства. \\
+
+Нека разгледаме един пример за конкатенация:
+\begin{align*}
+    aaa \cdot bbb & = (aaa \cdot bb)b = ((aaa \cdot b)b)b = (((aaa \cdot \varepsilon)b)b)b = \\
+                  & = (((aaa)b)b)b = ((aaab)b)b = (aaabb)b = aaabbb
+\end{align*}
+
+Вече можем да дефинираме $\alpha^n$ ($n$ на брой пъти да конкатенираме думата $\alpha$) индуктивно:
+\begin{itemize}
+    \item $\alpha^0 = \varepsilon$
+    \item $\alpha^{n + 1} = \alpha^n \cdot \alpha$
+\end{itemize}
+
+За пример можем да вземем $(ab)^3$.
+\begin{align*}
+    (ab)^3 & = (ab)^2 \cdot ab = ((ab^1) \cdot ab) \cdot ab = (((ab^0) \cdot ab) \cdot ab) \cdot ab = \\
+           & = ((\varepsilon \cdot ab) \cdot ab) \cdot ab = ab \cdot ab \cdot ab
+\end{align*}
+
+\begin{remark}
+    Тук използваме наготово, че $\varepsilon \cdot \alpha = \alpha$. \\
+\end{remark}
+
+Имайки конкатенация на думи, можем да дефинираме и конкатенацията на езици.
+Най-естествено е да направим следното:
+
+\begin{definition}
+    Нека $L_1, L_2 \subseteq \Sigma^*$.
+    Тогава \textbf{конкатенацията} на езиците $L_1$ и $L_2$ ще наричаме множеството:
+    \begin{center}
+        $L_1 \cdot L_2 = \{ \alpha \cdot \beta \: | \: \alpha \in L_1 \: \& \: \beta \in L_2 \}$ \\
+    \end{center}
+\end{definition}
+
+Вече можем да дефинираме $L^n$ ($n$ на брой пъти да конкатенираме езика $L$) индуктивно:
+\begin{itemize}
+    \item $L^0 = \{ \varepsilon \}$
+    \item $L^{n + 1} = L^n \cdot L$
+\end{itemize}
+
+\begin{definition}[Звезда на Клини]
+    Нека $L \subseteq \Sigma^*$. Тогава:
+    \begin{itemize}
+        \item $L^* = \bigcup\limits_{n \in \mathbb{N}} L^n = L^0 \cup L^1 \cup L^2 \cup \dots $
+        \item $L^+ = \bigcup\limits_{\substack{n \in \mathbb{N} \\ n \neq 0}} L^n = L^1 \cup L^2 \cup L^3 \cup \dots $
+    \end{itemize}
+\end{definition}
+
+Ясно е, че в тази дефиниция $\Sigma^*$ е същото нещо като в другата.
 
 \section{Допълнителни дефиниции}
 
+Тук ще сложим няколко дефиниции, които са стандартни, и ще има задачи, свързани с тях.
+
+\begin{definition}
+    Ще дефинираме \textbf{обръщането} на дума и на език.
+    Обръщането на дума $\alpha$, което бележим с $\alpha^{rev}$, става индуктивно:
+    \begin{itemize}
+        \item $\varepsilon^{rev} = \varepsilon$
+        \item $(\alpha x)^{rev} = x(\alpha^{rev})$
+    \end{itemize}
+    Обръщането на език $L$ бележим с $L^{rev} = \{\alpha^{rev} \: | \: \alpha \in L \}$.
+\end{definition}
+
+\begin{definition}
+    Ще дефинираме кога една дума $\alpha$ е префикс, инфикс или суфикс на друга дума $\beta$:
+    \begin{itemize}
+        \item $\alpha \preceq_{pref} \beta$, ако $(\exists \gamma \in \Sigma^*)(\alpha \cdot \gamma = \beta)$
+        \item $\alpha \preceq_{suff} \beta$, ако $(\exists \gamma \in \Sigma^*)(\gamma \cdot \alpha = \beta)$
+        \item $\alpha \preceq_{inf} \beta$, ако $(\exists \gamma_1 \in \Sigma^*)(\exists \gamma_2 \in \Sigma^*)(\gamma_1 \cdot \alpha \cdot \gamma_2 = \beta)$
+    \end{itemize}
+    Нека $L \subseteq \Sigma^*$. Тогава:
+    \begin{itemize}
+        \item $Pref(L) = \{ \alpha \in \Sigma^* \: | \: (\exists \beta \in L)(\alpha \preceq_{pref} \beta) \}$
+        \item $Suff(L) = \{ \alpha \in \Sigma^* \: | \: (\exists \beta \in L)(\alpha \preceq_{suff} \beta) \}$
+        \item $Infix(L) = \{ \alpha \in \Sigma^* \: | \: (\exists \beta \in L)(\alpha \preceq_{inf} \beta) \}$
+    \end{itemize}
+\end{definition}
+
 \section{Задачи за упражнение}
+
+\begin{problem}[асоциативност]
+Да се докаже, че $\alpha \cdot (\beta \cdot \gamma) = (\alpha \cdot \beta) \cdot \gamma$
+
+Упътване: да се направи индукция по $\gamma$
+\end{problem}
+
+\begin{problem}[неутрален елемент]
+Да се докаже, че $\varepsilon \cdot \alpha = \alpha$
+
+Упътване: да се направи индукция по $\alpha$
+\end{problem}
+
+\begin{problem}
+Да се докаже, че $\alpha^n \cdot \alpha^m = \alpha^{n + m}$
+
+Упътване: да се направи индукция по $m$
+\end{problem}
+
+
+\begin{problem}
+Да се докаже, че $(\alpha^n)^m = \alpha^{nm}$
+
+Упътване: да се направи индукция по $m$
+\end{problem}
+
+\begin{problem}
+Да се докаже, че $L^n \cdot L^m = L^{n + m}$
+
+Упътване: да се направи индукция по $m$
+\end{problem}
+
+
+\begin{problem}
+Да се докаже, че $(L^n)^m = L^{nm}$
+
+Упътване: да се направи индукция по $m$
+\end{problem}
+
+\begin{problem}[дистрибутивност]
+Да се докаже, че:
+\begin{itemize}
+    \item $(L_1 \cup L_2) \cdot L_3 = (L_1 \cdot L_3) \cup (L_2 \cdot L_3)$
+    \item $(L_1 \cap L_2) \cdot L_3 = (L_1 \cdot L_3) \cap (L_2 \cdot L_3)$
+\end{itemize}
+\end{problem}
+
+\begin{problem}
+Да се докаже, че $\Sigma^+ = \Sigma \cdot \Sigma^*$
+
+Упътване: да се използват предните резултати
+\end{problem}
+
+\begin{problem}
+Да се докаже, че $(\alpha \cdot \beta)^{rev} = \alpha^{rev} \cdot \beta^{rev}$
+
+Упътване: да се направи индукция по $\beta$
+\end{problem}
+
+\begin{problem}
+Да се докаже, че:
+\begin{itemize}
+    \item $(\alpha^{rev})^{rev} = \alpha$
+    \item $(L^{rev})^{rev} = L$
+\end{itemize}
+
+Упътване: за първото да се направи индукция по $\alpha$, а за второто да се използва първото
+\end{problem}
+\begin{problem}
+Да се докаже, че:
+\begin{itemize}
+    \item $Pref(L_1 \cdot L_2) = Pref(L_1) \cup (L_1 \cdot Pref(L_2))$
+    \item $Suff(L_1 \cdot L_2) = Suff(L_2) \cup (Suff(L_1) \cdot L_2)$
+    \item $Infix(L_1 \cdot L_2) = Infix(L_1) \cup Infix(L_2) \cup (Suff(L_1) \cdot Pref(L_2))$
+    \item $Infix(L) = Pref(Suff(L)) = Suff(Pref(L))$
+\end{itemize}
+
+Упътване: да се разсъждава на ниво думи (конкатенация на езици се дефинира с конкатенация на думи)
+\end{problem}
