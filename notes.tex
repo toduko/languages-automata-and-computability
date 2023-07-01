@@ -1,0 +1,63 @@
+\documentclass[11pt, a5paper]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[english, bulgarian]{babel}
+\usepackage{amssymb}
+\usepackage{hyperref, fancyhdr, lastpage, fancyvrb, tcolorbox, titlesec}
+\usepackage{array, tabularx, colortbl}
+\usepackage{tikz}
+\usepackage{venndiagram}
+\usepackage{amsthm}
+\usepackage{amsmath,physics}
+\usepackage{mathtools}
+\usepackage[a5paper, left=0.50in, right=0.50in, top=1.0in, bottom=1.0in]{geometry}
+
+\ExplSyntaxOn
+\NewDocumentCommand{\opair}{m}
+ {
+  \langle\mspace{2mu}
+  \clist_set:Nn \l_tmpa_clist { #1 }
+  \clist_use:Nn \l_tmpa_clist {,\mspace{3mu plus 1mu minus 1mu}\allowbreak}
+  \mspace{2mu}\rangle
+}
+\ExplSyntaxOff
+
+\hypersetup{
+    colorlinks=true,
+    linktoc=all,
+    linkcolor=blue
+}
+
+\newtheorem{definition}{Дефиниция}[section]
+\newtheorem{theorem}[definition]{Теорема}
+\newtheorem{claim}[definition]{Твърдение}
+\newtheorem{axiom}[definition]{Аксиома}
+\newtheorem{lemma}[definition]{Лема}
+\newtheorem{corollary}[definition]{Следствие}
+\theoremstyle{remark}
+\newtheorem*{remark}{Забележка}
+
+\pagestyle{fancy}
+
+\lhead{\leftmark}
+\rhead{}
+
+\setlength\parindent{0pt}
+
+\title{Записки за упражнения по ЕАИ}
+\author{Тодор Дуков}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\include{introduction.tex}
+\include{automata.tex}
+\include{regex.tex}
+\include{grammars.tex}
+
+\end{document}
