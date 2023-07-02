@@ -112,7 +112,7 @@
 
 \section{Прости примери за автоматни езици}
 
-Автомат за $L = \O$:
+Автомат за $L = \varnothing$:
 
 \begin{center}
     \begin{tikzpicture}[shorten >=1pt,node distance=2cm,>=stealth',thick]
@@ -191,10 +191,10 @@
         \draw[->] (3) -- node[above] {$a$} (6);
         \draw[->] (3) -- node[above] {$b$} (7);
         \path[->] (4) edge [bend left] node[right] {$a, b$} (8);
-        \path[->] (5) edge [bend right] node[left] {$a, b$} (8);
-        \path[->] (6) edge [bend left] node[left] {$a, b$} (8);
+        \path[->] (5) edge node[left] {$a, b$} (8);
+        \path[->] (6) edge node[left] {$a, b$} (8);
         \path[->] (7) edge [bend right] node[right] {$a, b$} (8);
-        \path[->] (8) edge [loop right] node[above] {$a, b$} (8);
+        \path[->] (8) edge [loop right] node[right] {$a, b$} (8);
     \end{tikzpicture}
 \end{center}
 
@@ -213,9 +213,191 @@
     \item $F = L$
 \end{itemize}
 
-Коректността на тази конструкция приемаме за очевидна.
+Коректността на тази конструкция приемаме за очевидна. \\
+
+Нека сега направим автомат за $L = \{ \alpha \in \Sigma^* \: | \: |\alpha| \: \text{е четно} \}$.
+
+За една дума $\alpha \in \Sigma^*$ знаем, че тя или има четна дължина или има нечетна дължина.
+Дали не можем да кодираме по някакъв начин четността на прочетената дума в състояние?
+Отговорът е, че можем. Автоматът е следния:
+
+\begin{center}
+    \begin{tikzpicture}[shorten >=1pt,node distance=2.5cm,>=stealth',thick]
+        \node[text width=0.5cm] at (-1, 1) {$\mathcal{A}$:};
+        \node[accepting, initial, state, initial text=] (1) {$0$};
+        \node[state] [right of=1] (2) {$1$};
+        \path[->] (1) edge [bend left] node[above] {$a, b$} (2);
+        \path[->] (2) edge [bend left] node[below] {$a, b$} (1);
+    \end{tikzpicture}
+\end{center}
+
+Знаем, че $|\varepsilon|$ е четно.
+За всякo $\alpha \in \Sigma^*, \: x \in \Sigma$ знаем,
+че $|\alpha x|$ има различна четност от $|\alpha|$.
+Така ние започваме с думата $\varepsilon$ и 0 като честност на думата и за всяка буква сменяме четността.
+
+Нека сега помислим как трябва да докажем, че $\mathcal{L(A)} = L$.
+За това ще трябва да покажем, че започвайки от $0$ и четейки $\alpha$ ние наистина получаваме четността на $|\alpha|$ като състояние.
+
+\begin{claim}
+    За всяко $\alpha \in \Sigma^*$ : $\delta^*(0, \alpha) = |\alpha| \: (mod \: 2)$
+\end{claim}
+
+\begin{proof}
+    С индукция по $|\alpha|$.
+    \begin{itemize}
+        \item База: $|\alpha| = 0$, тогава $\alpha = \varepsilon$.
+              Наистина $\delta^*(0, \varepsilon) = 0 \: (mod \: 2)$ \checkmark
+        \item ИС: $|\alpha| = n + 1$, тогава $\alpha = \beta x$ за $\beta \in \Sigma^*, |\beta| = n, \: x \in \Sigma$
+              Тогава:
+              \begin{align*}
+                  \delta^*(0, \beta x) & = \delta(\delta^*(0, \beta), x) \stackrel{\text{ИП}}{=}
+                  \delta(|\beta| \: (mod \: 2), x) = |\beta| + 1 \: (mod \: 2) =                 \\
+                                       & = |\beta x| \: (mod \: 2) = |\alpha| \: (mod \: 2)
+              \end{align*}
+    \end{itemize}
+\end{proof}
+
+С това показахме, че състоянията наистина кодират информацията, която искахме да кодират.
+Имайки това можем да покажем, че двата езика съвпадат, по следния начин:
+\begin{center}
+    $\alpha \in \mathcal{L(A)} \iff \delta^*(0, \alpha) = 0 \iff |\alpha| \: (mod \: 2) = 0 \iff \alpha \in L$
+\end{center}
+
+
+Нека сега помислим какъв автомат ще можем да направим, за $\overline{L}$.
+Ние вече имаме автомат за $L$.
+Единственото, което трябва да направим, е да сменим отговора на автомата.
+Ако преди той е казвал ДА, сега да казва НЕ, и обратното.
+Очевидно този автомат ще свърши работа:
+\begin{center}
+    \begin{tikzpicture}[shorten >=1pt,node distance=2.5cm,>=stealth',thick]
+        \node[text width=0.5cm] at (-1, 1) {$\mathcal{A}_{\overline{L}}$:};
+        \node[initial, state, initial text=] (1) {$0$};
+        \node[accepting, state] [right of=1] (2) {$1$};
+        \path[->] (1) edge [bend left] node[above] {$a, b$} (2);
+        \path[->] (2) edge [bend left] node[below] {$a, b$} (1);
+    \end{tikzpicture}
+\end{center}
 
 \section{Операции над автоматни езици}
+
+Сега ще разгледаме няколко операции, които запазват автоматност.
+Първата операция (която вече загатнахме) над автоматни езици, която ще разгледаме е допълнение.
+
+\begin{claim}
+    Ако $L$ е автоматен, то тогава и $\overline{L}$ също е автоматен.
+\end{claim}
+
+\begin{proof}
+    Понеже $L$ е автоматен, има ДКА $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$ с $\mathcal{L(A)} = L$.
+    Нека $\mathcal{A}_{\overline{L}} = \opair{\Sigma, Q, s, \delta, Q \setminus F}$. Тогава:
+    \begin{center}
+        $\alpha \in \mathcal{L(A)} \iff \delta^*(s, \alpha) \in Q \setminus F \iff \delta^*(s, \alpha) \notin F \iff \alpha \notin L$
+    \end{center}
+\end{proof}
+
+Както направихме и в предният пример, тук просто сменяме отговора.
+Състоянията и преходите на началният автомат ни дават достатъчна информация за структурата на думата,
+което е достатъчно за да кажем дали е от езика $\overline{L}$ или не е. \\
+
+Преди да разгледаме следващата операция ще разгледаме два авомата:
+
+\begin{center}
+    \begin{tikzpicture}[shorten >=1pt,node distance=2.5cm,>=stealth',thick]
+        \node[text width=0.5cm] at (-1, 1) {$\mathcal{A}_1$:};
+        \node[accepting, initial, state, initial text=] (1) {$0$};
+        \node[state] [right of=1] (2) {$1$};
+        \path[->] (1) edge [bend left] node[above] {$a$} (2);
+        \path[->] (2) edge [bend left] node[below] {$a$} (1);
+        \path[->] (1) edge [loop above] node[above] {$b$} (1);
+        \path[->] (2) edge [loop above] node[above] {$b$} (2);
+    \end{tikzpicture}
+\end{center}
+
+\begin{center}
+    \begin{tikzpicture}[shorten >=1pt,node distance=2.5cm,>=stealth',thick]
+        \node[text width=0.5cm] at (-1, 1) {$\mathcal{A}_2$:};
+        \node[initial, state, initial text=] (1) {$0$};
+        \node[accepting, state] [right of=1] (2) {$1$};
+        \path[->] (1) edge [bend left] node[above] {$b$} (2);
+        \path[->] (2) edge [bend left] node[below] {$b$} (1);
+        \path[->] (1) edge [loop above] node[above] {$a$} (1);
+        \path[->] (2) edge [loop above] node[above] {$a$} (2);
+    \end{tikzpicture}
+\end{center}
+
+Ще приемем за очевидно, че първият автомат разпознава думите с четен брой $a$,
+а вторият автомат разпознава думите с нечетен брой $b$.
+
+Как бихме могли да направим автомат $\mathcal{A}$ за $\mathcal{L}(\mathcal{A}_1) \cap \mathcal{L}(\mathcal{A}_2)$?
+Можем да направим така:
+
+\begin{center}
+    \begin{tikzpicture}[node distance=2.5cm,>=stealth',thick]
+        \node[text width=0.5cm] at (-1, 1) {$\mathcal{A}$:};
+        \node[initial, state with output, initial text=] (1) {$0$ \nodepart{lower} $0$};
+        \node[state with output] [right of=1] (2) {$0$ \nodepart{lower} $1$};
+        \node[accepting, state with output, initial text=] [below of=1](3) {$1$ \nodepart{lower} $0$};
+        \node[state with output] [right of=3] (4) {$1$ \nodepart{lower} $1$};
+        \path[->] (1) edge [bend left] node[above] {$a$} (2);
+        \path[->] (2) edge [bend left] node[below] {$a$} (1);
+        \path[->] (3) edge [bend left] node[above] {$a$} (4);
+        \path[->] (4) edge [bend left] node[below] {$a$} (3);
+        \path[->] (1) edge [bend left] node[right] {$b$} (3);
+        \path[->] (3) edge [bend left] node[left] {$b$} (1);
+        \path[->] (2) edge [bend left] node[right] {$b$} (4);
+        \path[->] (4) edge [bend left] node[left] {$b$} (2);
+    \end{tikzpicture}
+\end{center}
+
+Имаме един брояч от $\mathcal{A}_1$ за четността на $a$ и още един броят от $\mathcal{A}_2$ за четността на $b$.
+Можем вземем и двата брояча и единят да се променя само при четена на $a$ (долния брояч), а другият само при четене на $b$ (горния брояч).
+Накрая понеже искаме думата да има четен брой $a$ и нечетен брой $b$, искаме отгоре да седи $1$, а отдолу да седи $0$.
+
+Оказва се, че това, което направихме, може да се обобщи ето така:
+
+\begin{claim}
+    Ако $L_1$ и $L_2$ са автоматни езици, то $L_1 \cap L_2$ също е автоматен език.
+\end{claim}
+
+\begin{proof}
+    Нека $\mathcal{A}_1 = \opair{\Sigma, Q_1, s_1, \delta_1, F_1}$ е автомат за $L1$ и нека $\mathcal{A}_2 = \opair{\Sigma, Q_2, s_2, \delta_2, F_2}$ е автомат за $L_2$.
+    Строим автомат за сечението:
+    \begin{itemize}
+        \item $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$
+        \item $Q = Q_1 \cross Q_2$
+        \item $s = \opair{s_1, s2}$
+        \item $\delta(\opair{p_1, p_2}, x) = \opair{\delta_1(p_1, x), \delta_2(p_2, x)}$ за $\opair{p_1, p_2} \in Q, \: x \in \Sigma$
+        \item $F = F_1 \cross F_2$
+    \end{itemize}
+
+    Тук използваме, че двата автомата, които имаме по начало ни дават информация за структурата на думите.
+    Ние паралелно изпълняваме четене в $\mathcal{A}_1$ и $\mathcal{A}_2$,
+    и накрая искаме положителен отговор и от двата автомата.
+    За да покажем, че $\mathcal{L(A)} = L_1 \cap L_2$, ще докажем:
+    \begin{claim}
+        $\delta^*(\opair{p_1, p_2}, \alpha) = \opair{\delta_1^*(p_1, \alpha), \delta_2^*(p_2, \alpha)}$
+    \end{claim}
+    \begin{proof}
+        С индукция по $|\alpha|$.
+        \begin{itemize}
+            \item $\delta^*(\opair{p_1, p_2}, \varepsilon) = \opair{p_1, p_2} = \opair{\delta_1^*(p_1, \varepsilon), \delta_2^*(p_2, \varepsilon)}$ \checkmark
+            \item $\delta^*(\opair{p_1, p_2}, \beta x) = \delta(\delta^*(\opair{p_1, p_2}, \beta), x) \stackrel{\text{ИП}}{=} \delta(\opair{\delta_1^*(p_1, \beta), \delta_2^*(p_2, \beta)}, x) = \opair{\delta_1(\delta_1^*(p_1, \beta), x), \delta_2(\delta_2^*(p_2, \beta), x)} = \opair{\delta_1^*(p_1, \beta x), \delta_2^*(p_2, \beta x)}$
+        \end{itemize}
+    \end{proof}
+
+    Имайки това изкарваме директно, че
+    $\alpha \in \mathcal{L(A)} \iff \delta^*(s, \alpha) \in F \iff \opair{\delta_1^*(s_1, \alpha), \delta_2^*(s_2, \alpha)} \in F_1 \cross F_2 \iff \delta_1^*(s_1, \alpha) \in F_1 \: \& \: \delta_2^*(s_2, \alpha) \in F_2 \iff \alpha \in L_1 \: \& \: \alpha \in \L_2 \iff \alpha \in L_1 \cap L_2$, с което сме готови.
+\end{proof}
+
+Имайки, че $\cap$ и допълнение запазват автоматност, директно изкарваме, че $\cup$ и $\setminus$ запазват автоматност:
+\begin{itemize}
+    \item $L_1 \cup L_2 = \overline{\overline{L_1 \cup L_2}} = \overline{\overline{L_1} \cap \overline{L_2}}$ \\
+          Друг вариант това да се направи е да се приложи същата конструкция, със разликата че $F = (F_1 \cross Q_2) \cup (Q_1 \cross F_2)$
+    \item $L_1 \setminus L_2 = L_1 \cap \overline{L_2}$ \\
+          Друг вариант това да се направи е да се приложи същата конструкция, със разликата че $F = F_1 \cross (Q_2 \setminus F_2)$
+\end{itemize}
 
 \section{Недетерминирани автомати}
 
