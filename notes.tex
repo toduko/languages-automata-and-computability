@@ -11,6 +11,7 @@
 \usepackage{amsthm}
 \usepackage{amsmath,physics}
 \usepackage{mathtools}
+\usepackage{subcaption}
 \usepackage[a5paper, left=0.50in, right=0.50in, top=1.0in, bottom=1.0in]{geometry}
 \usetikzlibrary{automata, arrows}
 
@@ -58,7 +59,15 @@
 \tableofcontents
 
 \include{introduction.tex}
-\include{automata.tex}
+\include{automata/dfa-definitions.tex}
+\include{automata/dfa-examples.tex}
+\include{automata/dfa-operations.tex}
+\include{automata/nfa-definitions.tex}
+\include{automata/nfa-operations.tex}
+\include{automata/nfa-dfa-equivalency.tex}
+\include{automata/brzozowski-automaton.tex}
+\include{automata/pumping-lemma.tex}
+\include{automata/problems.tex}
 \include{regex.tex}
 \include{grammars.tex}
 

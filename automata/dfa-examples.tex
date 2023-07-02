@@ -1,0 +1,177 @@
+\section{Прости примери за автоматни езици}
+
+Нека видим много прости примери за автоматни езици,
+за да добием малко интуиция какви езици могат да бъдат автоматни,
+и да поработим малко със самите машини. Най-простите автоматни езици са $\varnothing$ и $\Sigma^*$:
+
+\begin{figure*}[h]
+    \centering
+    \begin{subfigure}[b]{0.3\linewidth}
+        \centering
+        \begin{tikzpicture}[node distance=2cm, thick]
+            \node[initial, state, initial text=] (1) {$q$};
+            \path[->] (1) edge [loop above] node[above] {$a, b$}(1);
+        \end{tikzpicture}
+        \caption*{Автомат за $\{ \varepsilon \}$}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.3\linewidth}
+        \centering
+        \begin{tikzpicture}[node distance=2cm, thick]
+            \node[initial, accepting, state, initial text=, right of=1] (2) {$q$};
+            \path[->] (2) edge [loop above] node[above] {$a, b$}(2);
+        \end{tikzpicture}
+        \caption*{Автомат за $\Sigma^*$}
+    \end{subfigure}
+\end{figure*}
+
+Сега малко ще усложним нещата.
+Ще направим автомат, който да разпознае езикът от една конкретна дума.
+Конструкцията за конкретната дума много лесно се обобщава за всички.
+За пример нека направим автомат за $L = \{ abab \}$:
+
+\begin{center}
+    \begin{tikzpicture}[shorten >=1pt,node distance=2.5cm,>=stealth',thick]
+        \node[initial, state, initial text=] (1) {$\varepsilon$};
+        \node[state] [right of=1] (2) {$a$};
+        \node[state] [right of=2] (3) {$ab$};
+        \node[state] [right of=3] (4) {$aba$};
+        \node[state, accepting] [right of=4] (5) {$abab$};
+        \node[state] [below of=3] (6) {$\cross$};
+        \draw[->] (1) -- node[above] {$a$} (2);
+        \draw[->] (2) -- node[above] {$b$} (3);
+        \draw[->] (3) -- node[above] {$a$} (4);
+        \draw[->] (4) -- node[above] {$b$} (5);
+        \path[->] (1) edge [bend right] node[below] {$b$} (6);
+        \path[->] (2) edge [bend right] node[below] {$a$} (6);
+        \path[->] (3) edge  node[right] {$b$} (6);
+        \path[->] (4) edge [bend left] node[below] {$a$} (6);
+        \path[->] (5) edge [bend left] node[below] {$a, b$} (6);
+        \path[->] (6) edge [loop below] node[below] {$a, b$} (6);
+    \end{tikzpicture} \\
+\end{center}
+
+\pagebreak
+
+Тази техника може да се приложи за строене на автомат за език от произволно дълга дума.
+Ето как ще обобщим конструкцията за езика $L = \{ \alpha \}$:
+\begin{itemize}
+    \item $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$
+    \item $Q = Pref(L) \cup \{ \cross \}$ (начален отрязък от пътя, който съставя $\alpha$, $\cross \notin \Sigma$ е отхвърлящо състояние боклук)
+    \item $s = \varepsilon$
+    \item За $\beta \preceq_{pref} \alpha \: ($тогава $\beta \in Q), \: x \in \Sigma$:
+          ако $\beta x \preceq_{pref} \alpha$, то $\delta(\beta, x) = \beta x$,
+          иначе $\delta(\beta, x) = \cross$
+    \item $\delta(\cross, x) = \cross$ за $x \in \Sigma$
+    \item $F = \{ \alpha \}$
+\end{itemize}
+
+Идеята зад конструкцията е следната:
+Състоянията кодират пътя, който сме изминали, ако не сме се отклонили вече от ``строежа'' на $\alpha$.
+В първият момент на отклонение отиваме във нефинално състояние ``боклук'', от което не може да излезнем.
+Можем да разширим идеята, така че да работи за няколко думи като кодираме повече видове пътища.
+
+\pagebreak
+
+\begin{figure*}
+    \centering
+    \begin{tikzpicture}[shorten >=1pt,node distance=2.5cm,>=stealth',thick]
+        \node[initial, state, initial text=] (1) {$\varepsilon$};
+        \node[state] [above right of=1] (2) {$a$};
+        \node[state] [below right of=1] (3) {$b$};
+        \node[state, accepting] [above right of=2] (4) {$aa$};
+        \node[state, accepting] [right of=2] (5) {$ab$};
+        \node[state, accepting] [right of=3] (6) {$ba$};
+        \node[state] [below right of=3] (7) {$bb$};
+        \node[state] [below right of=5] (8) {$\cross$};
+        \draw[->] (1) -- node[above] {$a$} (2);
+        \draw[->] (1) -- node[above] {$b$} (3);
+        \draw[->] (2) -- node[above] {$a$} (4);
+        \draw[->] (2) -- node[above] {$b$} (5);
+        \draw[->] (3) -- node[above] {$a$} (6);
+        \draw[->] (3) -- node[above] {$b$} (7);
+        \path[->] (4) edge [bend left] node[right] {$a, b$} (8);
+        \path[->] (5) edge node[left] {$a, b$} (8);
+        \path[->] (6) edge node[left] {$a, b$} (8);
+        \path[->] (7) edge [bend right] node[right] {$a, b$} (8);
+        \path[->] (8) edge [loop right] node[right] {$a, b$} (8);
+    \end{tikzpicture}
+    \caption*{Автомат за $L = \{ ab, ba, aa \}$}
+\end{figure*}
+
+Ето как ще обобщим конструкцията (чиято коректност приемаме за очевидна) за $L = \{ \alpha_1, \: \dots, \: \alpha_n \}$:
+\begin{itemize}
+    \item $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$
+    \item $Q = \{ \alpha \in \Sigma^* \: | \: (\exists \beta \in L) (|\alpha| \leq |\beta|) \} \cup \{ \cross \}$ (не гледаме пътища по-дълги от най-дългата дума в $L$, $\cross \notin \Sigma$ - състояние боклук)
+    \item $s = \varepsilon$
+    \item За $\alpha \in Q, \: x \in \Sigma$:
+          ако $\alpha x \in Q$, то $\delta(\alpha, x) = \alpha x$,
+          иначе $\delta(\alpha, x) = \cross$
+    \item $\delta(\cross, x) = \cross$ за $x \in \Sigma$
+    \item $F = L$
+\end{itemize}
+
+Нека сега направим автомат за $L = \{ \alpha \in \Sigma^* \: | \: |\alpha| \: \text{е четно} \}$.
+
+За една дума $\alpha \in \Sigma^*$ знаем, че тя или има четна дължина или има нечетна дължина.
+Дали не можем да кодираме по някакъв начин четността на прочетената дума в състояние?
+Отговорът е, че можем. Автоматът е следния:
+
+\begin{center}
+    \begin{tikzpicture}[shorten >=1pt,node distance=2.5cm,>=stealth',thick]
+        \node[text width=0.5cm] at (-1, 1) {$\mathcal{A}$:};
+        \node[accepting, initial, state, initial text=] (1) {$0$};
+        \node[state] [right of=1] (2) {$1$};
+        \path[->] (1) edge [bend left] node[above] {$a, b$} (2);
+        \path[->] (2) edge [bend left] node[below] {$a, b$} (1);
+    \end{tikzpicture}
+\end{center}
+
+Знаем, че $|\varepsilon|$ е четно.
+За всякo $\alpha \in \Sigma^*, \: x \in \Sigma$ знаем,
+че $|\alpha x|$ има различна четност от $|\alpha|$.
+Така ние започваме с думата $\varepsilon$ и 0 като честност на думата и за всяка буква сменяме четността.
+
+Нека сега помислим как да докажем, че $\mathcal{L(A)} = L$.
+За това ще трябва да покажем, че започвайки от $0$ и четейки $\alpha$ ние наистина получаваме четността на $|\alpha|$ като състояние.
+
+\begin{claim}
+    За всяко $\alpha \in \Sigma^*$ : $\delta^*(0, \alpha) = |\alpha| \: (mod \: 2)$
+\end{claim}
+
+\begin{proof}
+    С индукция по $|\alpha|$.
+    \begin{itemize}
+        \item База: $|\alpha| = 0$, тогава $\alpha = \varepsilon$.
+              Наистина $\delta^*(0, \varepsilon) = 0 \: (mod \: 2)$ \checkmark
+        \item ИС: $|\alpha| = n + 1$, тогава $\alpha = \beta x$ за $\beta \in \Sigma^*, |\beta| = n, \: x \in \Sigma$
+              Тогава:
+              \begin{align*}
+                  \delta^*(0, \beta x) & = \delta(\delta^*(0, \beta), x) \stackrel{\text{ИП}}{=}
+                  \delta(|\beta| \: (mod \: 2), x) = |\beta| + 1 \: (mod \: 2) =                 \\
+                                       & = |\beta x| \: (mod \: 2) = |\alpha| \: (mod \: 2)
+              \end{align*}
+    \end{itemize}
+\end{proof}
+
+Състоянията наистина кодират информацията, която искахме.
+Имайки това можем да покажем, че двата езика съвпадат, по следния начин:
+\begin{center}
+    $\alpha \in \mathcal{L(A)} \iff \delta^*(0, \alpha) = 0 \iff |\alpha| \: (mod \: 2) = 0 \iff \alpha \in L$
+\end{center}
+
+
+Нека сега помислим какъв автомат ще можем да направим за $\overline{L}$.
+Ние вече имаме автомат за $L$.
+От неговите състояние и преходи можем да извлечем информация за четността на дължината на думата.
+Единственото, което трябва да направим, е да сменим отговора на автомата.
+Ако преди той е казвал ДА, сега да казва НЕ, и обратното.
+Очевидно този автомат ще свърши работа:
+\begin{center}
+    \begin{tikzpicture}[shorten >=1pt,node distance=2.5cm,>=stealth',thick]
+        \node[text width=0.5cm] at (-1, 1) {$\mathcal{A}_{\overline{L}}$:};
+        \node[initial, state, initial text=] (1) {$0$};
+        \node[accepting, state] [right of=1] (2) {$1$};
+        \path[->] (1) edge [bend left] node[above] {$a, b$} (2);
+        \path[->] (2) edge [bend left] node[below] {$a, b$} (1);
+    \end{tikzpicture}
+\end{center}

@@ -1,0 +1,111 @@
+\chapter{Автомати}
+
+Тук ще разгледаме първата ``машина'', с която ще класифицираме езиците.
+
+\section{Детерминирани автомати и автоматни езици}
+
+\begin{definition}
+    \textbf{Детерминиран краен автомат} (накратко ДКА) ще наричаме всяко $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$, където:
+    \begin{itemize}
+        \item $\Sigma$ е крайна азбука
+        \item $Q$ е крайно множество от състояния
+        \item $s \in Q$ (ще го наричаме начално/стартово състояние)
+        \item $\delta : Q \cross \Sigma \rightarrow Q$ (ще я наричаме функция на преходите)
+        \item $F \subseteq Q$ (ще ги наричаме финални състояния)
+    \end{itemize}
+\end{definition}
+
+В момента със това, което имаме,
+ако искаме да покажем къде ще стигнем с думата $aaa$, започвайки от $s$,
+ще трябва да го запишем със $\delta(\delta(\delta(s, a), a), a)$, което е тромаво.
+
+За това ще си въведем начин, по който да видим крайният резултат от прочитането на цяла дума.
+
+\begin{definition}
+    Дефинираме $\delta^* : Q \cross \Sigma^* \rightarrow Q$ индуктивно:
+    \begin{itemize}
+        \item $\delta^*(p, \varepsilon) = p$ за всяко $p \in Q$
+        \item $\delta^*(p, \beta x) = \delta(\delta^*(p, \beta), x)$ за всяко $p \in Q, \beta \in \Sigma^*, x \in \Sigma$
+    \end{itemize}
+\end{definition}
+
+Сега можем да забележим, че:
+\begin{align*}
+    \delta^*(s, aaa) & = \delta(\delta^*(s, aa), a) = \delta(\delta(\delta^*(s, a), a), a) =                           \\
+                     & = \delta(\delta(\delta(\delta^*(s, \varepsilon), a), a), a) =\delta(\delta(\delta(s, a), a), a)
+\end{align*}
+Функцията наистина прави това, което искаме да прави.
+
+\begin{definition}
+    Нека $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$ е ДКА.
+    Тогава езикът на автомата $\mathcal{A}$ е множеството
+    $\mathcal{L}(\mathcal{A}) = \{ \alpha \in \Sigma^* \: | \: \delta^*(s, \alpha) \in F \}$.
+    Един език $L \subseteq \Sigma^*$, наричаме \textbf{автоматен}, ако има ДКА $\mathcal{A}$ с $\mathcal{L}(\mathcal{A}) = L$.
+\end{definition}
+
+\section{Представяне на автомат}
+
+Ще видим начините, по които можем да представяме един автомат.
+За пример ще вземем автомата $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$, където:
+\begin{itemize}
+    \item $\Sigma = \{ a, b \}$
+    \item $Q = \{ q_0, q_1, q_2 \}$
+    \item $s = q_0$
+    \item $\delta(q_0, a) = q_2$
+    \item $\delta(p, x) = q_1$ за $p \in Q, \: x \in \Sigma, \: \opair{p, x} \neq \opair{q_0, a}$
+    \item $F = \{ q_2 \}$
+\end{itemize}
+Това е първият начин за представяне.
+При него директно в явен вид се казват кои са всички съставни елементи на $\mathcal{A}$.
+Това ще бъде използване сравнително често, когато правим от един автомат друг.
+В случаите, в които не знаем как изглежда първоначалният автомат, следващите методи тогава няма да свършат работа. \\
+
+Вторият начин за представяне е с таблица на функцията на преходите:
+\begin{center}
+    \begin{tabular}{||r | r | r||}
+        \hline
+        \cellcolor{lightgray} & $a$   & $b$   \\
+        \hline
+        $\rightarrow q_0$     & $q_2$ & $q_1$ \\
+        \hline
+        $q_1$                 & $q_1$ & $q_1$ \\
+        \hline
+        $\checkmark q_2$      & $q_1$ & $q_1$ \\
+        \hline
+    \end{tabular}
+\end{center}
+Тук с $\rightarrow$ отбелязваме началното състояние,
+а с $\checkmark$ отбелязваме финалните състояния.
+Във втората и третата колона казваме къде ще се озовем,
+ако се намираме в съответното състояние и прочетем съответната буква.
+Това е по-прегледно представяне от първото, но може да стане обемно. \\
+
+Третият начин за представяне е с картинка:
+
+\begin{center}
+    \begin{tikzpicture}[shorten >=1pt,node distance=2cm,>=stealth',thick]
+        \node[initial, state, initial text=] (1) {$q_0$};
+        \node[state] (2) [above right of=1] {$q_1$};
+        \node[state, accepting] (3) [below right of=1] {$q_2$};
+        \draw[->] (1) -- node[above] {$b$} (2);
+        \draw[->] (1) -- node[above] {$a$} (3);
+        \path (2) edge [loop above] node[above] {$a, b$} (2);
+        \draw[->] (3) -- node[right] {$a, b$} (2);
+    \end{tikzpicture}
+\end{center}
+
+Началното състояние е отбелязано със стрелка, а финалните са оградени два пъти.
+Представянето чрез картинка изглежда по-прегледно от другите две, но то може и да стане огромно.
+
+Ясно е, че $\mathcal{L}(\mathcal{A}) = \{ a \}$.
+Ако искаме да покажем това формално, трябва да направим следното:
+\begin{itemize}
+    \item Очевидно $a \in \mathcal{L}(\mathcal{A}), \: b \notin \mathcal{L}(\mathcal{A}), \: \varepsilon \notin \mathcal{L}(\mathcal{A})$
+    \item Показваме, че $\delta^*(q_1, \alpha) = q_1$ за всяко $\alpha \in \Sigma^*$ с индукция по $|\alpha|$
+    \item Ако $\alpha \notin \{ a, b, \varepsilon \}$, то $\alpha = x y \beta$ за $x, y \in \Sigma, \: \beta \in \Sigma^*$
+    \item Тогава лесно се вижда, че $\delta^*(q_0, \alpha) = q_1 \notin F$.
+          Или директно отиваме в $q_1$ (ако $x = b$) и оставаме там, или първо отиваме в $q_2$ (ако $x = a$), и после със следващата буква отиваме в $q_1$ и оставаме там.
+\end{itemize}
+
+Това обаче за такива прости автомати не е нужно.
+Тези неща в такива случаи ще ги приемаме за очевидни.
