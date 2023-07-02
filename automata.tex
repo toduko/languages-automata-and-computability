@@ -159,7 +159,7 @@
 Ето как ще обобщим конструкцията за $L = \{ \alpha \}$:
 \begin{itemize}
     \item $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$
-    \item $Q = Pref(L) \cup \{ \cross \}$ (начален отрязък от пътя, който съставя $\alpha$, $\cross$ е отхвърлящо състояние боклук)
+    \item $Q = Pref(L) \cup \{ \cross \}$ (начален отрязък от пътя, който съставя $\alpha$, $\cross \notin \Sigma$ е отхвърлящо състояние боклук)
     \item $s = \varepsilon$
     \item За $\beta \preceq_{pref} \alpha \: ($тогава $\beta \in Q), \: x \in \Sigma$:
           ако $\beta x \preceq_{pref} \alpha$, то $\delta(\beta, x) = \beta x$,
@@ -204,7 +204,7 @@
 Ето как ще обобщим конструкцията за $L = \{ \alpha_1, \: \dots, \: \alpha_n \}$:
 \begin{itemize}
     \item $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$
-    \item $Q = \{ \alpha \in \Sigma^* \: | \: (\exists \beta \in L) (|\alpha| \leq |\beta|) \} \cup \{ \cross \}$ (не гледаме пътища по-дълги от най-дългата дума в $L$)
+    \item $Q = \{ \alpha \in \Sigma^* \: | \: (\exists \beta \in L) (|\alpha| \leq |\beta|) \} \cup \{ \cross \}$ (не гледаме пътища по-дълги от най-дългата дума в $L$, $\cross \notin \Sigma$ - състояние боклук)
     \item $s = \varepsilon$
     \item За $\alpha \in Q, \: x \in \Sigma$:
           ако $\alpha x \in Q$, то $\delta(\alpha, x) = \alpha x$,
