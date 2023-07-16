@@ -131,9 +131,9 @@
     \end{itemize}
     Нека $L \subseteq \Sigma^*$. Тогава:
     \begin{itemize}
-        \item $Pref(L) = \{ \alpha \in \Sigma^* \: | \: (\exists \beta \in L)(\alpha \preceq_{pref} \beta) \}$
-        \item $Suff(L) = \{ \alpha \in \Sigma^* \: | \: (\exists \beta \in L)(\alpha \preceq_{suff} \beta) \}$
-        \item $Infix(L) = \{ \alpha \in \Sigma^* \: | \: (\exists \beta \in L)(\alpha \preceq_{inf} \beta) \}$
+        \item $\operatorname{Pref}(L) = \{ \alpha \in \Sigma^* \: | \: (\exists \beta \in L)(\alpha \preceq_{pref} \beta) \}$
+        \item $\operatorname{Suff}(L) = \{ \alpha \in \Sigma^* \: | \: (\exists \beta \in L)(\alpha \preceq_{suff} \beta) \}$
+        \item $\operatorname{Infix}(L) = \{ \alpha \in \Sigma^* \: | \: (\exists \beta \in L)(\alpha \preceq_{inf} \beta) \}$
     \end{itemize}
 \end{definition}
 
@@ -211,10 +211,10 @@
 \begin{problem}
 Да се докаже, че:
 \begin{itemize}
-    \item $Pref(L_1 \cdot L_2) = Pref(L_1) \cup (L_1 \cdot Pref(L_2))$
-    \item $Suff(L_1 \cdot L_2) = Suff(L_2) \cup (Suff(L_1) \cdot L_2)$
-    \item $Infix(L_1 \cdot L_2) = Infix(L_1) \cup Infix(L_2) \cup (Suff(L_1) \cdot Pref(L_2))$
-    \item $Infix(L) = Pref(Suff(L)) = Suff(Pref(L))$
+    \item $\operatorname{Pref}(L_1 \cdot L_2) = \operatorname{Pref}(L_1) \cup (L_1 \cdot \operatorname{Pref}(L_2))$
+    \item $\operatorname{Suff}(L_1 \cdot L_2) = \operatorname{Suff}(L_2) \cup (\operatorname{Suff}(L_1) \cdot L_2)$
+    \item $\operatorname{Infix}(L_1 \cdot L_2) = \operatorname{Infix}(L_1) \cup \operatorname{Infix}(L_2) \cup (\operatorname{Suff}(L_1) \cdot \operatorname{Pref}(L_2))$
+    \item $\operatorname{Infix}(L) = \operatorname{Pref}(\operatorname{Suff}(L)) = \operatorname{Suff}(\operatorname{Pref}(L))$
 \end{itemize}
 
 Упътване: да се разсъждава на ниво думи (конкатенация на езици се дефинира с конкатенация на думи)

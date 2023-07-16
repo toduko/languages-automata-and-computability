@@ -124,7 +124,7 @@
 \begin{claim}
     Ако $L_1$ и $L_2$ са автоматни езици, то и
     \begin{align*}
-        Mix(L_1, L_2) = \{ a_1b_1 \dots a_nb_n \: | \: n \in \mathbb{N} \: & \& \: (\forall i \in \{ 1, \dots, n \})(a_i \in \Sigma \: \& \: b_i \in \Sigma) \: \\
+        \operatorname{Mix}(L_1, L_2) = \{ a_1b_1 \dots a_nb_n \: | \: n \in \mathbb{N} \: & \& \: (\forall i \in \{ 1, \dots, n \})(a_i \in \Sigma \: \& \: b_i \in \Sigma) \: \\
                                                                            & \& \: a_1 \dots a_n \in L_1 \: \& \: b_1 \dots b_n \in L_2 \}
     \end{align*}
     е автоматен.
@@ -132,7 +132,7 @@
 
 \begin{proof}
     Нека $\mathcal{A}_1 = \opair{\Sigma, Q_1, s_1, \delta_1, F_1}$ е автомат за $L_1$ и нека $\mathcal{A}_2 = \opair{\Sigma, Q_2, s_2, \delta_2, F_2}$ е автомат за $L_2$.
-    Строим автомат за $Mix(L_1, L_2)$:
+    Строим автомат за $\operatorname{Mix}(L_1, L_2)$:
     \begin{itemize}
         \item $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$
         \item $Q = Q_1 \cross Q_2 \cross \{ 0, 1 \}$ (третата компонента ще ни казва с кой автомат работим в момента)
@@ -182,7 +182,7 @@
         \alpha \in \mathcal{L(A)}  \iff & \delta^*(s, \alpha) \in F \iff                                                        \\
         \iff                            & \alpha = \alpha_1 \dots \alpha_{2n} (\alpha_i \in \Sigma)                       \: \& \\
                                         & \delta_1^*(s_1, \alpha_1 \alpha_3 \dots \alpha_{2n - 1}) \in L_1                \: \& \\
-                                        & \delta_2^*(s_2, \alpha_2 \alpha_4 \dots \alpha_{2n}) \in L_2 \iff \alpha \in L
+                                        & \delta_2^*(s_2, \alpha_2 \alpha_4 \dots \alpha_{2n}) \in L_2 \iff \alpha \in \operatorname{Mix}(L_1, L_2)
     \end{flalign*}
 
 \end{proof}
