@@ -186,3 +186,30 @@
     \end{flalign*}
 
 \end{proof}
+
+\pagebreak
+
+\begin{claim}
+    Нека $L_1$ и $L_2$ са автоматни езици и $\# \notin \Sigma$.
+    Тогава $L_1 \cdot \{ \# \} \cdot L_2$ също е автоматен език.
+\end{claim}
+
+\begin{proof}
+    Ще покажем само конструкцията, а доказателството ще оставим на читателя.
+    Нека $\mathcal{A}_1 = \opair{\Sigma, Q_1, s_1, \delta_1, F_1}$ е автомат за $L_1$ и нека $\mathcal{A}_2 = \opair{\Sigma, Q_2, s_2, \delta_2, F_2}$ е автомат за $L_2$.
+    Строим автомат за $L_1 \cdot \{ \# \} \cdot L_2$:
+    \begin{itemize}
+        \item $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$
+        \item $Q = Q_1 \cross Q_2 \cross \{ 0, 1 \} \cup \{ \cross \}$
+        \item $s = \opair{s_1, s_2, 0}$
+        \item $\delta(\opair{p_1, p_2, 0}, x) = \opair{\delta_1(p_1, x), p_2, 1}$ за $\opair{p_1, p_2} \in Q_1 \cross Q_2, \: x \in \Sigma$
+        \item $\delta(\opair{p_1, p_2, 0}, \#) = \opair{p_1, p_2, 1}$ за $\opair{p_1, p_2} \in Q_1 \cross Q_2$
+        \item $\delta(\opair{p_1, p_2, 1}, x) = \opair{p_1, \delta_2(p_2, x), 0}$ за $\opair{p_1, p_2} \in Q_1 \cross Q_2, \: x \in \Sigma$
+        \item $\delta(\opair{p_1, p_2, 1}, \#) = \cross$ за $\opair{p_1, p_2} \in Q_1 \cross Q_2$
+        \item $\delta(\cross, x) = \cross$ за $x \in \Sigma \cup \{ \# \}$
+        \item $F = F_1 \cross F_2 \cross \{ 1 \}$
+    \end{itemize}
+
+    Казано на естествен език, четем със $\mathcal{A}_1$ докато не стигнем $\#$, после четем със $\mathcal{A}_2$.
+    Накрая ще искаме да сме прочели $\#$ и прочетеното от $\mathcal{A}_1$ и $\mathcal{A}_2$ да бъде одобрено (т.е. да сме получили отговор ДА).
+\end{proof}
