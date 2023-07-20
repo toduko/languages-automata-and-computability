@@ -125,7 +125,7 @@
     Ако $L_1$ и $L_2$ са автоматни езици, то и
     \begin{align*}
         \operatorname{Mix}(L_1, L_2) = \{ a_1b_1 \dots a_nb_n \: | \: n \in \mathbb{N} \: & \& \: (\forall i \in \{ 1, \dots, n \})(a_i \in \Sigma \: \& \: b_i \in \Sigma) \: \\
-                                                                           & \& \: a_1 \dots a_n \in L_1 \: \& \: b_1 \dots b_n \in L_2 \}
+                                                                                          & \& \: a_1 \dots a_n \in L_1 \: \& \: b_1 \dots b_n \in L_2 \}
     \end{align*}
     е автоматен.
 \end{claim}
@@ -179,9 +179,9 @@
 
     Имайки това:
     \begin{flalign*}
-        \alpha \in \mathcal{L(A)}  \iff & \delta^*(s, \alpha) \in F \iff                                                        \\
-        \iff                            & \alpha = \alpha_1 \dots \alpha_{2n} (\alpha_i \in \Sigma)                       \: \& \\
-                                        & \delta_1^*(s_1, \alpha_1 \alpha_3 \dots \alpha_{2n - 1}) \in L_1                \: \& \\
+        \alpha \in \mathcal{L(A)}  \iff & \delta^*(s, \alpha) \in F \iff                                                                            \\
+        \iff                            & \alpha = \alpha_1 \dots \alpha_{2n} (\alpha_i \in \Sigma)                       \: \&                     \\
+                                        & \delta_1^*(s_1, \alpha_1 \alpha_3 \dots \alpha_{2n - 1}) \in L_1                \: \&                     \\
                                         & \delta_2^*(s_2, \alpha_2 \alpha_4 \dots \alpha_{2n}) \in L_2 \iff \alpha \in \operatorname{Mix}(L_1, L_2)
     \end{flalign*}
 
@@ -212,4 +212,36 @@
 
     Казано на естествен език, четем със $\mathcal{A}_1$ докато не стигнем $\#$, после четем със $\mathcal{A}_2$.
     Накрая ще искаме да сме прочели $\#$ и прочетеното от $\mathcal{A}_1$ и $\mathcal{A}_2$ да бъде одобрено (т.е. да сме получили отговор ДА).
+\end{proof}
+
+\pagebreak
+
+\begin{claim}
+    За всеки автоматен $L$ езиците $\operatorname{Pref}(L)$, $\operatorname{Suff}(L)$ и $\operatorname{Infix}(L)$ също са автоматни.
+\end{claim}
+
+\begin{proof}
+    Нека $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$ е автомат за $L$.
+
+    Нека $F' = \{ q \in Q \mid (\exists \gamma \in \Sigma^*) \: (\delta^*(q, \gamma) \in F) \}$
+    и $S' = \{ \delta^*(s, \beta) \mid \beta \in \Sigma^* \}$.
+    Да помислим кога точно една дума е префикс на дума от $L$:
+    \begin{flalign*}
+        \beta \in \operatorname{Pref}(L) & \iff (\exists \gamma \in \Sigma^*) \: (\beta \gamma \in L) \iff                             \\
+                                         & \iff (\exists \gamma \in \Sigma^*) \: (\delta^*(s, \beta \gamma) \in F) \iff                \\
+                                         & \iff (\exists \gamma \in \Sigma^*) \: (\delta^*(\delta^*(s, \beta), \gamma) \in F) \iff     \\
+                                         & \iff \delta^*(s, \beta) \in F' \iff \beta \in \mathcal{L}(\opair{\Sigma, Q, s, \delta, F'})
+    \end{flalign*}
+    Току що показахме автомат за $\operatorname{Pref}(L)$, а именно $\opair{\Sigma, Q, s, \delta, F'}$.
+    Така получихме, че $\operatorname{Pref}(L)$ е автоматен език.
+    Можем да направим подобни разсъждения за суфикс:
+    \begin{flalign*}
+        \gamma \in \operatorname{Suff}(L) & \iff (\exists \beta \in \Sigma^*) \: (\beta \gamma \in L) \iff                         \\
+                                          & \iff (\exists \beta \in \Sigma^*) \: (\delta^*(s, \beta \gamma) \in F) \iff            \\
+                                          & \iff (\exists \beta \in \Sigma^*) \: (\delta^*(\delta^*(s, \beta), \gamma) \in F) \iff \\
+                                          & \iff (\exists q \in S') \: (\delta^*(q, \gamma) \in F) \iff                            \\
+                                          & \iff \gamma \in \bigcup\limits_{q \in S'}\mathcal{L}(\opair{\Sigma, Q, q, \delta, F})
+    \end{flalign*}
+    Представихме $\operatorname{Suff}(L)$ като обединение на автоматни езици, откъдето и той е автоматен.
+    Освен това $\operatorname{Infix}(L) = \operatorname{Pref}(\operatorname{Suff}(L))$ (от \thref{prefix-suffix-infix-props}), с което сме готови.
 \end{proof}

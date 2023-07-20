@@ -36,12 +36,26 @@
 \end{align*}
 Функцията наистина прави това, което искаме да прави.
 
+\begin{claim}
+    $\delta^*(p, \alpha \beta) = \delta^*(\delta^*(p, \alpha), \beta)$
+\end{claim}
+
+\begin{proof}
+    С индукция по $|\beta|$.
+    \begin{itemize}
+        \item $\delta^*(p, \alpha \varepsilon) = \delta^*(p, \alpha) = \delta^*(\delta^*(p, \alpha), \varepsilon)$
+        \item $\delta^*(p, \alpha \beta x) = \delta(\delta^*(p, \alpha \beta), x) \stackrel{\text{ИП}}{=} \delta(\delta^*(\delta^*(p, \alpha), \beta), x) = \delta^*(\delta^*(p, \alpha), \beta x)$
+    \end{itemize}
+\end{proof}
+
 \begin{definition}
     Нека $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$ е ДКА.
     Тогава езикът на автомата $\mathcal{A}$ е множеството
     $\mathcal{L}(\mathcal{A}) = \{ \alpha \in \Sigma^* \: | \: \delta^*(s, \alpha) \in F \}$.
     Един език $L \subseteq \Sigma^*$, наричаме \textbf{автоматен}, ако има ДКА $\mathcal{A}$ с $\mathcal{L}(\mathcal{A}) = L$.
 \end{definition}
+
+\pagebreak
 
 \section{Представяне на автомат}
 
@@ -55,6 +69,7 @@
     \item $\delta(p, x) = q_1$ за $p \in Q, \: x \in \Sigma, \: \opair{p, x} \neq \opair{q_0, a}$
     \item $F = \{ q_2 \}$
 \end{itemize}
+
 Това е първият начин за представяне.
 При него директно в явен вид се казват кои са всички съставни елементи на $\mathcal{A}$.
 Това ще бъде използване сравнително често, когато правим от един автомат друг.
@@ -79,6 +94,8 @@
 Във втората и третата колона казваме къде ще се озовем,
 ако се намираме в съответното състояние и прочетем съответната буква.
 Това е по-прегледно представяне от първото, но може да стане обемно. \\
+
+\pagebreak
 
 Третият начин за представяне е с картинка:
 
