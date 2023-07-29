@@ -1,0 +1,124 @@
+\section{Недетерминирани автомати}
+
+\begin{definition}
+    \textbf{Недетерминиран краен автомат} (накратко НКА) ще наричаме всяко $\mathcal{N} = \opair{\Sigma, Q, S, \Delta, F}$, където:
+    \begin{itemize}
+        \item $\Sigma$ е крайна азбука
+        \item $Q$ е крайно множество от състояния
+        \item $S \subseteq Q$ (ще ги наричаме начални/стартови състояния)
+        \item $\Delta : Q \cross \Sigma \rightarrow \mathcal{P}(Q)$ (ще я наричаме функция на преходите)
+        \item $F \subseteq Q$ (ще ги наричаме финални състояния)
+    \end{itemize}
+\end{definition}
+
+Цялата ``недетерминираност'' идва от това, че от едно състояние с една буква можем да отидем на няколко места.
+Поне на пръв поглед тази нова машина изглежда доста по-мощна от старата.
+Вместо да си налагаме точно един преход, можем да направим два или три прехода, а можем да отидем в ``нищото'' (има се предвид $\varnothing$).
+
+\begin{definition}
+    Дефинираме $\Delta^* : \mathcal{P}(Q) \cross \Sigma^* \rightarrow \mathcal{P}(Q)$ индуктивно:
+    \begin{itemize}
+        \item $\Delta^*(P, \varepsilon) = P$ за всяко $P \subseteq Q$
+        \item $\Delta^*(P, \beta x) = \bigcup\limits_{q \in \Delta^*(P, \beta)}\Delta(q, x)$ за всяко $P \subseteq Q, \beta \in \Sigma^*, x \in \Sigma$
+    \end{itemize}
+\end{definition}
+
+\begin{remark}
+    $\Delta^*(P, \alpha \beta) = \Delta^*(\Delta^*(P, \alpha), \beta)$ (лесно излиза с индукция)
+\end{remark}
+
+Вече можем да кажем какъв е език на даден недетерминиран автомат.
+
+\begin{definition}
+    Нека $\mathcal{N} = \opair{\Sigma, Q, S, \Delta, F}$ е НКА.
+    Тогава езикът на автомата $\mathcal{N}$ е множеството
+    $\mathcal{L}(\mathcal{N}) = \{ \alpha \in \Sigma^* \: | \: \delta^*(S, \alpha) \cap F \neq \varnothing \}$.
+\end{definition}
+
+Тук цялата идея, е вместо думата да поеме по един предопределен път и да получи ДА или НЕ,
+тя да може да изпробва няколко възможни такива, и ако получи отговор ДА за поне един от тях, то тогава получава ДА от целия автомат.
+В някакъв смисъл има елемент на отгатване и несигурност. Може този път да свърши работа, но може и другия да свърши работа.
+
+\pagebreak
+
+Нека дадем няколко прости примери за недетерминирани автомати:
+\begin{figure*}[h]
+    \centering
+    \centering
+    \begin{tikzpicture}[node distance=2cm, thick]
+        \node[initial, state, initial text=] (1) {$q$};
+    \end{tikzpicture}
+    \caption*{Автомат за $\varnothing$}
+\end{figure*}
+
+\begin{figure*}[h]
+    \centering
+    \begin{tikzpicture}[node distance=2cm, thick]
+        \node[initial, state, initial text=] (1) {$\varepsilon$};
+        \node[state, initial text=, right of=1] (2) {$a$};
+        \node[state, initial text=, right of=2] (3) {$ab$};
+        \node[accepting, state, initial text=, right of=3] (4) {$aba$};
+        \path[->] (1) edge [] node[above] {$a$}(2);
+        \path[->] (2) edge [] node[above] {$b$}(3);
+        \path[->] (3) edge [] node[above] {$a$}(4);
+    \end{tikzpicture}
+    \caption*{Автомат за $\{ aba \}$}
+\end{figure*}
+
+Доста по-компактно става представянето на автомати за тези езици.
+Напълно елимираме ненужните преходи и състояние боклук.
+Можем и много лесно да направим автомат за няколко думи.
+
+\begin{figure*}[h]
+    \centering
+    \begin{tikzpicture}[node distance=2cm, thick]
+        \node[initial, state, initial text=] (1) {$\varepsilon_{aba}$};
+        \node[state, initial text=, right of=1] (2) {$a$};
+        \node[state, initial text=, right of=2] (3) {$ab$};
+        \node[accepting, state, initial text=, right of=3] (4) {$aba$};
+        \node[initial, state, initial text=, below of=1] (5) {$\varepsilon_{bab}$};
+        \node[state, initial text=, right of=5] (6) {$b$};
+        \node[state, initial text=, right of=6] (7) {$ba$};
+        \node[accepting, state, initial text=, right of=7] (8) {$bab$};
+        \path[->] (1) edge [] node[above] {$a$}(2);
+        \path[->] (2) edge [] node[above] {$b$}(3);
+        \path[->] (3) edge [] node[above] {$a$}(4);
+        \path[->] (5) edge [] node[above] {$b$}(6);
+        \path[->] (6) edge [] node[above] {$a$}(7);
+        \path[->] (7) edge [] node[above] {$b$}(8);
+    \end{tikzpicture}
+    \caption*{Автомат за $\{ aba, bab \}$}
+\end{figure*}
+
+Тук се опитваме да познаем дали четем една от двете думи.
+Двата малки автомата работят независимо един от други и всеки дава собствен отговор.
+Ако сме се озовали във финално състояние, сме прочели една от двете думи в езика, иначе не сме.
+
+\pagebreak
+
+Тази конструкция може да се обобщи за обединение на всеки два езика на недетерминирани автомати.
+
+\begin{claim}
+    Нека $\mathcal{N}_1 = \opair{\Sigma, Q_1, S_1, \Delta_1, F_1}$ и $\mathcal{N}_2 = \opair{\Sigma, Q_2, S_2, \Delta_2, F_2}$ са недетерминирани автомати.
+    Тогава има недетерминиран автомат за $\mathcal{L(N}_1) \cup \mathcal{L(N}_2)$.
+\end{claim}
+
+\begin{proof}
+    Б.О.О. нека $Q_1 \cap Q_2 = \varnothing (\star)$. Тогава:
+    \begin{align*}
+             & \alpha \in \mathcal{L}(\opair{\Sigma, Q_1 \cup Q_2, S_1 \cup S_2, \Delta_1 \cup \Delta_2, F_1 \cup F_2}) \iff       \\
+        \iff & (\Delta_1 \cup \Delta_2)(S_1 \cup S_2, \alpha) \cap (F_1 \cup F_2) \neq \varnothing \stackrel{(\star)}{\iff}            \\
+        \iff & \Delta_1^*(S_1, \alpha) \cap F_1 \neq \varnothing \lor \Delta_2^*(S_2, \alpha) \cap F_2 \neq \varnothing \iff       \\
+        \iff & \alpha \in \mathcal{L(N}_1) \lor \alpha \in \mathcal{L(N}_2) \iff \alpha \in \mathcal{L(N}_1) \cup \mathcal{L(N}_2)
+    \end{align*}
+\end{proof}
+
+Тази конструкция при недетерминирани автомати е по-компактна в сравнение с детерминираната версия.
+В този случай новите състояния са $|Q_1 \cup Q_2| = |Q_1| + |Q_2|$ на брой,
+докато при детерминираните автомати се получават $|Q_1 \crossproduct Q_2| = |Q_1| \cdot |Q_2|$ на брой състояния за новия автомат, което може да бъде много повече.
+
+\begin{itemize}
+    \item $10 + 10 = 20$, докато $10 \cdot 10 = 100$
+    \item $1000 + 2 = 1002$, докато $1000 \cdot 2 = 2000$
+    \item $1000 + 1000 = 2000$, докато $1000 \cdot 1000 = 1000000$
+\end{itemize}
