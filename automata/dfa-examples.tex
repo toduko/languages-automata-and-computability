@@ -175,3 +175,23 @@
         \path[->] (2) edge [bend left] node[below] {$a, b$} (1);
     \end{tikzpicture}
 \end{center}
+
+\begin{problem}
+    Да се построи автомат за:
+    \begin{itemize}
+        \item $L_1 = \{ \alpha \in \Sigma^* \: | \: |\alpha| \text{ се дели на } 3 \}$
+        \item $L_2 = \{ \alpha \in \Sigma^* \: | \: |\alpha| \text{ се дели на } 5 \}$
+        \item $L_3 = \{ \alpha \in \Sigma^* \: | \: |\alpha| \text{ дава остатък } 2 \text{ при деление на } 4 \}$
+    \end{itemize}
+    Упътване: за състояния да се използват остатъци при деление на $n$
+\end{problem}
+
+\begin{problem}
+    Да се построи автомат за:
+    \begin{itemize}
+        \item $L_1 = \{ \alpha \in \Sigma^* \: | \: |\alpha| \text{ не се дели на } 3 \}$
+        \item $L_2 = \{ \alpha \in \Sigma^* \: | \: |\alpha| \text{ не се дели на } 5 \}$
+        \item $L_3 = \{ \alpha \in \Sigma^* \: | \: |\alpha| \text{ не дава остатък } 2 \text{ при деление на } 4 \}$
+    \end{itemize}
+    Упътване: да се използват автоматите от предната задача
+\end{problem}
