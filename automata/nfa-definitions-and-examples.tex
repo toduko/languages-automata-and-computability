@@ -104,13 +104,16 @@
 \end{claim}
 
 \begin{proof}
-    Б.О.О. нека $Q_1 \cap Q_2 = \varnothing (\star)$. Тогава:
+    Б.О.О. нека $\underbrace{Q_1 \cap Q_2 = \varnothing}_{(\star)}$. Тогава:
     \begin{align*}
-             & \alpha \in \mathcal{L}(\opair{\Sigma, Q_1 \cup Q_2, S_1 \cup S_2, \Delta_1 \cup \Delta_2, F_1 \cup F_2}) \iff       \\
-        \iff & (\Delta_1 \cup \Delta_2)(S_1 \cup S_2, \alpha) \cap (F_1 \cup F_2) \neq \varnothing \stackrel{(\star)}{\iff}            \\
-        \iff & \Delta_1^*(S_1, \alpha) \cap F_1 \neq \varnothing \lor \Delta_2^*(S_2, \alpha) \cap F_2 \neq \varnothing \iff       \\
+             & \alpha \in \mathcal{L}(\opair{\Sigma, Q_1 \cup Q_2, S_1 \cup S_2, \underbrace{\Delta_1 \cup \Delta_2}_{\textcolor{red}{!!!}}, F_1 \cup F_2}) {\iff} \\
+        \iff & (\Delta_1 \cup \Delta_2)(S_1 \cup S_2, \alpha) \cap (F_1 \cup F_2) \neq \varnothing \stackrel{(\star)}{\iff}                                        \\
+        \iff & \Delta_1^*(S_1, \alpha) \cap F_1 \neq \varnothing \lor \Delta_2^*(S_2, \alpha) \cap F_2 \neq \varnothing \iff                                       \\
         \iff & \alpha \in \mathcal{L(N}_1) \lor \alpha \in \mathcal{L(N}_2) \iff \alpha \in \mathcal{L(N}_1) \cup \mathcal{L(N}_2)
     \end{align*}
+    \begin{remark}[\textcolor{red}{!!!}]
+        Понеже $(\star)$ е вярно, $\operatorname{Dom}(\Delta_1) \cap \operatorname{Dom}(\Delta_2) = \varnothing$, откъдето $\Delta_1 \cup \Delta_2$ е добре дефинирана функция.
+    \end{remark}
 \end{proof}
 
 Тази конструкция при недетерминирани автомати е по-компактна в сравнение с детерминираната версия.
