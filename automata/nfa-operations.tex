@@ -1,1 +1,58 @@
-\section{Още операции}
+\section{Операции над езици на недетерминирани автомати}
+
+Тази конструкция може да се обобщи за обединение на всеки два езика на недетерминирани автомати.
+
+\begin{claim}
+    Нека $\mathcal{N}_i = \opair{\Sigma, Q_i, S_i, \Delta_i, F_i}$  е недетерминиран автомат за $i = 1, 2$.
+    Тогава съществува недетерминиран автомат за езика $\mathcal{L(N}_1) \cup \mathcal{L(N}_2)$.
+\end{claim}
+
+\begin{proof}
+    Б.О.О. нека $\underbrace{Q_1 \cap Q_2 = \varnothing}_{(\star)}$. Тогава:
+    \begin{align*}
+             & \alpha \in \mathcal{L}(\opair{\Sigma, Q_1 \cup Q_2, S_1 \cup S_2, \underbrace{\Delta_1 \cup \Delta_2}_{\textcolor{red}{!!!}}, F_1 \cup F_2}) {\iff} \\
+        \iff & (\Delta_1 \cup \Delta_2)(S_1 \cup S_2, \alpha) \cap (F_1 \cup F_2) \neq \varnothing \stackrel{(\star)}{\iff}                                        \\
+        \iff & \Delta_1^*(S_1, \alpha) \cap F_1 \neq \varnothing \lor \Delta_2^*(S_2, \alpha) \cap F_2 \neq \varnothing \iff                                       \\
+        \iff & \alpha \in \mathcal{L(N}_1) \lor \alpha \in \mathcal{L(N}_2) \iff \alpha \in \mathcal{L(N}_1) \cup \mathcal{L(N}_2)
+    \end{align*}
+    \begin{remark}[\textcolor{red}{!!!}]
+        Понеже $(\star)$ е вярно, $\operatorname{Dom}(\Delta_1) \cap \operatorname{Dom}(\Delta_2) = \varnothing$, откъдето $\Delta_1 \cup \Delta_2$ е добре дефинирана функция.
+    \end{remark}
+\end{proof}
+
+Тази конструкция при недетерминирани автомати е по-компактна в сравнение с детерминираната версия.
+В този случай новите състояния са $|Q_1 \cup Q_2| = |Q_1| + |Q_2|$ на брой,
+докато при детерминираните автомати се получават $|Q_1 \crossproduct Q_2| = |Q_1| \cdot |Q_2|$ на брой състояния за новия автомат, което може да бъде много повече.
+
+\begin{itemize}
+    \item $10 + 10 = 20$, докато $10 \cdot 10 = 100$
+    \item $1000 + 2 = 1002$, докато $1000 \cdot 2 = 2000$
+    \item $1000 + 1000 = 2000$, докато $1000 \cdot 1000 = 1000000$
+\end{itemize}
+
+\begin{claim}
+    Нека $L$ е автоматен език.
+    Тогава има недетерминиран автомат за:
+    \begin{center}
+        $\operatorname{ChangeSomeLetters}(L) = \{ \alpha \in \Sigma^* \mid (\exists \beta \in L) \: (|\beta| = |\alpha| ) \}$
+    \end{center}
+\end{claim}
+
+\begin{proof}
+    Нека $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$ е ДКА за $L$.
+    Строим автомат $\mathcal{N}$ за $\operatorname{ChangeSomeLetters}(L)$:
+    \begin{itemize}
+        \item $\mathcal{N} = \opair{\Sigma, Q, \{ s \}, \Delta, F}$
+        \item $S = \{ s \}$
+        \item $\Delta(p, x) = \{ \delta(p, a), \delta(p, b) \}$ за $p \in Q, \: x \in \Sigma$
+    \end{itemize}
+
+    Оставяме доказателството на следния факт на читателя, понеже е елементарна индукция:
+    $\Delta^*(S, \alpha) = \{ \delta^*(s, \beta) \mid \beta \in \Sigma \: \& \: |\beta| = |\alpha| \}$
+
+    Имайки това твърдение получаваме, че:
+    \begin{align*}
+        \alpha \in \mathcal{L(N)} & \iff \Delta^*(S, \alpha) \cup F \neq \varnothing \iff (\exists \beta \in \Sigma^{|\alpha|}) \: (\delta^*(s, \beta) \in F) \iff \\
+                                  & \iff (\exists \beta \in \Sigma^{|\alpha|}) \: (\beta \in L) \iff \alpha \in \operatorname{ChangeSomeLetters}(L)
+    \end{align*}
+\end{proof}
