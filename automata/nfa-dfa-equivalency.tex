@@ -1,1 +1,40 @@
 \section{Еквивалентност на детерминирани и недетерминирани автомати}
+
+Въпреки че на пръв поглед недетерминираните автомати ни се струват по-мощни, те не ни дават нищо повече освен удобство.
+Първо ще покажем, че наистина недетерминираните автомати правят поне толкова, колкото и детерминираните.
+
+\begin{claim}
+    За всеки детерминиран автомат $\mathcal{A}$ съществува недетерминиран автомат $\mathcal{N}$ със $\mathcal{L(N) = L(A)}$.
+\end{claim}
+
+\begin{proof}
+    Нека $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$ е детерминиран автомат.
+    Нека $\mathcal{N} = \opair{\Sigma, Q, \{ s \}, \Delta, F}$,
+    където $\Delta(p, x) = \{ \delta(p, x) \}$ за $p \in Q$.
+    Тривиално може да се покаже с индукция, че за всяко $p \in Q, \: \alpha \in \Sigma^*$: $\Delta^*(p, \alpha) = \{ \delta^*(p, \alpha) \}$.
+    Така:
+    \begin{align*}
+        \alpha \in \mathcal{L(N)} & \iff \Delta^*(\{ s \}, \alpha) \cap F \neq \varnothing \iff \{ \delta^*(s, \alpha) \} \cap F \neq \varnothing \\
+                                  & \iff \delta^*(s, \alpha) \in F \iff \alpha \in \mathcal{L(A)}
+    \end{align*}
+\end{proof}
+
+Сега пък ще покажем как ``детерминизира'' недетерминиран автомат.
+
+\begin{claim}
+    За всеки недетерминиран автомат $\mathcal{N}$ съществува детерминиран автомат $\mathcal{A}$ със $\mathcal{L(A) = L(N)}$.
+\end{claim}
+
+\begin{proof}
+    Нека $\mathcal{N} = \opair{\Sigma, Q, S, \Delta, F}$ е недетерминиран автомат.
+    Нека $\mathcal{A} = \opair{\Sigma, \mathcal{P}(Q), S, \delta, F'}$,
+    където $\delta(P, x) = \Delta^*(P, x)$ за $P \subseteq Q$ и $F' = \{ P \in \mathcal{P}(Q) \mid P \cap F \neq \varnothing \}$.
+    Тривиално може да се покаже с индукция, че за всяко $P \subseteq Q, \: \alpha \in \Sigma^*$: $\delta^*(P, \alpha) = \Delta^*(P, \alpha)$.
+    Така:
+    \begin{align*}
+        \alpha \in \mathcal{L(N)} & \iff \Delta^*(S, \alpha) \cap F \neq \varnothing \iff \delta^*(S, \alpha) \cap F \neq \varnothing \\
+                                  & \iff \delta^*(S, \alpha) \in F' \iff \alpha \in \mathcal{L(A)}
+    \end{align*}
+\end{proof}
+
+Имайки това можем да използваме, че конкатенацията и звездата на Клини запазват автоматност.
