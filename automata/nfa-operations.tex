@@ -56,3 +56,62 @@
                                   & \iff (\exists \beta \in \Sigma^{|\alpha|}) \: (\beta \in L) \iff \alpha \in \operatorname{ChangeSomeLetters}(L)
     \end{align*}
 \end{proof}
+
+\begin{claim}
+    Нека $\mathcal{N}_i = \opair{\Sigma, Q_i, S_i, \Delta_i, F_i}$  е недетерминиран автомат за $i = 1, 2$.
+    Тогава съществува недетерминиран автомат за езика $\mathcal{L(N}_1) \cdot \mathcal{L(N}_2)$.
+\end{claim}
+
+\begin{proof}
+    Нека Б.О.О. $Q_1 \cap Q_2 = \varnothing$.
+    Строим недетерминиран автомат $\mathcal{N} = \opair{\Sigma, Q, S, \Delta, F}$ за $\mathcal{L(N}_1) \cdot \mathcal{L(N}_2)$:
+    \begin{itemize}
+        \item $Q = Q_1 \cup Q_2$
+        \item $S = S_1 \cup S_2$ ако $\varepsilon \in \mathcal{L(N}_1)$, иначе $S = S_1$
+        \item $F = F_2$
+        \item $\Delta(p, x) = \Delta_1(p, x) \cup S_2$, ако $\Delta_1(p, x) \cap F \neq \varnothing \: (\star)$
+        \item За другите състояния от $Q_1$ взимаме преходите от $\Delta_1$, и аналогично за $Q_2$ взимаме същите преходи от $\Delta_2$
+    \end{itemize}
+
+    Сега остава да покажем, че $\mathcal{L(N)} = \mathcal{L(N}_1) \cdot \mathcal{L(N}_2)$.
+    \begin{itemize}
+        \item $\mathcal{L(N)} \subseteq \mathcal{L(N}_1) \cdot \mathcal{L(N}_2)$ \\
+              Нека $\alpha \in \mathcal{L(N)}$.
+              Тогава $\Delta^*(S, \alpha) \cap F \neq \varnothing$.
+              Ако сме стигнали до финално от $S_2$, то тогава $\alpha \in \mathcal{L(N}_2)$ и $\varepsilon \in \mathcal{L(N}_1)$,
+              откъдето $\alpha = \varepsilon \cdot \alpha \in \mathcal{L(N}_1) \cdot \mathcal{L(N}_2)$ и сме готови.
+              В противен случай $\varepsilon \notin \mathcal{L(N}_1)$ и има $\beta, \gamma \in \Sigma^*$ такива,
+              че $\alpha = \beta \gamma, \: \beta \neq \varepsilon, \: S_2 \subseteq \Delta^*(S, \beta)$,  т.е. сме приложили $(\star)$.
+              Тогава с последната буква на $\beta$ сме достигнали до финално състояние в $\mathcal{L(N}_1)$, откъдето $\beta \in \mathcal{L(N}_1)$.
+              Също така понеже $Q_1 \cap Q_2 = \varnothing$, и състоянията от $Q_2$ имат само преходите на $\Delta_2$,
+              $\Delta(S_2, \gamma) \cap F \neq \varnothing$, откъдето $\gamma \in \mathcal{L(N}_2)$.
+              Така получаваме, че $\alpha = \beta \cdot \gamma \in \mathcal{L(N}_1) \cdot \mathcal{L(N}_2)$.
+
+        \item $\mathcal{L(N}_1) \cdot \mathcal{L(N}_2) \subseteq \mathcal{L(N)}$ \\
+              Нека $\beta \in \mathcal{L(N}_1), \gamma \in \mathcal{L(N}_2)$.
+              Ако $\beta = \varepsilon$, то тогава $S_2 \subseteq S$, и понеже $\gamma \in \mathcal{L(N}_2), \: F = F_2$,
+              то $\Delta^*(S, \underbrace{\beta \cdot \gamma}_{\gamma}) \cap F \neq \varnothing$, и от там $\beta \cdot \gamma \in \mathcal{L(N)}$.
+              Ако $\beta \neq \varepsilon$, то $S_2 \subseteq \Delta^*(S, \beta)$, понеже $\beta \in \mathcal{L(N}_1)$ и $(\star)$.
+              Освен това и $\gamma \in \mathcal{L(N}_2)$ т.е. $\Delta^*(S_2, \gamma) \cap F_2 \neq \varnothing$,
+              откъдето $\Delta^*(S, \beta \cdot \gamma) \cap F \neq \varnothing$ т.е. $\beta \cdot \gamma \in \mathcal{L(N)}$.
+    \end{itemize}
+\end{proof}
+
+\begin{claim}
+    Нека $\mathcal{N} = \opair{\Sigma, Q, S, \Delta, F}$ е недетерминиран автомат.
+    Тогава има недетерминиран автомат за езика $\mathcal{L(N)^*}$.
+\end{claim}
+
+\begin{proof}
+    Ще покажем само конструкцията, без да я обосноваваме (аналогична е на предната).
+    Правим автомат за $\mathcal{L(N)^+}$ и използваме, че $L^* = L^+ \cup \{ \varepsilon \}$ за всеки език $L$.
+    Нека $\mathcal{N}' = \opair{\Sigma, Q, S, \Delta', F}$, където:
+    \begin{equation}
+        \Delta'(p, x) =
+        \begin{cases}
+            \Delta(p, x)                     & \text{ако } p \notin F \\
+            \Delta(p, x) \cup \Delta^*(S, x) & \text{ако } p \in F
+        \end{cases}
+    \end{equation}
+    Доказателството на коректност е аналогично на предната задача.
+\end{proof}
