@@ -1,0 +1,89 @@
+\section{Неавтоматни езици и лема за покачването}
+
+До сега всичко, което сме правили е да се опитаме да докажем, че някакъв език е автоматен.
+Тогава идва естественият въпрос дали има неавтоматни езици, и ако да - как изглеждат те.
+Че има неавтоматни езици е ясно, иначе тази класификация на езици щеше да е безсмислена.
+Какъв обаче би бил един такъв език и как точно да докажем, че не може да се направи автомат за него.
+Като че ли изглежда по-лесно да докажеш съществуването на обект като го конструираш, отколкото да докажеш, че такъв не може да се построи.
+
+Ще вземем два метода за доказването на неавтоматност на езици.
+Кое кога да се използва е въпрос на лично предпочитание.
+За първият метод ще трябва да въведем една допълнителна дефиниция.
+
+\begin{definition}
+    Нека $\alpha \in \Sigma^*$ и $L \subseteq \Sigma^*$. Тогава:
+    \begin{align*}
+        \alpha^{-1}(L) = \{ \beta \in \Sigma^* \mid \alpha \cdot \beta \in L \}
+    \end{align*}
+\end{definition}
+
+\begin{claim}\thlabel{nerode-nonregular}
+    Ако $\{ \alpha^{-1}(L) \mid \alpha \in \Sigma^* \}$ е безкрайно, то $L$ не е автоматен
+\end{claim}
+
+\begin{proof}
+    Нека $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$ е ДКА за $L$. Тогава:
+    \begin{align*}
+        \beta \in \alpha^{-1}(L) & \iff \alpha \cdot \beta \in L \iff \delta^*(s, \alpha \cdot \beta) \in F                                                                                \\
+                                 & \iff \delta^*(\delta^*(s, \alpha), \beta) \in F \iff \beta \in \mathcal{L}(\underbrace{\opair{\Sigma, Q, \delta^*(s, \alpha), \delta, F}}_{\text{ДКА}})
+    \end{align*}
+
+    От тук можем да видим, че ако $L$ е автоматен, то за всяка дума $\alpha$,
+    на $\alpha^{-1}(L)$ съпоставяме състояние от $Q$ т.е. $|\{ \alpha^{-1}(L) \mid \alpha \in \Sigma^* \}| \leq |Q| < \infty$.
+    Получаваме импликацията:
+    \begin{center}
+        $L$ е автоматен $\Rightarrow \{ \alpha^{-1}(L) \mid \alpha \in \Sigma^* \}$ е крайно
+    \end{center}
+    Но ние знаем, че $p \Rightarrow q$ е еквивалентно на $\neg q \Rightarrow \neg p$, откъдето:
+    \begin{center}
+        $\{ \alpha^{-1}(L) \mid \alpha \in \Sigma^* \}$ е безкрайно $\Rightarrow L$ не е автоматен
+    \end{center}
+\end{proof}
+
+\pagebreak
+
+Започваме с каноничния пример за неавтоматен език:
+
+\begin{claim}
+    Езикът $L = \{ a^nb^n \mid n \in \mathbb{N} \}$ не е автоматен.
+\end{claim}
+
+\begin{proof}
+    Искаме да покажем, че $\{ \alpha^{-1}(L) \mid \alpha \in \Sigma^* \}$ е безкрайно.
+    За целта ни трябват изброима редица от думи $\alpha_0, \alpha_1, \alpha_2, \dots$ такава, че за $i \neq j : \alpha_i^{-1}(L) \neq \alpha_j^{-1}(L)$.
+    Твърдя, че думите от вида $a^n$ за $n \in \mathbb{N}$ ще ни свършат работа.
+    Нека $n, k \in \mathbb{N}, \: n \neq k$.
+    Тогава:
+    \begin{itemize}
+        \item $a^nb^n \in L \Rightarrow b^n \in (a^n)^{-1}(L)$
+        \item $a^kb^n \notin L \Rightarrow b^n \notin (a^k)^{-1}(L)$
+    \end{itemize}
+    Така получаваме, че $(a^n)^{-1}(L) \neq (a^k)^{-1}(L)$.
+
+    Тук $(a^0)^{-1}(L), (a^1)^{-1}(L), (a^2)^{-1}(L), \dots$ са безброй много съществено различни елементи на $\{ \alpha^{-1}(L) \mid \alpha \in \Sigma^* \}$.
+    Така по \thref{nerode-nonregular} езикът $L$ не е автоматен.
+\end{proof}
+
+\begin{problem}
+Да се докаже, че следните езици не са автоматни:
+\begin{itemize}
+    \item $L_1 = \{ a^nb^{2n} \mid n \in \mathbb{N} \}$
+    \item $L_2 = \{ a^{3n}b^n \mid n \in \mathbb{N} \}$
+    \item $L_3 = \{ a^{5n}b^{7n} \mid n \in \mathbb{N} \}$
+\end{itemize}
+Упътване: напълно аналогично на горния пример
+\end{problem}
+
+\begin{claim}
+    Езикът $L = \{ a^nb^m \mid n \leq m \}$ не е автоматен.
+\end{claim}
+
+\begin{proof}
+    Отново ще пробваме с думи от вида $a^n$ за $n \in \mathbb{N}$.
+    Нека $n, k \in \mathbb{N}, \: n \neq k$ като Б.О.О. $n < k$.
+    \begin{itemize}
+        \item Понеже $n \leq n, \: a^nb^n \in L$, откъдето $b^n \in (a^n)^{-1}(L)$
+        \item Понеже $n < k \iff \neg(k \leq n), \: a^kb^n \notin L$, откъдето $b^n \notin (a^k)^{-1}(L)$
+    \end{itemize}
+    По \thref{nerode-nonregular} езикът $L$ не е автоматен.
+\end{proof}
