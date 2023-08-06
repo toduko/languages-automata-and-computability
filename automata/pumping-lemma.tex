@@ -122,15 +122,38 @@
     \item $L_2 = \{ a^{2^n} \mid n \in \mathbb{N} \}$
     \item $L_3 = \{ a^{n!} \mid n \in \mathbb{N} \}$
     \item $L_4 = \{ \alpha \alpha \mid \alpha \in \Sigma^* \}$
-    \item $L_5 = \{ \alpha \alpha \alpha \mid \alpha \in \Sigma^* \}$
-    \item $L_6 = \{ \alpha \alpha^{rev} \alpha \mid \alpha \in \Sigma^* \}$
+    \item $L_5 = \{ \alpha \alpha^{rev} \mid \alpha \in \Sigma^* \}$
 \end{itemize}
+Упътване: решенията на тази задача са просто адаптация на тези от \thref{nonregular-problems-1} и \thref{nonregular-problems-2}
 \end{problem}
 
-\begin{problem}
-Да се покаже, че следният език не е автоматен и че условието от \nameref{pumping-lemma} е изпълнено за него:
+\pagebreak
+
+
+От всичкото това доказване на неавтоматност използвайки лемата, човек си задава въпроса дали това не може да стане и в обратната посока.
+Оказва се, че не може.
+
+\begin{warning}
+    Има \textbf{неавтоматни} езици, за който условието от \nameref{pumping-lemma} \textbf{е изпълнено}.
+\end{warning}
+За пример нека вземем:
 \begin{center}
     $L = (\{ c \}^+ \cdot \{ a^nb^n \mid n \in \mathbb{N} \}) \cup (\{ a \}^* \cdot \{ b \}^*)$
 \end{center}
-Упътване: за неавтоматност да се допусне противното
-\end{problem}
+Ако допуснем, че $L$ е автоматен, то тогава очевидно:
+\begin{center}
+    $L \cap (\{ c \} \cdot \{ a \}^* \cdot \{ b \}^*) = \{ c \} \cdot \{ a^nb^n \mid n \in \mathbb{N} \}$
+\end{center}
+ще бъде автоматен, но той не е (елементарна проверка, която оставяме на читателя).
+Сега да проверим условието от \nameref{pumping-lemma}.
+Нека $p = 2$.
+Нека $\alpha \in L, \: |\alpha| \geq p$.
+Полагаме:
+\begin{itemize}
+    \item $x = \varepsilon$
+    \item $y = \alpha[1]$ (първата буква на $\alpha$)
+    \item $z = \alpha[2:|\alpha|]$ (останалите букви на $\alpha$)
+\end{itemize}
+Ако $\alpha \in \{ c \}^+ \cdot \{ a^nb^n \mid n \in \mathbb{N} \}$, то тогава $y = c$.
+За $i = 2$, $xy^iz = c \cdot \alpha \in L$.
+Ако пък $\alpha \in \{ a \}^* \cdot \{ b \}^*$, то тогава очевидно $i = 2$ пак ще свърши работа.
