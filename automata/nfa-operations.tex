@@ -115,3 +115,24 @@
     \end{equation}
     Доказателството на коректност е аналогично на предната задача.
 \end{proof}
+
+\begin{claim}
+    Нека $\mathcal{N} = \opair{\Sigma, Q, S, \Delta, F}$ е недетерминиран автомат.
+    Тогава има недетерминиран автомат за езика $\mathcal{L(N)}^{rev}$.
+\end{claim}
+
+\begin{proof}
+    Нека $\mathcal{N}_{rev} = \opair{\Sigma, Q, F, \Delta_{rev}, S}$, където:
+    \begin{center}
+        $\Delta_{rev} = \{ \opair{p, x, q} \mid \opair{q, x, p} \in \Delta \}$
+    \end{center}
+    Тривиално може да се покаже с индукция, че за $\alpha \in \Sigma^*, \: p, q \in Q$:
+    \begin{center}
+        $q \in \Delta^*(p, \alpha) \iff p \in \Delta_{rev}^*(q, \alpha) \: (\star)$
+    \end{center}
+    След това приключваме със:
+    \begin{align*}
+        \alpha \in \mathcal{L(N)} \iff & \Delta^*(S, \alpha) \cap F \neq \varnothing                                            \\
+        \stackrel{(\star)}{\iff}       & \Delta_{rev}^*(F, \alpha) \cap S \neq \varnothing \iff \alpha \in \mathcal{L(N}_{rev})
+    \end{align*}
+\end{proof}
