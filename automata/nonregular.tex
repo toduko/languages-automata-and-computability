@@ -87,3 +87,59 @@
     \end{itemize}
     По \thref{nerode-nonregular} езикът $L$ не е автоматен.
 \end{proof}
+
+\begin{claim}
+    Езикът $L = \{ a^{n^2} \mid n \in \mathbb{N} \}$ не е автоматен.
+\end{claim}
+
+\begin{proof}
+    Отново ще пробваме с думи от вида $a^n$ за $n \in \mathbb{N}$.
+    Нека $n, k \in \mathbb{N}, \: n \neq k$ като Б.О.О. $k < n$.
+    \begin{itemize}
+        \item $a^na^{n^2+n+1} = a^{(n+1)^2} \in L$, откъдето $a^{n^2+n+1} \in (a^n)^{-1}(L)$
+        \item $n^2 < n^2+n+k+1 < n^2+2n+1=(n+1)^2$, следователно $a^ka^{n^2+n+1} \notin L$, откъдето $a^{n^2+n+1} \notin (a^k)^{-1}(L)$
+    \end{itemize}
+    По \thref{nerode-nonregular} езикът $L$ не е автоматен.
+\end{proof}
+
+Това е често срещана техника при езици от вида $\{ a^{f(n)} \mid n \in \mathbb{N} \}$, за някоя $f : \mathbb{N} \rightarrow \mathbb{N}$ строго растяща.
+За да се ``изкара'' думата от езика е много удобно да се използва, че ако $f(n) < x < f(n+1)$, то $x$ няма как да е член на редицата.
+
+\begin{problem}
+Да се докаже, че следните езици не са автоматни:
+\begin{itemize}
+    \item $L_1 = \{ a^{n^3} \mid n \in \mathbb{N} \}$
+    \item $L_2 = \{ a^{2^n} \mid n \in \mathbb{N} \}$
+    \item $L_3 = \{ a^{n!} \mid n \in \mathbb{N} \}$
+\end{itemize}
+Упътване: да се използва горепоказаната техника
+\end{problem}
+
+\begin{claim}
+    Езикът $L = \{ \alpha \alpha^{rev} \mid \alpha \in \Sigma^* \}$ е неавтоматен.
+\end{claim}
+
+\begin{proof}
+    Тук думи от вида $a^n$ няма да ни свършат работа.
+    Изобщо при еднобуквена азбука езикът е регулярен.
+    Получават се думи с четна дължина.
+    Ще трябва да използваме и други букви за да успеем да изкараме този резултат.
+    Нека $n, k \in \mathbb{N}, \: n \neq k$.
+    \begin{itemize}
+        \item $a^nb^nb^na^n \in L$
+        \item $a^kb^nb^na^n \notin L$ (очевидно $a^k \neq a^n$, а $a^kb^t$ за $0 \leq t \leq 2n$ са единствените кандидати за $\alpha$, че да стане $\alpha \alpha^{rev}$)
+    \end{itemize}
+    По \thref{nerode-nonregular} езикът $L$ не е автоматен.
+\end{proof}
+
+\pagebreak
+
+\begin{problem}
+Да се докаже, че следните езици не са автоматни:
+\begin{itemize}
+    \item $L_1 = \{ \alpha \alpha \mid \alpha \in \Sigma^* \}$
+    \item $L_2 = \{ \alpha \alpha \alpha \mid \alpha \in \Sigma^* \}$
+    \item $L_3 = \{ \alpha \alpha^{rev} \alpha \mid \alpha \in \Sigma^* \}$
+\end{itemize}
+Упътване: напълно аналогично на горния пример
+\end{problem}
