@@ -32,7 +32,10 @@
     linkcolor=blue
 }
 
+\theoremstyle{definition}
 \newtheorem{definition}{Дефиниция}[section]
+\newtheorem*{warning}{\textcolor{red}{Внимание}}
+\theoremstyle{plain}
 \newtheorem{theorem}[definition]{Теорема}
 \newtheorem{claim}[definition]{Твърдение}
 \newtheorem{axiom}[definition]{Аксиома}
@@ -41,6 +44,7 @@
 \newtheorem{corollary}[definition]{Следствие}
 \theoremstyle{remark}
 \newtheorem*{remark}{Забележка}
+\theoremstyle{definition}
 
 \pagestyle{fancy}
 
@@ -48,10 +52,6 @@
 \rhead{}
 
 \setlength\parindent{0pt}
-
-\title{Записки за упражнения по ЕАИ}
-\author{Тодор Дуков}
-\date{\today}
 
 \begin{document}
 

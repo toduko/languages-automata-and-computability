@@ -17,7 +17,7 @@
     \end{align*}
 \end{definition}
 
-\begin{claim}\thlabel{nerode-nonregular}
+\begin{claim}[класови критерий за нерегулярност]\thlabel{nerode-nonregular}
     Ако $\{ \alpha^{-1}(L) \mid \alpha \in \Sigma^* \}$ е безкрайно, то $L$ не е автоматен
 \end{claim}
 
@@ -61,7 +61,7 @@
     Така получаваме, че $(a^n)^{-1}(L) \neq (a^k)^{-1}(L)$.
 
     Тук $(a^0)^{-1}(L), (a^1)^{-1}(L), (a^2)^{-1}(L), \dots$ са безброй много съществено различни елементи на $\{ \alpha^{-1}(L) \mid \alpha \in \Sigma^* \}$.
-    Така по \thref{nerode-nonregular} езикът $L$ не е автоматен.
+    Така по \nameref{nerode-nonregular} езикът $L$ не е автоматен.
 \end{proof}
 
 \begin{problem}
@@ -85,7 +85,7 @@
         \item Понеже $n \leq n, \: a^nb^n \in L$, откъдето $b^n \in (a^n)^{-1}(L)$
         \item Понеже $n < k \iff \neg(k \leq n), \: a^kb^n \notin L$, откъдето $b^n \notin (a^k)^{-1}(L)$
     \end{itemize}
-    По \thref{nerode-nonregular} езикът $L$ не е автоматен.
+    По \nameref{nerode-nonregular} езикът $L$ не е автоматен.
 \end{proof}
 
 \begin{claim}
@@ -99,7 +99,7 @@
         \item $a^na^{n^2+n+1} = a^{(n+1)^2} \in L$, откъдето $a^{n^2+n+1} \in (a^n)^{-1}(L)$
         \item $n^2 < n^2+n+k+1 < n^2+2n+1=(n+1)^2$, следователно $a^ka^{n^2+n+1} \notin L$, откъдето $a^{n^2+n+1} \notin (a^k)^{-1}(L)$
     \end{itemize}
-    По \thref{nerode-nonregular} езикът $L$ не е автоматен.
+    По \nameref{nerode-nonregular} езикът $L$ не е автоматен.
 \end{proof}
 
 Това е често срещана техника при езици от вида $\{ a^{f(n)} \mid n \in \mathbb{N} \}$, за някоя $f : \mathbb{N} \rightarrow \mathbb{N}$ строго растяща.
@@ -129,7 +129,7 @@
         \item $a^nb^nb^na^n \in L$
         \item $a^kb^nb^na^n \notin L$ (очевидно $a^k \neq a^n$, а $a^kb^t$ за $0 \leq t \leq 2n$ са единствените кандидати за $\alpha$, че да стане $\alpha \alpha^{rev}$)
     \end{itemize}
-    По \thref{nerode-nonregular} езикът $L$ не е автоматен.
+    По \nameref{nerode-nonregular} езикът $L$ не е автоматен.
 \end{proof}
 
 \pagebreak
@@ -143,3 +143,27 @@
 \end{itemize}
 Упътване: напълно аналогично на горния пример
 \end{problem}
+
+Нека сега видим какво се случва с различните операции.
+Ако $L$ не е автоматен, то и $\overline{L}$ също не е автоматен.
+В противен случай $\overline{\overline{L}} = L$ би бил автоматен.
+Тази затвореност я няма при други операции, които сме разглеждали.
+Тук се запазва поради обратимостта на тази операция.
+
+\begin{warning}
+    Следните са често срещани грешки:
+    \begin{itemize}
+        \item \textbf{\textit{\textcolor{red}{конкатенация на два неавтоматни езика винаги ни дава неавтоматен език}}} \\
+              Нека вземем за пример някой неавтоматен език $L$.
+              $\overline{L}$ също няма да е автоматен.
+              Добавяйки крайно много елементи към който и да е неавтоматен език го оставя неавтоматен.
+              В противен случай бихме махнали тези крайно много думи (те образуват автоматен език) и ще получим, че първоначалният език е автоматен.
+              Въпреки че $(L \cup \{ \varepsilon \})$ и $(\overline{L} \cup \{ \varepsilon \})$ не са автоматни езици,
+              конкатенацията им $(L \cup \{ \varepsilon \}) \cdot (\overline{L} \cup \{ \varepsilon \}) = \Sigma^*$ е автоматен език.
+              Също така не е вярно, че при конкатенация на неавтоматни се получава винаги автоматен.
+              Тривиално се проверява, че $\{ a^nb^n \mid n \in \mathbb{N} \} \cdot \{ a^nb^n \mid n \in \mathbb{N} \} = \{ a^nb^na^mb^m \mid n, m \in \mathbb{N} \}$ не е автоматен.
+
+        \item \textbf{\textit{\textcolor{red}{обединение на два неавтоматни езика винаги ни дава неавтоматен език}}} \\
+              Абсолютно същите примери вършат работа и тук.
+    \end{itemize}
+\end{warning}
