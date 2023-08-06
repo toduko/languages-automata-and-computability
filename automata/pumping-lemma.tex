@@ -1,0 +1,136 @@
+\section{Лема за покачването}
+
+Сега ще покажем другия критерий за доказване на неавтоматност.
+Той понякога е по-удобен за използване, обаче не е винаги приложим, и е по-вербозен.
+
+\begin{lemma}[Лема за покачването]\thlabel{pumping-lemma}
+    Нека $L$ е автоматен език. Тогава:
+    \begin{align*}
+         & (\exists p \geq 1)                                                             \\
+         & (\forall \alpha \in L, \: |\alpha| \geq 1)                                     \\
+         & (\exists x, y, z \in \Sigma^*, \: xyz = \alpha, \: |xy| \leq p, \: |y| \geq 1) \\
+         & (\forall i \in \mathbb{N}) [xy^iz \in L]
+    \end{align*}
+\end{lemma}
+
+\begin{proof}
+    Езикът $L$ е автоматен.
+    Следователно съществува ДКА
+    $\mathcal{A} = \opair{Q, \Sigma, s, \delta, F}$,
+    такъв че $\mathcal{L}(\mathcal{A}) = L$.
+
+    Полагаме $p = |Q|$ и нека $q_1, \dots, q_p$ са състоянията от $Q$.
+
+    Нека $\alpha \in L$ е такава, че $|\alpha| = n$, където $n \geq p$.
+    Ще разбием $\alpha$ на $\alpha_1, \dots, \alpha_n \in \Sigma$ (т.е. $\alpha = \alpha_1\dots\alpha_n$).
+
+    Знаем, че съществуват $i_0, \dots, i_n \in \{1, \dots, n \}$ такива,
+    че $s = q_{i_0}$ и за всяко $j \in \{1, \dots, n\} : \delta(q_{i_{j-1}}, \alpha_j) = q_{i_j}$.
+
+    Нека разгледаме думата $\alpha_1 \dots \alpha_p$.
+    За нея знаем, че по време на четенето на думата автоматът минава през $p + 1$ състояния.
+    Следователно по принципът на Дирихле съществуват
+    $t_1, t_2 \in \{1, \dots, p\}$, където $t_1 < t_2$ такива, че $q_{i_{t_1}} = q_{i_{t_2}}$.
+
+    Полагаме $x = \alpha_1 \dots \alpha_{t_1}$, $y = \alpha_{t_1 + 1} \dots \alpha_{t_2}$ и $z = \alpha_{t_2 + 1} \dots \alpha_n$.
+    Сигурни сме, че $|xy| \leq p$, защото $t_2 \leq p$ и че $|y| \geq 1$ понеже $t_1 \neq t_2$.
+    Знаем, че $\delta^*(q_{i_{t_1}}, y) = q_{i_{t_2}}$.
+
+    \begin{claim}\thlabel{pl-helper}
+        $(\forall i \in \mathbb{N}) (\delta^*(q_{i_{t_1}}, y^i) = q_{i_{t_2}})$.
+    \end{claim}
+
+    \begin{proof}
+        Ще докажем твърдението с индукция по $i \in \mathbb{N}$.
+
+        База: $\delta^*(q_{i_{t_1}}, \epsilon) = q_{i_{t_1}} = q_{i_{t_2}}$ \checkmark
+
+        ИС: $\delta^*(q_{i_{t_1}}, y^{i+1}) = \delta(\delta^*(q_{i_{t_1}}, y^i), y) \overset{\text{ИП}}{=} \delta(q_{i_{t_2}}, y) = \delta(q_{i_{t_1}}, y) = q_{i_{t_2}}$
+    \end{proof}
+
+    Знаем, че $\alpha = xyz \in L$.
+    Тогава $\delta^*(s, xyz) \in F$.
+    От тук следва, че $\delta^*(\delta^*(s, xy), z) \in F$, следователно $\delta^*(\delta^*(\delta^*(s, x), y), z) \in F$.
+    Така получаваме, че $\delta^*(s, x) = q_{i_{t_1}}$ и от там $\delta^*(\delta^*(q_{i_{t_1}}, y), z) \in F$.
+    От \thref{pl-helper} имаме, че $(\forall i \in \mathbb{N}) (\delta^*(q_{i_{t_1}}, y^i) = q_{i_{t_2}} = q_{i_{t_1}})$.
+    Освен това знаем, че $\delta^*(q_{i_{t_2}}, z) \in F$.
+    Следователно
+    $(\forall i \in \mathbb{N}) (\delta^*(\delta^*(q_{i_{t_1}}, y^i), z) \in F)$.
+    От тук можем да заключим, че
+    $(\forall i \in \mathbb{N}) (\delta^*(\delta^*(\delta^*(s, x), y^i), z) \in F)$
+    и вървейки в обратната посока (``сливането'' на всички $\delta^*$ в едно) получаваме, че
+    $(\forall i \in \mathbb{N}) (\delta^*(s, xy^iz) \in F)$,
+    с което доказахме лемата.
+\end{proof}
+
+Тук отново няма да използваме твърдението в тази форма, а неговата контрапозиция:
+
+\begin{corollary}[Лема за покачването (контрапозиция)]\thlabel{nonreg-pl}
+    Ако е изпълнено, че:
+    \begin{align*}
+         & (\forall p \geq 1)                                                             \\
+         & (\exists \alpha \in L, \: |\alpha| \geq 1)                                     \\
+         & (\forall x, y, z \in \Sigma^*, \: xyz = \alpha, \: |xy| \leq p, \: |y| \geq 1) \\
+         & (\exists i \in \mathbb{N}) [xy^iz \notin L],
+    \end{align*}
+    то тогава $L$ не е автоматен.
+\end{corollary}
+
+Ще покажем и по този начин, че $L = \{ a^nb^n \mid n \in \mathbb{N} \}$ не е автоматен.
+Нека $p \geq 1$.
+Тогава $\alpha = a^pb^p \in L, \: |a^pb^p| = 2p \geq p$.
+Нека вземем $x, y, z \in \Sigma^*, \: xyz = \alpha, \: |xy| \leq n, \: |y| \geq 1$.
+Знаем със сигурност, че $y = a^t$ за някое $1 \leq t \leq n$.
+За да намерим числото $i \in \mathbb{N}$, което ще ни ``изкара'' думата, трябва да видим как изглежда $xy^iz$:
+\begin{center}
+    $xy^iz = a^pa^{(i - 1)t}b^p$
+\end{center}
+Тук всяко $i \neq 1$ ще ни свърши работа.
+Нека вземем $i = 0$.
+Тогава $p + (i - 1)t = p - t < p$, понеже ($t \geq 1$), откъдето $xy^0z = a^{(p - t)}b^p \notin L$.
+Така по \nameref{nonreg-pl} излиза, че езикът не е автоматен.
+
+\begin{claim}
+    Езикът $L = \{ a^p \mid p \text{ е просто число} \}$ не е автоматен.
+\end{claim}
+
+\begin{proof}
+    Нека $n \geq 1$ и $p \geq n$ е просто число.
+
+    Тогава $\alpha = a^p \in L, \: |a^p| \geq n$.
+    Нека $x, y, z \in \Sigma^*, \: xyz = \alpha, \: |xy| \leq n, \: |y| \geq 1$.
+    Тогава $y = a^t$ за някое $1 \leq t \leq n$.
+    Нека видим как изглежда $xy^iz$:
+    \begin{center}
+        $xy^iz = xyy^{i - 1}z = a^pa^{(i - 1)t}$
+    \end{center}
+    Искаме $p + (i - 1)t$ да е съставно число.
+    $t$ е нещо, което се променя, така че по-скоро бихме се надявали $p$ да е множител.
+    Искаме да е множител във $(i - 1)t$. Възможно е $t < p$, така че трябва $p \mid i - 1$.
+    Ако положим $i = p + 1$ получаваме, че:
+    \begin{center}
+        $p + (i - 1)t = p + (p + 1 - 1)t = p + pt = p(1 + t)$
+    \end{center}
+    Тъй като $t \geq 1, \: t + 1 \geq 2$, и от там $p(1 + t) = p + (i - 1)t$ е съставно число.
+    Накрая понеже $xy^{p + 1}z = a^{p(1 + t)} \notin L$, по \nameref{nonreg-pl} излиза, че $L$ не е автоматен.
+\end{proof}
+
+\begin{problem}
+С лемата за покачването да се докаже, че следните езици не са автоматни:
+\begin{itemize}
+    \item $L_1 = \{ a^{n^2} \mid n \in \mathbb{N} \}$
+    \item $L_2 = \{ a^{2^n} \mid n \in \mathbb{N} \}$
+    \item $L_3 = \{ a^{n!} \mid n \in \mathbb{N} \}$
+    \item $L_4 = \{ \alpha \alpha \mid \alpha \in \Sigma^* \}$
+    \item $L_5 = \{ \alpha \alpha \alpha \mid \alpha \in \Sigma^* \}$
+    \item $L_6 = \{ \alpha \alpha^{rev} \alpha \mid \alpha \in \Sigma^* \}$
+\end{itemize}
+\end{problem}
+
+\begin{problem}
+Да се покаже, че следният език не е автоматен и че условието от \nameref{pumping-lemma} е изпълнено за него:
+\begin{center}
+    $L = (\{ c \}^+ \cdot \{ a^nb^n \mid n \in \mathbb{N} \}) \cup (\{ a \}^* \cdot \{ b \}^*)$
+\end{center}
+Упътване: за неавтоматност да се допусне противното
+\end{problem}
