@@ -105,8 +105,12 @@
         \end{itemize}
     \end{proof}
 
-    Имайки това изкарваме директно, че
-    $\alpha \in \mathcal{L(A)} \iff \delta^*(s, \alpha) \in F \iff \opair{\delta_1^*(s_1, \alpha), \delta_2^*(s_2, \alpha)} \in F_1 \cross F_2 \iff \delta_1^*(s_1, \alpha) \in F_1 \: \& \: \delta_2^*(s_2, \alpha) \in F_2 \iff \alpha \in L_1 \: \& \: \alpha \in L_2 \iff \alpha \in L_1 \cap L_2$, с което сме готови.
+    Имайки това изкарваме директно, че:
+    \begin{align*}
+        \alpha \in \mathcal{L(A)} & \iff \delta^*(s, \alpha) \in F \iff \opair{\delta_1^*(s_1, \alpha), \delta_2^*(s_2, \alpha)} \in F_1 \cross F_2 \\
+                                  & \iff \delta_1^*(s_1, \alpha) \in F_1 \: \& \: \delta_2^*(s_2, \alpha) \in F_2                                   \\
+                                  & \iff \alpha \in L_1 \: \& \: \alpha \in L_2 \iff \alpha \in L_1 \cap L_2
+    \end{align*}
 \end{proof}
 
 Имайки, че $\cap$ и допълнение запазват автоматност, директно изкарваме, че $\cup$ и $\setminus$ запазват автоматност:
@@ -179,7 +183,7 @@
 
     Имайки това:
     \begin{flalign*}
-        \alpha \in \mathcal{L(A)}  \iff & \delta^*(s, \alpha) \in F \iff                                                                            \\
+        \alpha \in \mathcal{L(A)}  \iff & \delta^*(s, \alpha) \in F                                                                                 \\
         \iff                            & \alpha = \alpha_1 \dots \alpha_{2n} (\alpha_i \in \Sigma)                       \: \&                     \\
                                         & \delta_1^*(s_1, \alpha_1 \alpha_3 \dots \alpha_{2n - 1}) \in L_1                \: \&                     \\
                                         & \delta_2^*(s_2, \alpha_2 \alpha_4 \dots \alpha_{2n}) \in L_2 \iff \alpha \in \operatorname{Mix}(L_1, L_2)
@@ -227,19 +231,19 @@
     и $S' = \{ \delta^*(s, \beta) \mid \beta \in \Sigma^* \}$.
     Да помислим кога точно една дума е префикс на дума от $L$:
     \begin{flalign*}
-        \beta \in \operatorname{Pref}(L) & \iff (\exists \gamma \in \Sigma^*) \: (\beta \gamma \in L) \iff                             \\
-                                         & \iff (\exists \gamma \in \Sigma^*) \: (\delta^*(s, \beta \gamma) \in F) \iff                \\
-                                         & \iff (\exists \gamma \in \Sigma^*) \: (\delta^*(\delta^*(s, \beta), \gamma) \in F) \iff     \\
+        \beta \in \operatorname{Pref}(L) & \iff (\exists \gamma \in \Sigma^*) \: (\beta \gamma \in L)                                  \\
+                                         & \iff (\exists \gamma \in \Sigma^*) \: (\delta^*(s, \beta \gamma) \in F)                     \\
+                                         & \iff (\exists \gamma \in \Sigma^*) \: (\delta^*(\delta^*(s, \beta), \gamma) \in F)          \\
                                          & \iff \delta^*(s, \beta) \in F' \iff \beta \in \mathcal{L}(\opair{\Sigma, Q, s, \delta, F'})
     \end{flalign*}
     Току що показахме автомат за $\operatorname{Pref}(L)$, а именно $\opair{\Sigma, Q, s, \delta, F'}$.
     Така получихме, че $\operatorname{Pref}(L)$ е автоматен език.
     Можем да направим подобни разсъждения за суфикс:
     \begin{flalign*}
-        \gamma \in \operatorname{Suff}(L) & \iff (\exists \beta \in \Sigma^*) \: (\beta \gamma \in L) \iff                         \\
-                                          & \iff (\exists \beta \in \Sigma^*) \: (\delta^*(s, \beta \gamma) \in F) \iff            \\
-                                          & \iff (\exists \beta \in \Sigma^*) \: (\delta^*(\delta^*(s, \beta), \gamma) \in F) \iff \\
-                                          & \iff (\exists q \in S') \: (\delta^*(q, \gamma) \in F) \iff                            \\
+        \gamma \in \operatorname{Suff}(L) & \iff (\exists \beta \in \Sigma^*) \: (\beta \gamma \in L)                             \\
+                                          & \iff (\exists \beta \in \Sigma^*) \: (\delta^*(s, \beta \gamma) \in F)                \\
+                                          & \iff (\exists \beta \in \Sigma^*) \: (\delta^*(\delta^*(s, \beta), \gamma) \in F)     \\
+                                          & \iff (\exists q \in S') \: (\delta^*(q, \gamma) \in F)                                \\
                                           & \iff \gamma \in \bigcup\limits_{q \in S'}\mathcal{L}(\opair{\Sigma, Q, q, \delta, F})
     \end{flalign*}
     Представихме $\operatorname{Suff}(L)$ като обединение на автоматни езици, откъдето и той е автоматен.
