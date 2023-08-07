@@ -1,1 +1,89 @@
 \section{Регулярни изрази и регулярни езици}
+
+Вече знаем как да превръщаме автоматите в реални програми.
+Това даде живот на нашата концептуална машина за валидация на текст.
+Ние не само имаме програмна реализация, тя също така има много хубави свойства.
+Въпреки всичко това има нещо което ни липсва.
+Понякога бихме искали да представим тази информация в по-компактен вариант от една картинка или програма.
+Тук идват на помощ регулярните изрази.
+
+\begin{definition}
+    Дефинираме множеството от \textbf{регулярни изрази} $\mathcal{RE}(\Sigma)$ индуктивно:
+    \begin{itemize}
+        \item $\varnothing, \varepsilon \in \mathcal{RE}(\Sigma)$ и $\sigma \in \mathcal{RE}(\Sigma)$ за всяко $\sigma \in \Sigma$
+        \item ако $r_1, r_2 \in \mathcal{RE}(\Sigma)$, то тогава $r_1 \cdot r_2, r_1 + r_2 \in \mathcal{RE}(\Sigma)$
+        \item ако $r \in \mathcal{RE}(\Sigma)$, то тогава $r^* \in \mathcal{RE}(\Sigma)$
+    \end{itemize}
+\end{definition}
+
+\begin{remark}
+    Освен това имаме и скоби за приоритет на операциите.
+    При липса на скоби с най-голям приоритет е $*$, после $\cdot$, и накрая $+$.
+    Също така за краткост понякога ще изпускаме $\cdot$ както се прави при умножението.
+\end{remark}
+
+\begin{definition}
+    Дефинираме индуктивно \textbf{езика $\regexlang{r}$ на регулярен израз $r \in \mathcal{RE}(\Sigma)$}:
+    \begin{itemize}
+        \item $\regexlang{\varnothing} = \varnothing$ и $\regexlang{x} = \{ x \}$ за всяко $x \in \Sigma_{\varepsilon} \: (\Sigma \cup \{ \varepsilon \})$
+        \item $\regexlang{r_1 \cdot r_2} = \regexlang{r_1} \cdot \regexlang{r_2}$
+        \item $\regexlang{r_1 \cup r_2} = \regexlang{r_1} \cup \regexlang{r_2}$
+        \item $\regexlang{r^*} = \regexlang{r}^*$
+    \end{itemize}
+\end{definition}
+
+\begin{definition}
+    Език $L \subseteq \Sigma^*$ наричаме \textbf{регулярен}, ако съществува регулярен израз $r \in \mathcal{RE}(\Sigma)$ такъв, че $\regexlang{r} = L$
+\end{definition}
+
+Ето няколко прости примери за регулярни изрази и техните езици:
+\begin{itemize}
+    \item $\regexlang{(a+b)^*} = \Sigma^*$
+    \item $\regexlang{((a+b)(a+b))^*} =(\Sigma^2)^*$
+    \item $\regexlang{(b^*ab^*ab^*)^*} = \{ \alpha \in \Sigma^* \mid |\alpha| \equiv 0 \pmod{2} \}$
+    \item $\regexlang{b^*ab^*a(b^*ab^*ab^*ab^*)^*} = \{ \alpha \in \Sigma^* \mid |\alpha| \equiv 2 \pmod{3} \}$
+\end{itemize}
+
+Първите две са очевидни.
+Ще обосновем много накратко третия пример и ще оставим четвъртия на читателя.
+Едната посока е:
+\begin{center}
+    $\regexlang{(b^*ab^*ab^*)^*} \subseteq \{ \alpha \in \Sigma^* \mid |\alpha| \equiv 0 \pmod{2} \}$
+\end{center}
+Със $*$ наслагваме ``блокчета'' от $b^*ab^*ab^*$, които са все думи със две на брой букви $a$:
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        $b \dots b \: a \: b \dots b \: a \: b \dots b$                                                                                                                      &
+        $b \dots b \: a \: b \dots b \: a \: b \dots b$                                                                                                                      &
+        $\dots$                                                                                                                                                              &
+        $b \dots b \: a \: b \dots b \: a \: b \dots b$                                                                                                                        \\
+        \hline
+        \multicolumn{1}{@{}c@{}}{$\underbrace{\hspace*{\dimexpr\tabcolsep+2\arrayrulewidth}\hphantom{b \dots b \: a \: b \dots b \: a \: b \dots b}}_{+2 \text{ букви } a}$} &
+        \multicolumn{1}{@{}c@{}}{$\underbrace{\hspace*{\dimexpr\tabcolsep+2\arrayrulewidth}\hphantom{b \dots b \: a \: b \dots b \: a \: b \dots b}}_{+2 \text{ букви } a}$} &
+        \multicolumn{1}{@{}c@{}}{}                                                                                                                                           &
+        \multicolumn{1}{@{}c@{}}{$\underbrace{\hspace*{\dimexpr\tabcolsep+2\arrayrulewidth}\hphantom{b \dots b \: a \: b \dots b \: a \: b \dots b}}_{+2 \text{ букви } a}$}
+    \end{tabular}
+\end{center}
+Колкото и пъти да събираме четни числа, винаги като резултат ще получим четно число.
+Думата очевидно е от $\{ \alpha \in \Sigma^* \mid |\alpha| \equiv 0 \pmod{2} \}$.
+Другата посока е:
+\begin{center}
+    $\{ \alpha \in \Sigma^* \mid |\alpha| \equiv 0 \pmod{2} \} \subseteq \regexlang{(b^*ab^*ab^*)^*}$
+\end{center}
+Ако вземем дума от ляво, можем да я разделим на всеки две срещания на буквата $a$:
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        $b \dots b \: a \: b \dots b \: a$                                                                                                                              &
+        $b \dots b \: a \: b \dots b \: a$                                                                                                                              &
+        $\dots$                                                                                                                                                         &
+        $b \dots b \: a \: b \dots b \: a \: b \dots b$                                                                                                                   \\
+        \hline
+        \multicolumn{1}{@{}c@{}}{$\underbrace{\hspace*{\dimexpr\tabcolsep+2\arrayrulewidth}\hphantom{b \dots b \: a \: b \dots b \: a}}_{\in \regexlang{b^*ab^*ab^*}}$} &
+        \multicolumn{1}{@{}c@{}}{$\underbrace{\hspace*{\dimexpr\tabcolsep+2\arrayrulewidth}\hphantom{b \dots b \: a \: b \dots b \: a}}_{\in \regexlang{b^*ab^*ab^*}}$} &
+        \multicolumn{1}{@{}c@{}}{}                                                                                                                                      &
+        \multicolumn{1}{@{}c@{}}{$\underbrace{\hspace*{\dimexpr\tabcolsep+2\arrayrulewidth}\hphantom{b \dots b \: a \: b \dots b \: a \: b \dots b}}_{\in \regexlang{b^*ab^*ab^*}}$}
+    \end{tabular}
+\end{center}
+Вече е очевидно, че думата е от $\regexlang{(b^*ab^*ab^*)^*}$.

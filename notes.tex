@@ -16,7 +16,11 @@
 \usepackage{theoremref}
 \usepackage[a5paper, left=0.50in, right=0.50in, top=1.0in, bottom=1.0in]{geometry}
 \usepackage{minted}
+\usepackage{stmaryrd}
 \usetikzlibrary{automata, arrows}
+
+\newcommand{\db}[1]{\llbracket #1 \rrbracket}
+\newcommand{\regexlang}[1]{\mathcal{L}\db{#1}}
 
 \ExplSyntaxOn
 \NewDocumentCommand{\opair}{m}
