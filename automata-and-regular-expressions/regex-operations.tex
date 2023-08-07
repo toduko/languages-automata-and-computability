@@ -1,1 +1,39 @@
 \section{Операции над регулярни езици}
+
+Сега ще разгледаме някои операции, които запазват регулярност.
+
+\begin{claim}
+    Ако $L$ е регулярен език, то и езикът $L^{rev}$ също е регулярен.
+\end{claim}
+
+\begin{proof}
+    С индукция по строене на регулярните езици.
+
+    \begin{itemize}
+        \item $L^{rev} = L$ за всеки $L \in \{ \varnothing, \{ \varepsilon \}, \{ a \}, \{ b \} \}$ \checkmark
+        \item $(L_1 \cdot L_2)^{rev} = L_2^{rev} \cdot L_1^{rev}$ (от \nameref{prefix-suffix-infix-props}) \\
+              По ИП $L_1^{rev}$ и $L_2^{rev}$ са регулярни, откъдето $L_2^{rev} \cdot L_1^{rev}$ е регулярен.
+        \item $(L_1 \cup L_2)^{rev} = L_1^{rev} \cup L_2^{rev}$ (директна проверка с дефиниции) \\
+              По ИП $L_1^{rev}$ и $L_2^{rev}$ са регулярни, откъдето $L_2^{rev} \cup L_1^{rev}$ е регулярен.
+        \item $(L^*)^{rev} = (L^{rev})^*$ (обобщение на предните две) \\
+              По ИП $L^{rev}$ e регулярен, откъдето $(L^{rev})^*$ е регулярен.
+    \end{itemize}
+\end{proof}
+
+\begin{claim}
+    Със $sub(\alpha)$ ще бележим множеството от всички подредици на $\alpha$.
+    Ако $L$ е регулярен език, то и $sub[L]$ е регулярен.
+\end{claim}
+
+\begin{proof}
+    Ще покажем само структурата на индукцията.
+
+    \begin{itemize}
+        \item базата е очевидна \checkmark
+        \item $sub[L_1 \cdot L_2] = sub[L_1] \cdot sub[L_2]$ (понеже $sub(\alpha \cdot \beta) = sub(\alpha) \cdot sub(\beta)$)
+        \item $sub[L_1 \cup L_2] = sub[L_1] \cup sub[L_2]$ (така работят функциите)
+        \item $sub[L^*] = (sub[L])^*$ (обобщение на предните две)
+    \end{itemize}
+
+    Остава само да се приложат индукционните предположения.
+\end{proof}
