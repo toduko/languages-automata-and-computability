@@ -1,1 +1,58 @@
 \section{Еквивалентност на регулярните и автоматните езици}
+
+\begin{theorem}[Теорема на Клини]
+    За всеки език $L \subseteq \Sigma^*$:
+    \begin{center}
+        $L$ е автоматен $\iff$ $L$ е регулярен
+    \end{center}
+\end{theorem}
+
+\begin{proof}
+    $(\Leftarrow)$ С индукция по строене на регулярните езици.
+
+    \begin{itemize}
+        \item $\varnothing, \varepsilon, \{ a \}, \{ b \}$ са автоматни езици
+        \item $\cup, \: \cdot$ и $*$ запазват автоматност
+    \end{itemize}
+
+    $(\Rightarrow)$ Тук ще трябва да поработим малко повече.
+
+    Нека $\mathcal{A} = \opair{\Sigma, Q, q_0, \delta, F}$ е ДКА за $L$.
+    Нека $Q = \{ q_0, \dots, q_{n - 1} \}$.
+    Със $L(i, j, k)$ ще бележим множеството от всички думи $\alpha$,
+    за които $\delta^*(q_i, \alpha) = q_j$ и всички междинни състояния имат индекс $< k$.
+    Ясно е, че $L = \bigcup \{ L(0, j, n) \mid q_j \in F \}$.
+    Строим $L(i, j, k)$ рекурсивно:
+
+    За $k = 0$ има две възможности (които тривиално са регулярни езици):
+    \begin{itemize}
+        \item за $i = j$ имаме, че $L(i, j, 0) = \{ \varepsilon \} \cup \{ x \in \Sigma \mid \delta(q_i, x) = q_j \}$
+        \item за $i \neq j$ имаме, че $L(i, j, 0) = \{ x \in \Sigma \mid \delta(q_i, x) = q_j \}$
+    \end{itemize}
+    Имайки $L(i, j, k)$, за $L(i, j, k + 1)$ имаме две възможности:
+    \begin{itemize}
+        \item $q_k$ да не се среща като междинно. Тогава сме в $L(i, j, k)$
+        \item $q_k$ се среща като междинно. Разделяме по срещнанията на $q_k$:
+    \end{itemize}
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|c|}
+            \hline
+            $\in L(i, k, k)$                                                                                                                                   &
+            $\in L(k, k, k)$                                                                                                                                   &
+            $\dots$                                                                                                                                            &
+            $\in L(k, k, k)$                                                                                                                                   &
+            $\in L(k, j, k)$                                                                                                                                     \\
+            \hline
+            \multicolumn{1}{@{}c@{}}{$\underbrace{\hspace*{\dimexpr\tabcolsep+2\arrayrulewidth}\hphantom{\text{1-во срещане}}}_{\text{1-во срещане}}$}         &
+            \multicolumn{1}{@{}c@{}}{$\underbrace{\hspace*{\dimexpr\tabcolsep+2\arrayrulewidth}\hphantom{\text{2-ро срещане}}}_{\text{2-ро срещане}}$}         &
+            \multicolumn{1}{@{}c@{}}{}                                                                                                                         &
+            \multicolumn{1}{@{}c@{}}{$\underbrace{\hspace*{\dimexpr\tabcolsep+2\arrayrulewidth}\hphantom{\text{последно срещане}}}_{\text{последно срещане}}$} &
+            \multicolumn{1}{@{}c@{}}{}
+        \end{tabular}
+    \end{center}
+    Тъй като го разделихме на всички срещания няма как да получим междинни с индекс $k$.
+    Накрая:
+    \begin{center}
+        $L(i, j, k + 1) = L(i, j, k) \cup (L(i, k, k) \cdot L(k, k, k)^* \cdot L(k, j, k))$
+    \end{center}
+\end{proof}
