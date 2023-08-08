@@ -1,1 +1,137 @@
 \section{Автомат на Brzozowski}
+
+Автоматите, които създаваме, не са единствените за конкретния език.
+Най-малкото можем да добавим недостижими състояния.
+Но това е глупаво, ние по-скоро искаме да направим автомат с възможно най-малко състояния.
+Тогава ако решим да направим програма, тя ще заема по-малко памет.
+
+\begin{definition}
+    За език $L \subseteq \Sigma^*$ дефинираме $Q_L = \{ \alpha^{-1}(L) \mid \alpha \in \Sigma^* \}$.
+\end{definition}
+
+\begin{claim}
+    Ако $Q_L$ е крайно, то $L$ е регулярен.
+\end{claim}
+
+\begin{proof}
+    Нека $Q_L$ е крайно.
+
+    Строим автомат $\mathcal{B}_L = \opair{\Sigma, Q_L, L, \delta, F}$ за $L$, който ще наричаме \textbf{автомат на Brzozowski} за $L$:
+
+    \begin{itemize}
+        \item $\delta(M, x) = x^{-1}(M)$ за $M \in Q_L, \: x \in \Sigma$
+        \item $F = \{ M \in Q_L \mid \varepsilon \in M \}$
+    \end{itemize}
+
+    \begin{claim}
+        За всяко $M \in Q_L \: : \: \delta^*(M, \alpha) = \alpha^{-1}(M)$
+    \end{claim}
+
+    \begin{proof}
+        С индукция по $|\alpha|$.
+
+        \begin{itemize}
+            \item $\delta^*(M, \varepsilon) = M = \varepsilon^{-1}(M)$ \checkmark
+            \item $\delta^*(M, \beta x) = \delta(\delta^*(M, \beta), x) \stackrel{\text{ИП}}{=} x^{-1}(\beta^{-1}(M)) = \{ \gamma \in \Sigma^* \mid x \gamma \in \beta^{-1}(M) \} = \{ \gamma \in \Sigma^* \mid \beta x \gamma \in M \} = (\beta x)^{-1}(M)$
+        \end{itemize}
+    \end{proof}
+
+    Имайки това:
+    \begin{align*}
+        \alpha \in L & \iff \varepsilon \in \alpha^{-1}(L)      \\
+                     & \iff \varepsilon \in \delta^*(L, \alpha) \\
+                     & \iff \delta^*(L, \alpha) \in F           \\
+                     & \iff \alpha \in \mathcal{L(B)}
+    \end{align*}
+\end{proof}
+
+Вече сме сигурни, че \nameref{nerode-nonregular} е напълно точен, за разлика от \nameref{pumping-lemma}:
+
+\begin{corollary}
+    $L$ е регулярен $\iff Q_L$ е крайно
+\end{corollary}
+
+Освен че за всеки регулярен език $L$ може да се построи такъв автомат, той се оказва и минимален.
+
+\begin{claim}[Автоматът на Brzozowski е минимален]\thlabel{brzozowski-minimal-automaton}
+    Нека $L$ е регулярен с автомат $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$.
+    Тогава $|Q_L| \leq |Q|$.
+\end{claim}
+
+\begin{proof}
+    Б.О.О. всички състояния в $\mathcal{A}$ са достижими.
+
+    Нека $Q = \{ 1, \dots, n \}$.
+    Нека $\alpha_i \in \Sigma^*$ е такава дума, че $\delta^*(s, \alpha) = q_i$.
+    Дефинираме функцията $f : Q \rightarrow Q_L$:
+    \begin{center}
+        $f(q_i) = \alpha^{-1}(L)$
+    \end{center}
+    Трябва само да покажем, че $f$ е сюрективна.
+
+    Нека $M \in Q_L$.
+    Тогава има $\alpha \in \Sigma^* \: : \: M = \alpha^{-1}(L)$.
+    Знаем, че $\delta^*(s, \alpha) = q_i$ за някое $i \in \{ 1, \dots, n \}$.
+    \begin{align*}
+        \beta \in M \iff \beta \in \alpha^{-1}(L) & \iff \alpha \beta \in L                                                                                               \\
+                                                  & \iff \delta^*(s, \alpha \beta) \in F \iff \delta^*(\delta^*(s, \alpha), \beta) \in F  \iff \delta^*(q_i, \beta) \in F \\
+                                                  & \iff \delta^*(\delta^*(s, \alpha_i), \beta) \in F \iff \delta^*(s, \alpha_i \beta) \in F \iff \alpha_i \beta \in L    \\
+                                                  & \iff \beta \in \alpha_i^{-1}(L) \iff \beta \in f(q_i)
+    \end{align*}
+    Така $f(q_i) = M$.
+    Накрая понеже $f$ е сюрективна, $\operatorname{Dom}(f) = Q, \: \operatorname{Rng}(f) = Q_L, \: |Q_L| \leq |Q|$.
+\end{proof}
+
+\begin{problem}
+Да се построи минимален автомат за $\regexlang{a^*b^*}$
+\end{problem}
+
+За такива задачи е хубаво да се имат на предвид следните свойства на регулярните изрази:
+\begin{itemize}
+    \item $\regexlang{r^+} = \regexlang{r \cdot r^*}$
+    \item $\regexlang{r^*} = \regexlang{r^+ + \varepsilon}$
+    \item $\regexlang{r_1 + r_2} = \regexlang{r_2 + r_1}$
+    \item $\regexlang{r(r_1 + r_2)} = \regexlang{r \cdot r_1 + r \cdot r_2}$
+\end{itemize}
+
+Започваме да строим автомат на Brzozowski за $\regexlang{a^*b^*}$:
+\begin{itemize}
+    \item начално състояние $L_0 = \regexlang{a^*b^*} = \regexlang{a^+b^* + b^*} = \regexlang{a \cdot a^*b^* + b^*} = \regexlang{a \cdot a^*b^* + b^+ + \varepsilon} = \regexlang{a \cdot a^*b^* + b \cdot b^* + \varepsilon}$
+    \item функцията на преходите е следната:
+          \begin{itemize}
+              \item $\delta(L_0, a) = a^{-1}(\regexlang{a \cdot a^*b^* + b \cdot b^* + \varepsilon}) = \regexlang{a^*b^*} = L_0$
+              \item $\delta(L_0, b) = b^{-1}(\regexlang{a \cdot a^*b^* + b \cdot b^* + \varepsilon}) = \regexlang{b^*} = \regexlang{b \cdot b^* + \varepsilon}= L_1 \neq L_0$, понеже $a \in \regexlang{a^*b^*}, \: a \notin \regexlang{b^*}$
+              \item $\delta(L_1, a) = a^{-1}(\regexlang{b \cdot b^* + \varepsilon}) = \varnothing = L_2 \neq L_0, L_1$
+              \item $\delta(L_1, b) = b^{-1}(\regexlang{b \cdot b^* + \varepsilon}) = \regexlang{b^*} = L_1$
+              \item $\delta(L_2, a) = a^{-1}(\varnothing) = \varnothing = b^{-1}(\varnothing) = \delta(L_2, a)$
+          \end{itemize}
+    \item $\varepsilon \in L_0, L_1$, следователно те стават финални
+\end{itemize}
+
+Ето как ще изглежда автомата на картинка:
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[node distance=2cm, thick]
+        \node[accepting, initial, state, initial text=] (1) {$L_0$};
+        \node[accepting, state, initial text=, right of=1] (2) {$L_1$};
+        \node[state, initial text=, right of=2] (3) {$L_2$};
+        \path[->] (1) edge [loop above] node[above] {$a$} (1);
+        \path[->] (1) edge [] node[above] {$b$} (2);
+        \path[->] (2) edge [loop above] node[above] {$b$} (2);
+        \path[->] (2) edge [] node[above] {$a$} (3);
+        \path[->] (3) edge [loop above] node[above] {$a, b$} (3);
+    \end{tikzpicture}
+    \caption*{минимален автомат за $\regexlang{a^*b^*}$}
+\end{figure}
+
+Как бихме процедирали ако трябва да се построи минимален автомат за $\Sigma^* \setminus \regexlang{a^*b^*}$?
+
+\begin{warning}
+    За всеки регулярен език $L$, ако има автомат за $L$ с $n$ на брой състояния, то тогава има автомат за $\overline{L}$ с $n$ на брой състояния.
+\end{warning}
+
+Това го знаем още от \thref{complement-regular}.
+В конструкцията там ние използваме същото множество от състояния, същото начално състояния и същите преходи.
+Единственото, което променяме, е кои са финалните състояния.
+Така можем да заключим, че за да получим минималният автомат за $\Sigma^* \setminus \regexlang{a^*b^*}$, трябва просто да приложим конструкцията от \thref{complement-regular} върху минималният автомат за $\regexlang{a^*b^*}$.
+Това е много по-кратко от преминаването към регулярен израз за $\Sigma^* \setminus \regexlang{a^*b^*}$ и прилагането на алгоритъма на Brzozowski.
