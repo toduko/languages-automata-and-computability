@@ -1,1 +1,66 @@
 \section{Задачи за упражнение}
+
+\begin{definition}
+    Функция $h : \Sigma_1^* \rightarrow \Sigma_2^*$ ще наричаме \textbf{хомоморфизъм}, ако:
+    \begin{center}
+        $h(\alpha \cdot \beta) = h(\alpha) \cdot h(\beta)$ за всички $\alpha, \beta \in \Sigma_1^*$
+    \end{center}
+\end{definition}
+
+\begin{problem}
+Да се докаже, че за произволен хомоморфизъм $h$ е вярно, че $h(\varepsilon) = \varepsilon$
+\end{problem}
+
+\begin{problem}\thlabel{homomorphism-regular}
+Да се докаже, че за произволен хомоморфизъм $h$ и регулярен език $L$, езикът $h[L]$ е регулярен
+
+Упътване: да се направи индукция по строенето на регулярните езици
+\end{problem}
+
+\begin{problem}\thlabel{homomorphism-inverse-regular}
+Да се докаже, че за произволен хомоморфизъм $h$ и регулярен език $L$, езикът $h^{-1}[L]$ е регулярен
+
+Упътване: да се направи автомат, който докато чете $\alpha$, прави преходи с $h(\alpha)$ в автомат за $L$
+\end{problem}
+
+\begin{problem}
+Използвайки нерегулярността на $\{ a^nb^n \mid n \in \mathbb{N} \}$ заедно със \thref{homomorphism-regular} или \thref{homomorphism-inverse-regular} да се докаже, че езикът $L = \{ a^nb^{2n} \mid n \in \mathbb{N} \}$ е нерегулярен.
+
+Упътване: да се представи $L$ като образ или праобраз на хомоморфизъм
+\end{problem}
+
+\begin{problem}
+Нека $L$ е регулярен език. Да се докаже, че езикът $L' = \{ \alpha \in \Sigma^* \mid \alpha \alpha \in L \}$ е регулярен.
+
+Упътване: докато се чете $\alpha$ да се види къде отиват всички състояния от автомата за $L$
+\end{problem}
+
+\begin{problem}
+Нека $L$ е регулярен език. Да се докаже, че езикът $L' = \{ \alpha \# c^n \mid n \in \mathbb{N} \: \& \: \alpha^n \in L \}$ е регулярен.
+
+Упътване: леко усложнение на конструкцията от предната задача
+\end{problem}
+
+\begin{problem}
+Нека $L$ е регулярен език. Да се докаже, че езикът $L' = \{ \alpha \in \Sigma^* \mid (\exists n \in \mathbb{N}) \: (\alpha^n \in L) \}$ е регулярен.
+
+Упътване: да се използват предната задача и хомоморфизми
+\end{problem}
+
+\begin{definition}
+    Функция $h : \Sigma_1^* \rightarrow \mathcal{P}(\Sigma_2^*)$ ще наричаме \textbf{силен хомоморфизъм}, ако:
+    \begin{itemize}
+        \item $h(\alpha)$ е регулярен за всяко $\alpha \in \Sigma_1^*$
+        \item $h(\alpha \cdot \beta) = h(\alpha) \cdot h(\beta)$ за всички $\alpha, \beta \in \Sigma_1^*$
+    \end{itemize}
+\end{definition}
+
+\begin{problem}
+Да се докаже, че за произволен силен хомоморфизъм $h$ е вярно, че $h(\varepsilon) = \{ \varepsilon \}$
+\end{problem}
+
+\begin{problem}\thlabel{strong-homomorphism-regular}
+Да се докаже, че за произволен силен хомоморфизъм $h$ и регулярен език $L$, $\bigcup h[L]$ е регулярен
+
+Упътване: да се направи индукция по строенето на регулярните езици
+\end{problem}
