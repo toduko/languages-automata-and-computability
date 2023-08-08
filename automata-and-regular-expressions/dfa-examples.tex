@@ -50,13 +50,11 @@
     \end{tikzpicture} \\
 \end{center}
 
-\pagebreak
-
 Тази техника може да се приложи за строене на автомат за език от произволно дълга дума.
 Ето как ще обобщим конструкцията за езика $L = \{ \alpha \}$:
 \begin{itemize}
     \item $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$
-    \item $Q = Pref(L) \cup \{ \cross \}$ (начален отрязък от пътя, който съставя $\alpha$, $\cross \notin \Sigma$ е отхвърлящо състояние боклук)
+    \item $Q = \operatorname{Pref}(L) \cup \{ \cross \}$ (начален отрязък от пътя, който съставя $\alpha$, $\cross \notin \Sigma$ е отхвърлящо състояние боклук)
     \item $s = \varepsilon$
     \item За $\beta \preceq_{pref} \alpha \: ($тогава $\beta \in Q), \: x \in \Sigma$:
           ако $\beta x \preceq_{pref} \alpha$, то $\delta(\beta, x) = \beta x$,
@@ -68,9 +66,19 @@
 Идеята зад конструкцията е следната:
 Състоянията кодират пътя, който сме изминали, ако не сме се отклонили вече от ``строежа'' на $\alpha$.
 В първият момент на отклонение отиваме във нефинално състояние ``боклук'', от което не може да излезнем.
-Можем да разширим идеята, така че да работи за няколко думи като кодираме повече видове пътища.
 
-\pagebreak
+Можем да разширим идеята, така че да работи за няколко думи като кодираме повече видове пътища.
+Ето как ще обобщим конструкцията (чиято коректност приемаме за очевидна) за $L = \{ \alpha_1, \: \dots, \: \alpha_n \}$:
+\begin{itemize}
+    \item $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$
+    \item $Q = \{ \alpha \in \Sigma^* \: | \: (\exists \beta \in L) (|\alpha| \leq |\beta|) \} \cup \{ \cross \}$ (не гледаме пътища по-дълги от най-дългата дума в $L$, $\cross \notin \Sigma$ - състояние боклук)
+    \item $s = \varepsilon$
+    \item За $\alpha \in Q, \: x \in \Sigma$:
+          ако $\alpha x \in Q$, то $\delta(\alpha, x) = \alpha x$,
+          иначе $\delta(\alpha, x) = \cross$
+    \item $\delta(\cross, x) = \cross$ за $x \in \Sigma$
+    \item $F = L$
+\end{itemize}
 
 \begin{figure*}
     \centering
@@ -95,20 +103,8 @@
         \path[->] (7) edge [bend right] node[right] {$a, b$} (8);
         \path[->] (8) edge [loop right] node[right] {$a, b$} (8);
     \end{tikzpicture}
-    \caption*{Автомат за $L = \{ ab, ba, aa \}$}
+    \caption*{пример за прилагане на конструкцията за $L = \{ ab, ba, aa \}$}
 \end{figure*}
-
-Ето как ще обобщим конструкцията (чиято коректност приемаме за очевидна) за $L = \{ \alpha_1, \: \dots, \: \alpha_n \}$:
-\begin{itemize}
-    \item $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$
-    \item $Q = \{ \alpha \in \Sigma^* \: | \: (\exists \beta \in L) (|\alpha| \leq |\beta|) \} \cup \{ \cross \}$ (не гледаме пътища по-дълги от най-дългата дума в $L$, $\cross \notin \Sigma$ - състояние боклук)
-    \item $s = \varepsilon$
-    \item За $\alpha \in Q, \: x \in \Sigma$:
-          ако $\alpha x \in Q$, то $\delta(\alpha, x) = \alpha x$,
-          иначе $\delta(\alpha, x) = \cross$
-    \item $\delta(\cross, x) = \cross$ за $x \in \Sigma$
-    \item $F = L$
-\end{itemize}
 
 Нека сега направим автомат за $L = \{ \alpha \in \Sigma^* \: | \: |\alpha| \: \text{е четно} \}$.
 
@@ -143,13 +139,11 @@
     \begin{itemize}
         \item База: $|\alpha| = 0$, тогава $\alpha = \varepsilon$.
               Наистина $\delta^*(0, \varepsilon) = 0 \: (mod \: 2)$ \checkmark
-        \item ИС: $|\alpha| = n + 1$, тогава $\alpha = \beta x$ за $\beta \in \Sigma^*, |\beta| = n, \: x \in \Sigma$
+        \item ИС: $|\alpha| = n + 1$, тогава $\alpha = \beta x$ за $\beta \in \Sigma^*, |\beta| = n, \: x \in \Sigma$.
               Тогава:
-              \begin{align*}
-                  \delta^*(0, \beta x) & = \delta(\delta^*(0, \beta), x) \stackrel{\text{ИП}}{=}
-                  \delta(|\beta| \: (mod \: 2), x) = |\beta| + 1 \: (mod \: 2) =                 \\
-                                       & = |\beta x| \: (mod \: 2) = |\alpha| \: (mod \: 2)
-              \end{align*}
+              \begin{center}
+                  $\delta^*(0, \beta x) = \delta(\delta^*(0, \beta), x) \stackrel{\text{ИП}}{=} \delta(|\beta| \: (mod \: 2), x) = |\beta| + 1 \: (mod \: 2) = |\beta x| \: (mod \: 2) = |\alpha| \: (mod \: 2)$
+              \end{center}
     \end{itemize}
 \end{proof}
 
@@ -165,7 +159,10 @@
 От неговите състояние и преходи можем да извлечем информация за четността на дължината на думата.
 Единственото, което трябва да направим, е да сменим отговора на автомата.
 Ако преди той е казвал ДА, сега да казва НЕ, и обратното.
-Очевидно този автомат ще свърши работа:
+
+\pagebreak
+
+Това означава просто да обърнем финалните състояния:
 \begin{center}
     \begin{tikzpicture}[shorten >=1pt,node distance=2.5cm,>=stealth',thick]
         \node[text width=0.5cm] at (-1, 1) {$\mathcal{A}_{\overline{L}}$:};
@@ -177,21 +174,43 @@
 \end{center}
 
 \begin{problem}
-    Да се построи автомат за:
-    \begin{itemize}
-        \item $L_1 = \{ \alpha \in \Sigma^* \: | \: |\alpha| \text{ се дели на } 3 \}$
-        \item $L_2 = \{ \alpha \in \Sigma^* \: | \: |\alpha| \text{ се дели на } 5 \}$
-        \item $L_3 = \{ \alpha \in \Sigma^* \: | \: |\alpha| \text{ дава остатък } 2 \text{ при деление на } 4 \}$
-    \end{itemize}
-    Упътване: за състояния да се използват остатъци при деление на $n$
+Да се построи автомат за:
+\begin{itemize}
+    \item $L_1 = \{ a, b, ab \}$
+    \item $L_2 = \{ \varepsilon, ab, abab \}$
+    \item $L_3 = \{ aa, bb \}$
+\end{itemize}
+Упътване: за състояния да се използват остатъци при деление на $n$
 \end{problem}
 
 \begin{problem}
-    Да се построи автомат за:
-    \begin{itemize}
-        \item $L_1 = \{ \alpha \in \Sigma^* \: | \: |\alpha| \text{ не се дели на } 3 \}$
-        \item $L_2 = \{ \alpha \in \Sigma^* \: | \: |\alpha| \text{ не се дели на } 5 \}$
-        \item $L_3 = \{ \alpha \in \Sigma^* \: | \: |\alpha| \text{ не дава остатък } 2 \text{ при деление на } 4 \}$
-    \end{itemize}
-    Упътване: да се използват автоматите от предната задача
+Да се построи автомат за:
+\begin{itemize}
+    \item $L_1 = \Sigma^* \setminus \{ a, b, ab \}$
+    \item $L_2 = \Sigma^* \setminus \{ \varepsilon, ab, abab \}$
+    \item $L_3 = \Sigma^* \setminus \{ aa, bb \}$
+\end{itemize}
+Упътване: да се използват автоматите от предната задача
+\end{problem}
+
+\begin{problem}
+Да се построи автомат за:
+\begin{itemize}
+    \item $L_1 = \{ \alpha \in \Sigma^* \: | \: |\alpha| \text{ се дели на } 3 \}$
+    \item $L_2 = \{ \alpha \in \Sigma^* \: | \: |\alpha| \text{ се дели на } 5 \}$
+    \item $L_3 = \{ \alpha \in \Sigma^* \: | \: |\alpha| \text{ дава остатък } 2 \text{ при деление на } 4 \}$
+    \item $L_4 = \{ \alpha \in \Sigma^* \: | \: |\alpha| \text{ дава остатък } 3 \text{ при деление на } 5 \}$
+\end{itemize}
+Упътване: за състояния да се използват остатъци при деление на $n$
+\end{problem}
+
+\begin{problem}
+Да се построи автомат за:
+\begin{itemize}
+    \item $L_1 = \{ \alpha \in \Sigma^* \: | \: |\alpha| \text{ не се дели на } 3 \}$
+    \item $L_2 = \{ \alpha \in \Sigma^* \: | \: |\alpha| \text{ не се дели на } 5 \}$
+    \item $L_3 = \{ \alpha \in \Sigma^* \: | \: |\alpha| \text{ не дава остатък } 2 \text{ при деление на } 4 \}$
+    \item $L_4 = \{ \alpha \in \Sigma^* \: | \: |\alpha| \text{ не дава остатък } 3 \text{ при деление на } 5 \}$
+\end{itemize}
+Упътване: да се използват автоматите от предната задача
 \end{problem}

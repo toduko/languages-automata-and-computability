@@ -37,8 +37,27 @@
     \end{align*}
 \end{proof}
 
-Имайки това можем да използваме, че $\cdot$ и $*$ запазват автоматност.
+Имайки това вече можем да използваме, че $\cdot$, $*$ и $rev$ запазват автоматност.
 \begin{warning}
     При ``детерминизиране'' броят на състоянията нараства експоненциално.
     Накратко $10$ става $1024$.
 \end{warning}
+
+\begin{problem}
+Да се детерминира следният автомат:
+\begin{center}
+    \begin{tikzpicture}[shorten >=1pt,node distance=2.5cm,>=stealth',thick]
+        \node[initial, state, initial text=] (1) {$0$};
+        \node[state] [right of=1] (2) {$1$};
+        \node[initial, state, initial text=] [below left of=2] (3) {$2$};
+        \node[accepting, state] [right of=3] (4) {$3$};
+        \path[->] (1) edge [loop above] node[above] {$a$} (1);
+        \path[->] (1) edge node[above] {$a, b$} (2);
+        \path[->] (1) edge node[left] {$b$} (3);
+        \path[->] (2) edge node[above] {$b$} (3);
+        \path[->] (2) edge node[right] {$b$} (4);
+        \path[->] (3) edge [loop below] node[below] {$a$} (3);
+        \path[->] (3) edge node[above] {$a$} (4);
+    \end{tikzpicture}
+\end{center}
+\end{problem}

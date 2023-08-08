@@ -23,47 +23,58 @@
     \end{itemize}
 \end{definition}
 
-\begin{remark}
-    $\Delta^*(P, \alpha \beta) = \Delta^*(\Delta^*(P, \alpha), \beta)$ (лесно излиза с индукция)
-\end{remark}
+\begin{claim}
+    $\Delta^*(P, \alpha \beta) = \Delta^*(\Delta^*(P, \alpha), \beta)$
+\end{claim}
+
+\begin{proof}
+    Елементарна индукция
+\end{proof}
 
 Вече можем да кажем какъв е език на даден недетерминиран автомат.
 
 \begin{definition}
     Нека $\mathcal{N} = \opair{\Sigma, Q, S, \Delta, F}$ е НКА.
-    Тогава езикът на автомата $\mathcal{N}$ е множеството
-    $\mathcal{L}(\mathcal{N}) = \{ \alpha \in \Sigma^* \: | \: \delta^*(S, \alpha) \cap F \neq \varnothing \}$.
+    Тогава езикът на автомата $\mathcal{N}$ е множеството:
+    \begin{center}
+        $\mathcal{L}(\mathcal{N}) = \{ \alpha \in \Sigma^* \: | \: \delta^*(S, \alpha) \cap F \neq \varnothing \}$.
+    \end{center}
 \end{definition}
 
 Тук цялата идея, е вместо думата да поеме по един предопределен път и да получи ДА или НЕ,
 тя да може да изпробва няколко възможни такива, и ако получи отговор ДА за поне един от тях, то тогава получава ДА от целия автомат.
 В някакъв смисъл има елемент на отгатване и несигурност. Може този път да свърши работа, но може и другия да свърши работа.
-
-\pagebreak
+Недетерминираните автомати са много добри, когато не сме сигурни какво точно искаме да се случи, но знаем всички възможности, с които да изпробваме.
+Тъй като ни трябва само един ``клон'' от изчислението да ни каже ДА, ние просто можем да изпробваме всички, които имат потенциал да ни свършат работа.
 
 Нека дадем няколко прости примери за недетерминирани автомати:
 \begin{figure*}[h]
     \centering
-    \centering
-    \begin{tikzpicture}[node distance=2cm, thick]
-        \node[initial, state, initial text=] (1) {$q$};
-    \end{tikzpicture}
-    \caption*{Автомат за $\varnothing$}
+    \begin{subfigure}[b]{0.3\linewidth}
+        \centering
+        \begin{tikzpicture}[node distance=2cm, thick]
+            \node[initial, state, initial text=] (1) {$q$};
+        \end{tikzpicture}
+        \caption*{Автомат за $\varnothing$}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.6\linewidth}
+        \centering
+        \begin{tikzpicture}[node distance=2cm, thick]
+            \node[initial, state, initial text=] (1) {$\varepsilon$};
+            \node[state, initial text=, right of=1] (2) {$a$};
+            \node[state, initial text=, right of=2] (3) {$ab$};
+            \node[accepting, state, initial text=, right of=3] (4) {$aba$};
+            \path[->] (1) edge [] node[above] {$a$}(2);
+            \path[->] (2) edge [] node[above] {$b$}(3);
+            \path[->] (3) edge [] node[above] {$a$}(4);
+        \end{tikzpicture}
+        \caption*{Автомат за $\{ aba \}$}
+    \end{subfigure}
 \end{figure*}
 
-\begin{figure*}[h]
-    \centering
-    \begin{tikzpicture}[node distance=2cm, thick]
-        \node[initial, state, initial text=] (1) {$\varepsilon$};
-        \node[state, initial text=, right of=1] (2) {$a$};
-        \node[state, initial text=, right of=2] (3) {$ab$};
-        \node[accepting, state, initial text=, right of=3] (4) {$aba$};
-        \path[->] (1) edge [] node[above] {$a$}(2);
-        \path[->] (2) edge [] node[above] {$b$}(3);
-        \path[->] (3) edge [] node[above] {$a$}(4);
-    \end{tikzpicture}
-    \caption*{Автомат за $\{ aba \}$}
-\end{figure*}
+% \begin{figure*}[h]
+
+% \end{figure*}
 
 Доста по-компактно става представянето на автомати за тези езици.
 Напълно елимираме ненужните преходи и състояние боклук.

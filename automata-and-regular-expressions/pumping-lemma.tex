@@ -35,6 +35,7 @@
     Полагаме $x = \alpha_1 \dots \alpha_{t_1}$, $y = \alpha_{t_1 + 1} \dots \alpha_{t_2}$ и $z = \alpha_{t_2 + 1} \dots \alpha_n$.
     Сигурни сме, че $|xy| \leq p$, защото $t_2 \leq p$ и че $|y| \geq 1$ понеже $t_1 \neq t_2$.
     Знаем, че $\delta^*(q_{i_{t_1}}, y) = q_{i_{t_2}}$.
+    Искаме да проверим, че можем да ``циклим'' със $y$.
 
     \begin{claim}\thlabel{pl-helper}
         $(\forall i \in \mathbb{N}) (\delta^*(q_{i_{t_1}}, y^i) = q_{i_{t_2}})$.
@@ -118,17 +119,15 @@
 \begin{problem}
 С лемата за покачването да се докаже, че следните езици не са регулярни:
 \begin{itemize}
-    \item $L_1 = \{ a^{n^2} \mid n \in \mathbb{N} \}$
-    \item $L_2 = \{ a^{2^n} \mid n \in \mathbb{N} \}$
-    \item $L_3 = \{ a^{n!} \mid n \in \mathbb{N} \}$
-    \item $L_4 = \{ \alpha \alpha \mid \alpha \in \Sigma^* \}$
-    \item $L_5 = \{ \alpha \alpha^{rev} \mid \alpha \in \Sigma^* \}$
+    \item $L_1 = \{ a^nb^n \mid n \in \mathbb{N} \}$ // $y$ ще хване само букви $a$
+    \item $L_2 = \{ a^{n^2} \mid n \in \mathbb{N} \}$
+    \item $L_3 = \{ a^{2^n} \mid n \in \mathbb{N} \}$
+    \item $L_4 = \{ a^{n!} \mid n \in \mathbb{N} \}$
+    \item $L_5 = \{ \alpha \alpha \mid \alpha \in \Sigma^* \}$
+    \item $L_6 = \{ \alpha \alpha^{rev} \mid \alpha \in \Sigma^* \}$
 \end{itemize}
-Упътване: решенията на тази задача са просто адаптация на тези от \thref{nonregular-problems-1} и \thref{nonregular-problems-2}
+Упътване: решенията на тази задача са просто адаптация на тези от \thref{nonregular-problems-1}, \thref{nonregular-problems-2} и \thref{nonregular-problems-3}
 \end{problem}
-
-\pagebreak
-
 
 От всичкото това доказване на нерегулярност използвайки лемата, човек си задава въпроса дали това не може да стане и в обратната посока.
 Оказва се, че не може.

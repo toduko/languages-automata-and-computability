@@ -1,4 +1,4 @@
-\documentclass[11pt, a5paper]{report}
+\documentclass{report}
 
 \usepackage[utf8]{inputenc}
 \usepackage[T2A]{fontenc}
@@ -14,10 +14,11 @@
 \usepackage{mathtools}
 \usepackage{subcaption}
 \usepackage{theoremref}
-\usepackage[a5paper, left=0.50in, right=0.50in, top=1.0in, bottom=1.0in]{geometry}
+\usepackage[a4paper, left=0.50in, right=0.50in, top=1.0in, bottom=1.0in]{geometry}
 \usepackage{minted}
 \usepackage{stmaryrd}
-\usetikzlibrary{automata, arrows}
+\usepackage[Rejne]{fncychap}
+\usetikzlibrary{automata, arrows, positioning}
 
 \newcommand{\db}[1]{\llbracket #1 \rrbracket}
 \newcommand{\regexlang}[1]{\mathcal{L}\db{#1}}
@@ -75,6 +76,8 @@
 \tableofcontents
 
 \include{introduction.tex}
+\begingroup
+\let\clearpage\relax
 \include{automata-and-regular-expressions/dfa-definitions.tex}
 \include{automata-and-regular-expressions/dfa-examples.tex}
 \include{automata-and-regular-expressions/dfa-operations.tex}
@@ -89,6 +92,7 @@
 \include{automata-and-regular-expressions/pumping-lemma.tex}
 \include{automata-and-regular-expressions/brzozowski-automaton.tex}
 \include{automata-and-regular-expressions/problems.tex}
+\endgroup
 \include{grammars.tex}
 
 \end{document}

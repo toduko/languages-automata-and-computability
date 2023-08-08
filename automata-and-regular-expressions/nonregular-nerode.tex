@@ -11,37 +11,33 @@
 За първият метод ще трябва да въведем една допълнителна дефиниция.
 
 \begin{definition}
-    Нека $\alpha \in \Sigma^*$ и $L \subseteq \Sigma^*$. Тогава:
-    \begin{align*}
-        \alpha^{-1}(L) = \{ \beta \in \Sigma^* \mid \alpha \cdot \beta \in L \}
-    \end{align*}
+    Нека $\alpha \in \Sigma^*$ и $L \subseteq \Sigma^*$. Дефинираме $\alpha^{-1}(L) = \{ \beta \in \Sigma^* \mid \alpha \cdot \beta \in L \}$
 \end{definition}
 
-\begin{claim}[класови критерий за нерегулярност]\thlabel{nerode-nonregular}
-    Нека множеството $\{ \alpha^{-1}(L) \mid \alpha \in \Sigma^* \}$ е безкрайно.
-    Тогава $L$ не е регулярен
+\begin{claim}\thlabel{nerode-nonregular-contraposition}
+    Нека $L$ е регулярен.
+    Тогава множеството $\{ \alpha^{-1}(L) \mid \alpha \in \Sigma^* \}$ е крайно.
 \end{claim}
 
 \begin{proof}
     Нека $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$ е ДКА за $L$. Тогава:
     \begin{align*}
-        \beta \in \alpha^{-1}(L) & \iff \alpha \cdot \beta \in L \iff \delta^*(s, \alpha \cdot \beta) \in F                                                                                \\
-                                 & \iff \delta^*(\delta^*(s, \alpha), \beta) \in F \iff \beta \in \mathcal{L}(\underbrace{\opair{\Sigma, Q, \delta^*(s, \alpha), \delta, F}}_{\text{ДКА}})
+        \beta \in \alpha^{-1}(L) & \iff \alpha \cdot \beta \in L \iff \delta^*(s, \alpha \cdot \beta) \in F \iff \delta^*(\delta^*(s, \alpha), \beta) \in F \iff \beta \in \mathcal{L}(\opair{\Sigma, Q, \delta^*(s, \alpha), \delta, F})
     \end{align*}
-
     От тук можем да видим, че ако $L$ е регулярен, то за всяка дума $\alpha$,
-    на $\alpha^{-1}(L)$ съпоставяме състояние от $Q$ т.е. $|\{ \alpha^{-1}(L) \mid \alpha \in \Sigma^* \}| \leq |Q| < \infty$.
-    Получаваме импликацията:
+    на $\alpha^{-1}(L)$ съпоставяме състояние от $Q$ т.е.
     \begin{center}
-        $L$ е регулярен $\Rightarrow \{ \alpha^{-1}(L) \mid \alpha \in \Sigma^* \}$ е крайно
-    \end{center}
-    Но ние знаем, че $p \Rightarrow q$ е еквивалентно на $\neg q \Rightarrow \neg p$, откъдето:
-    \begin{center}
-        $\{ \alpha^{-1}(L) \mid \alpha \in \Sigma^* \}$ е безкрайно $\Rightarrow L$ не е регулярен
+        $|\{ \alpha^{-1}(L) \mid \alpha \in \Sigma^* \}| \leq |Q| < \infty$
     \end{center}
 \end{proof}
 
-\pagebreak
+\begin{corollary}[класови критерий за нерегулярност]\thlabel{nerode-nonregular}
+    Ако $\{ \alpha^{-1}(L) \mid \alpha \in \Sigma^* \}$
+\end{corollary}
+
+\begin{proof}
+    Контрапозиция на \thref{nerode-nonregular-contraposition}
+\end{proof}
 
 Започваме с каноничния пример за нерегулярен език:
 
@@ -65,12 +61,14 @@
     Така по \nameref{nerode-nonregular} езикът $L$ не е регулярен.
 \end{proof}
 
-\begin{problem}
+\begin{problem}\thlabel{nonregular-problems-1}
 Да се докаже, че следните езици не са регулярни:
 \begin{itemize}
     \item $L_1 = \{ a^nb^{2n} \mid n \in \mathbb{N} \}$
     \item $L_2 = \{ a^{3n}b^n \mid n \in \mathbb{N} \}$
     \item $L_3 = \{ a^{5n}b^{7n} \mid n \in \mathbb{N} \}$
+    \item $L_4 = \{ a^nb^{n^2} \mid n \in \mathbb{N} \}$
+    \item $L_5 = \{ a^nb^{2^n} \mid n \in \mathbb{N} \}$
 \end{itemize}
 Упътване: напълно аналогично на горния пример
 \end{problem}
@@ -106,12 +104,13 @@
 Това е често срещана техника при езици от вида $\{ a^{f(n)} \mid n \in \mathbb{N} \}$, за някоя $f : \mathbb{N} \rightarrow \mathbb{N}$ строго растяща.
 За да се ``изкара'' думата от езика е много удобно да се използва, че ако $f(n) < x < f(n+1)$, то $x$ няма как да е член на редицата.
 
-\begin{problem}\thlabel{nonregular-problems-1}
+\begin{problem}\thlabel{nonregular-problems-2}
 Да се докаже, че следните езици не са регулярни:
 \begin{itemize}
     \item $L_1 = \{ a^{n^3} \mid n \in \mathbb{N} \}$
     \item $L_2 = \{ a^{2^n} \mid n \in \mathbb{N} \}$
     \item $L_3 = \{ a^{n!} \mid n \in \mathbb{N} \}$
+    \item $L_4 = \{ a^{1 + \dots + n} \mid n \in \mathbb{N} \}$
 \end{itemize}
 Упътване: да се използва горепоказаната техника
 \end{problem}
@@ -133,9 +132,7 @@
     По \nameref{nerode-nonregular} езикът $L$ не е регулярен.
 \end{proof}
 
-\pagebreak
-
-\begin{problem}\thlabel{nonregular-problems-2}
+\begin{problem}\thlabel{nonregular-problems-3}
 Да се докаже, че следните езици не са регулярни:
 \begin{itemize}
     \item $L_1 = \{ \alpha \alpha \mid \alpha \in \Sigma^* \}$
@@ -157,7 +154,7 @@
     \begin{itemize}
         \item \textbf{\textit{\textcolor{red}{конкатенация на два нерегулярни езика винаги ни дава нерегулярен език}}} \\
               Нека вземем за пример някой нерегулярен език $L$.
-              $\overline{L}$ също няма да е регулярен.
+              Тогава $\overline{L}$ също няма да е регулярен.
               Добавяйки крайно много елементи към който и да е нерегулярен език го оставя нерегулярен.
               В противен случай бихме махнали тези крайно много думи (те образуват регулярен език) и ще получим, че първоначалният език е регулярен.
               Въпреки че $(L \cup \{ \varepsilon \})$ и $(\overline{L} \cup \{ \varepsilon \})$ не са регулярни езици,
@@ -166,6 +163,8 @@
               Тривиално се проверява, че $\{ a^nb^n \mid n \in \mathbb{N} \} \cdot \{ a^nb^n \mid n \in \mathbb{N} \} = \{ a^nb^na^mb^m \mid n, m \in \mathbb{N} \}$ не е регулярен.
 
         \item \textbf{\textit{\textcolor{red}{обединение на два нерегулярни езика винаги ни дава нерегулярен език}}} \\
-              Абсолютно същите примери вършат работа и тук.
+              Абсолютно същите примери вършат работа и тук. За нерегулярен $L$, $L \cup \overline{L} = \Sigma^*$ е регулярен, но $L \cup L = L$ е нерегулярен.
+        \item \textbf{\textit{\textcolor{red}{подмножество на регулярен/нерегулярен език е регулярен/нерегулярен}}} \\
+              $\varnothing$ е подмножество на всеки език, а $\Sigma^*$ разширява всеки език.
     \end{itemize}
 \end{warning}

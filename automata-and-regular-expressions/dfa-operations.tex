@@ -71,9 +71,10 @@
 
 Имаме един брояч от за четността на $a$ и още един брояч за четността на $b$.
 Всеки брояч се променя само от неговата буква.
-Накрая искаме отгоре да седи $1$ (четен брой $a$), а отдолу да седи $0$ (нечетен брой $b$).
+Накрая искаме отгоре да седи $1$ (нечетен брой $b$), а отдолу да седи $0$ (четен брой $a$).
 
-Оказва се, че това, което направихме, може да се обобщи ето така:
+Естествен въпрос, който човек може да си зададе, е дали това не може да се обобщи за произволни автомати.
+Оказва се, че може:
 
 \begin{claim}
     Ако $L_1$ и $L_2$ са автоматни езици, то $L_1 \cap L_2$ също е автоматен език.
@@ -93,10 +94,19 @@
     Тук използваме, че двата автомата, които имаме по начало ни дават информация за структурата на думите.
     Ние паралелно изпълняваме четене в $\mathcal{A}_1$ и $\mathcal{A}_2$,
     и накрая искаме положителен отговор и от двата автомата.
-    За да покажем, че $\mathcal{L(A)} = L_1 \cap L_2$, ще докажем:
+    Обаче ние трябва да покажем, че наистина двата автомата работят паралелно.
+    Отново ни трябва някакво твърдение за функцията $\delta^*$, която описва работата на автомата.
+    Ние знаем, че за всяка буква правим преход и в двата компонента на текущото състояние $\opair{p_1, p_2}$.
+    Това, което искаме да проверим, е че същото нещо се случва при четенето на една дълга дума.
+
+    \pagebreak
+
+    Ето го помощното твърдение:
+
     \begin{claim}
         $\delta^*(\opair{p_1, p_2}, \alpha) = \opair{\delta_1^*(p_1, \alpha), \delta_2^*(p_2, \alpha)}$
     \end{claim}
+
     \begin{proof}
         С индукция по $|\alpha|$.
         \begin{itemize}
@@ -107,9 +117,11 @@
 
     Имайки това изкарваме директно, че:
     \begin{align*}
-        \alpha \in \mathcal{L(A)} & \iff \delta^*(s, \alpha) \in F \iff \opair{\delta_1^*(s_1, \alpha), \delta_2^*(s_2, \alpha)} \in F_1 \cross F_2 \\
-                                  & \iff \delta_1^*(s_1, \alpha) \in F_1 \: \& \: \delta_2^*(s_2, \alpha) \in F_2                                   \\
-                                  & \iff \alpha \in L_1 \: \& \: \alpha \in L_2 \iff \alpha \in L_1 \cap L_2
+        \alpha \in \mathcal{L(A)} & \iff \delta^*(s, \alpha) \in F                                                   \\
+                                  & \iff \opair{\delta_1^*(s_1, \alpha), \delta_2^*(s_2, \alpha)} \in F_1 \cross F_2 \\
+                                  & \iff \delta_1^*(s_1, \alpha) \in F_1 \: \& \: \delta_2^*(s_2, \alpha) \in F_2    \\
+                                  & \iff \alpha \in L_1 \: \& \: \alpha \in L_2                                      \\
+                                  & \iff \alpha \in L_1 \cap L_2
     \end{align*}
 \end{proof}
 
@@ -121,16 +133,13 @@
           Друг вариант това да се направи е да се приложи същата конструкция, със разликата че $F = F_1 \cross (Q_2 \setminus F_2)$
 \end{itemize}
 
-\pagebreak
-
 Освен, че можем да изпълняваме няколко автомата паралелно, ние също така можем и да ги караме да се редуват.
 
 \begin{claim}
     Ако $L_1$ и $L_2$ са автоматни езици, то и
-    \begin{align*}
-        \operatorname{Mix}(L_1, L_2) = \{ a_1b_1 \dots a_nb_n \: | \: n \in \mathbb{N} \: & \& \: (\forall i \in \{ 1, \dots, n \})(a_i \in \Sigma \: \& \: b_i \in \Sigma) \: \\
-                                                                                          & \& \: a_1 \dots a_n \in L_1 \: \& \: b_1 \dots b_n \in L_2 \}
-    \end{align*}
+    \begin{center}
+        $\operatorname{Mix}(L_1, L_2) = \{ a_1b_1 \dots a_nb_n \: | \: n \in \mathbb{N} \: \& \: (\forall i \in \{ 1, \dots, n \})(a_i \in \Sigma \: \& \: b_i \in \Sigma) \: \& \: a_1 \dots a_n \in L_1 \: \& \: b_1 \dots b_n \in L_2 \}$
+    \end{center}
     е автоматен.
 \end{claim}
 
@@ -142,15 +151,31 @@
         \item $Q = Q_1 \cross Q_2 \cross \{ 0, 1 \}$ (третата компонента ще ни казва с кой автомат работим в момента)
         \item $s = \opair{s_1, s_2, 0}$ (чисто начало, контрол има $\mathcal{A}_1$)
         \item $\delta(\opair{p_1, p_2, 0}, x) = \opair{\delta_1(p_1, x), p_2, 1}$ за $\opair{p_1, p_2} \in Q_1 \cross Q_2, \: x \in \Sigma$
-              Идеята тук, е че понеже под контрол е $\mathcal{A}_1$, ние правим преход само с неговото състояние и след това предаваме контрола на $\mathcal{A}_2$
+
+              Има контрол е $\mathcal{A}_1$, ние правим преход само с неговото състояние, и след това предаваме контрола на $\mathcal{A}_2$
         \item $\delta(\opair{p_1, p_2, 1}, x) = \opair{p_1, \delta_2(p_2, x), 0}$ за $\opair{p_1, p_2} \in Q_1 \cross Q_2, \: x \in \Sigma$
-              Аналогично тук под контрол е $\mathcal{A}_2$, затова ние правим преход само в него и след това връщаме контрола на $\mathcal{A}_1$
+
+              Аналогично тук има контрол е $\mathcal{A}_2$, затова ние правим преход само в него, и след това има контрол $\mathcal{A}_1$
         \item $F = F_1 \cross F_2 \cross \{ 0 \}$ ($\mathcal{A}_1$ и $\mathcal{A}_2$ са одобрили своите думи и сме прочели дума с четна дължина)
     \end{itemize}
 
-    Този автомат просто чете буква със $\mathcal{A}_1$ и буква със $\mathcal{A}_2$, после пак буква със $\mathcal{A}_1$ и буква със $\mathcal{A}_2$ и така нататък.
+    Случва се нещо като в тази картинка:
 
-    \pagebreak
+    \begin{center}
+        \begin{tikzpicture}[node distance=2.5cm,>=stealth',thick]
+            \node[initial, state with output, initial text=] (1) {$p_1$ \nodepart{lower} $q_1$};
+            \node[state with output] [right of=1] (2) {$p_2$ \nodepart{lower} $q_1$};
+            \node[state with output, initial text=] [right of=2](3) {$p_2$ \nodepart{lower} $q_2$};
+            \node[state with output] [right of=3] (4) {$p_3$ \nodepart{lower} $q_2$};
+            \node[state with output] [right of=4] (5) {$p_3$ \nodepart{lower} $q_3$};
+            \path[->] (1) edge [bend left] node[above] {$x_1$} (2);
+            \path[->] (2) edge [bend right] node[below] {$x_2$} (3);
+            \path[->] (3) edge [bend left] node[above] {$x_3$} (4);
+            \path[->] (4) edge [bend right] node[below] {$x_4$} (5);
+        \end{tikzpicture}
+    \end{center}
+
+    Този автомат просто чете буква със $\mathcal{A}_1$ и буква със $\mathcal{A}_2$, после пак буква със $\mathcal{A}_1$ и буква със $\mathcal{A}_2$ и така нататък.
 
     Нека сега докажем, че това наистина се случва.
 
@@ -183,15 +208,12 @@
 
     Имайки това:
     \begin{flalign*}
-        \alpha \in \mathcal{L(A)}  \iff & \delta^*(s, \alpha) \in F                                                                                 \\
-        \iff                            & \alpha = \alpha_1 \dots \alpha_{2n} (\alpha_i \in \Sigma)                       \: \&                     \\
-                                        & \delta_1^*(s_1, \alpha_1 \alpha_3 \dots \alpha_{2n - 1}) \in L_1                \: \&                     \\
-                                        & \delta_2^*(s_2, \alpha_2 \alpha_4 \dots \alpha_{2n}) \in L_2 \iff \alpha \in \operatorname{Mix}(L_1, L_2)
+        \alpha \in \mathcal{L(A)}  \iff & \delta^*(s, \alpha) \in F                                                                                                                                                                                     \\
+        \iff                            & \alpha = \alpha_1 \dots \alpha_{2n} \: (\alpha_i \in \Sigma) \: \& \: \delta_1^*(s_1, \alpha_1 \alpha_3 \dots \alpha_{2n - 1}) \in L_1 \: \& \:  \delta_2^*(s_2, \alpha_2 \alpha_4 \dots \alpha_{2n}) \in L_2 \\
+        \iff                            & \alpha \in \operatorname{Mix}(L_1, L_2)
     \end{flalign*}
 
 \end{proof}
-
-\pagebreak
 
 \begin{claim}
     Нека $L_1$ и $L_2$ са автоматни езици и $\# \notin \Sigma$.
@@ -200,25 +222,24 @@
 
 \begin{proof}
     Ще покажем само конструкцията, а доказателството ще оставим на читателя.
-    Нека $\mathcal{A}_1 = \opair{\Sigma, Q_1, s_1, \delta_1, F_1}$ е автомат за $L_1$ и нека $\mathcal{A}_2 = \opair{\Sigma, Q_2, s_2, \delta_2, F_2}$ е автомат за $L_2$.
-    Строим автомат за $L_1 \cdot \{ \# \} \cdot L_2$:
+
+    Нека $\mathcal{A}_i = \opair{\Sigma, Q_i, s_i, \delta_i, F_i}$ е автомат за $L_i \: (\text{за } i = 1,2)$.
+    Б.О.О. нека $Q_1 \cap Q_2 = \varnothing$.
+    Също така нека $\cross \notin \Sigma$.
+    Автоматът за $L_1 \cdot \{ \# \} \cdot L_2$ ще бъде $\mathcal{A} = \opair{\Sigma, Q_1 \cup Q_2 \cup \{ \cross \}, s_1, \delta, F_2}$, където:
+
     \begin{itemize}
-        \item $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$
-        \item $Q = Q_1 \cross Q_2 \cross \{ 0, 1 \} \cup \{ \cross \}$
-        \item $s = \opair{s_1, s_2, 0}$
-        \item $\delta(\opair{p_1, p_2, 0}, x) = \opair{\delta_1(p_1, x), p_2, 1}$ за $\opair{p_1, p_2} \in Q_1 \cross Q_2, \: x \in \Sigma$
-        \item $\delta(\opair{p_1, p_2, 0}, \#) = \opair{p_1, p_2, 1}$ за $\opair{p_1, p_2} \in Q_1 \cross Q_2$
-        \item $\delta(\opair{p_1, p_2, 1}, x) = \opair{p_1, \delta_2(p_2, x), 0}$ за $\opair{p_1, p_2} \in Q_1 \cross Q_2, \: x \in \Sigma$
-        \item $\delta(\opair{p_1, p_2, 1}, \#) = \cross$ за $\opair{p_1, p_2} \in Q_1 \cross Q_2$
+        \item $\delta(p, x) = \delta_1(p, x)$ за $x \in \Sigma, \: p \in Q_1$
+        \item $\delta(p, \#) = \cross$ за $p \notin F_1$
+        \item $\delta(f, \#) = s_2$ за $f \in F_1$
+        \item $\delta(p, x) = \delta_2(p, x)$ за $x \in \Sigma, \: p \in Q_2$
+        \item $\delta(p, \#) = \cross$ за $p \in Q_2$
         \item $\delta(\cross, x) = \cross$ за $x \in \Sigma \cup \{ \# \}$
-        \item $F = F_1 \cross F_2 \cross \{ 1 \}$
     \end{itemize}
 
     Казано на естествен език, четем със $\mathcal{A}_1$ докато не стигнем $\#$, после четем със $\mathcal{A}_2$.
     Накрая ще искаме да сме прочели $\#$ и прочетеното от $\mathcal{A}_1$ и $\mathcal{A}_2$ да бъде одобрено (т.е. да сме получили отговор ДА).
 \end{proof}
-
-\pagebreak
 
 \begin{claim}
     За всеки автоматен $L$ езиците $\operatorname{Pref}(L)$, $\operatorname{Suff}(L)$ и $\operatorname{Infix}(L)$ също са автоматни.
@@ -231,10 +252,11 @@
     и $S' = \{ \delta^*(s, \beta) \mid \beta \in \Sigma^* \}$.
     Да помислим кога точно една дума е префикс на дума от $L$:
     \begin{flalign*}
-        \beta \in \operatorname{Pref}(L) & \iff (\exists \gamma \in \Sigma^*) \: (\beta \gamma \in L)                                  \\
-                                         & \iff (\exists \gamma \in \Sigma^*) \: (\delta^*(s, \beta \gamma) \in F)                     \\
-                                         & \iff (\exists \gamma \in \Sigma^*) \: (\delta^*(\delta^*(s, \beta), \gamma) \in F)          \\
-                                         & \iff \delta^*(s, \beta) \in F' \iff \beta \in \mathcal{L}(\opair{\Sigma, Q, s, \delta, F'})
+        \beta \in \operatorname{Pref}(L) & \iff (\exists \gamma \in \Sigma^*) \: (\beta \gamma \in L)                         \\
+                                         & \iff (\exists \gamma \in \Sigma^*) \: (\delta^*(s, \beta \gamma) \in F)            \\
+                                         & \iff (\exists \gamma \in \Sigma^*) \: (\delta^*(\delta^*(s, \beta), \gamma) \in F) \\
+                                         & \iff \delta^*(s, \beta) \in F'                                                     \\
+                                         & \iff \beta \in \mathcal{L}(\opair{\Sigma, Q, s, \delta, F'})
     \end{flalign*}
     Току що показахме автомат за $\operatorname{Pref}(L)$, а именно $\opair{\Sigma, Q, s, \delta, F'}$.
     Така получихме, че $\operatorname{Pref}(L)$ е автоматен език.

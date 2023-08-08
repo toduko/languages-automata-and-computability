@@ -10,10 +10,10 @@
 \begin{proof}
     Б.О.О. нека $\underbrace{Q_1 \cap Q_2 = \varnothing}_{(\star)}$. Тогава:
     \begin{align*}
-             & \alpha \in \mathcal{L}(\opair{\Sigma, Q_1 \cup Q_2, S_1 \cup S_2, \underbrace{\Delta_1 \cup \Delta_2}_{\textcolor{red}{!!!}}, F_1 \cup F_2}) {\iff} \\
-        \iff & (\Delta_1 \cup \Delta_2)(S_1 \cup S_2, \alpha) \cap (F_1 \cup F_2) \neq \varnothing \stackrel{(\star)}{\iff}                                        \\
-        \iff & \Delta_1^*(S_1, \alpha) \cap F_1 \neq \varnothing \lor \Delta_2^*(S_2, \alpha) \cap F_2 \neq \varnothing \iff                                       \\
-        \iff & \alpha \in \mathcal{L(N}_1) \lor \alpha \in \mathcal{L(N}_2) \iff \alpha \in \mathcal{L(N}_1) \cup \mathcal{L(N}_2)
+        \alpha \in \mathcal{L}(\opair{\Sigma, Q_1 \cup Q_2, S_1 \cup S_2, \underbrace{\Delta_1 \cup \Delta_2}_{\textcolor{red}{!!!}}, F_1 \cup F_2}) \iff & (\Delta_1 \cup \Delta_2)(S_1 \cup S_2, \alpha) \cap (F_1 \cup F_2) \neq \varnothing                      \\
+        \stackrel{(\star)}{\iff}                                                                                                                          & \Delta_1^*(S_1, \alpha) \cap F_1 \neq \varnothing \lor \Delta_2^*(S_2, \alpha) \cap F_2 \neq \varnothing \\
+        \iff                                                                                                                                              & \alpha \in \mathcal{L(N}_1) \lor \alpha \in \mathcal{L(N}_2)                                             \\
+        \iff                                                                                                                                              & \alpha \in \mathcal{L(N}_1) \cup \mathcal{L(N}_2)
     \end{align*}
     \begin{remark}[\textcolor{red}{!!!}]
         Понеже $(\star)$ е вярно, $\operatorname{Dom}(\Delta_1) \cap \operatorname{Dom}(\Delta_2) = \varnothing$, откъдето $\Delta_1 \cup \Delta_2$ е добре дефинирана функция.
@@ -48,11 +48,13 @@
     \end{itemize}
 
     Оставяме доказателството на следния факт на читателя, понеже е елементарна индукция:
-    $\Delta^*(S, \alpha) = \{ \delta^*(s, \beta) \mid \beta \in \Sigma \: \& \: |\beta| = |\alpha| \}$
+    \begin{center}
+        $\Delta^*(S, \alpha) = \{ \delta^*(s, \beta) \mid \beta \in \Sigma \: \& \: |\beta| = |\alpha| \}$
+    \end{center}
 
     Имайки това твърдение получаваме, че:
     \begin{align*}
-        \alpha \in \mathcal{L(N)} & \iff \Delta^*(S, \alpha) \cup F \neq \varnothing \iff (\exists \beta \in \Sigma^{|\alpha|}) \: (\delta^*(s, \beta) \in F) \iff \\
+        \alpha \in \mathcal{L(N)} & \iff \Delta^*(S, \alpha) \cup F \neq \varnothing \iff (\exists \beta \in \Sigma^{|\alpha|}) \: (\delta^*(s, \beta) \in F) \\
                                   & \iff (\exists \beta \in \Sigma^{|\alpha|}) \: (\beta \in L) \iff \alpha \in \operatorname{ChangeSomeLetters}(L)
     \end{align*}
 \end{proof}
