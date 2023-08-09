@@ -4,25 +4,19 @@
 за да добием малко интуиция какви езици могат да бъдат автоматни,
 и да поработим малко със самите машини. Най-простите автоматни езици са $\varnothing$ и $\Sigma^*$:
 
-\begin{figure*}[h]
-    \centering
-    \begin{subfigure}[b]{0.3\linewidth}
-        \centering
-        \begin{tikzpicture}[node distance=2cm, thick]
-            \node[initial, state, initial text=] (1) {$q$};
-            \path[->] (1) edge [loop above] node[above] {$a, b$}(1);
-        \end{tikzpicture}
-        \caption*{Автомат за $\varnothing$}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.3\linewidth}
-        \centering
-        \begin{tikzpicture}[node distance=2cm, thick]
-            \node[initial, accepting, state, initial text=, right of=1] (2) {$q$};
-            \path[->] (2) edge [loop above] node[above] {$a, b$}(2);
-        \end{tikzpicture}
-        \caption*{Автомат за $\Sigma^*$}
-    \end{subfigure}
-\end{figure*}
+\begin{center}
+    \begin{tikzpicture}[node distance=2cm, thick]
+        \node[text width=3.0cm] at (0.35, -1) {автомат за $\varnothing$};
+        \node[initial, state, initial text=] (1) {$q$};
+        \path[->] (1) edge [loop above] node[above] {$a, b$}(1);
+    \end{tikzpicture}
+    \hspace{2cm}
+    \begin{tikzpicture}[node distance=2cm, thick]
+        \node[text width=3.0cm] at (0.35, -1) {автомат за $\Sigma^*$};
+        \node[initial, accepting, state, initial text=] (1) {$q$};
+        \path[->] (1) edge [loop above] node[above] {$a, b$}(1);
+    \end{tikzpicture}
+\end{center}
 
 Сега малко ще усложним нещата.
 Ще направим автомат, който да разпознае езикът от една конкретна дума.
@@ -47,7 +41,7 @@
         \path[->] (4) edge [bend left] node[below] {$a$} (6);
         \path[->] (5) edge [bend left] node[below] {$a, b$} (6);
         \path[->] (6) edge [loop below] node[below] {$a, b$} (6);
-    \end{tikzpicture} \\
+    \end{tikzpicture}
 \end{center}
 
 Тази техника може да се приложи за строене на автомат за език от произволно дълга дума.
