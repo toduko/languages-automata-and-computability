@@ -14,14 +14,16 @@
 \usepackage{mathtools}
 \usepackage{subcaption}
 \usepackage{theoremref}
+\usepackage{circuitikz}
 \usepackage[a4paper, left=0.50in, right=0.50in, top=1.0in, bottom=1.0in]{geometry}
 \usepackage{minted}
 \usepackage{stmaryrd}
 \usepackage[Rejne]{fncychap}
-\usetikzlibrary{automata, arrows, positioning}
+\usetikzlibrary{automata, arrows, positioning, shapes}
 
 \newcommand{\db}[1]{\llbracket #1 \rrbracket}
 \newcommand{\regexlang}[1]{\mathcal{L}\db{#1}}
+\newcommand{\tri}[1]{\stackrel{#1}{\vartriangleleft}}
 
 \ExplSyntaxOn
 \NewDocumentCommand{\opair}{m}

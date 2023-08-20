@@ -1,1 +1,217 @@
+\chapter{Граматики}
+
+Сега ще покажем едно много по-мощно средство,
+което може да разпознава много повече езици като цената, която ще платим,
+е да се загубят няколко хубави свойства.
+
 \section{Безконтекстни граматики}
+
+\begin{definition}
+    \textbf{Безконтекстна граматика} ще наричаме всяко $G = \opair{\Sigma, V, S, R}$, където:
+    \begin{itemize}
+        \item $\Sigma$ е крайна азбука
+        \item $V$ е крайно множество от променливи
+        \item $S \in V$ (ще го наричаме начална променлива)
+        \item $R \subseteq V \cross (\Sigma \cup V)^*$ (ще наричаме това множество правила на $G$)
+    \end{itemize}
+\end{definition}
+
+\begin{remark}
+    Когато $\opair{A, \alpha} \in R$ ще го бележим с $A \rightarrow_G \alpha$.
+    Ако граматиката $G$ се подразбира, може да пишем $A \rightarrow \alpha$.
+\end{remark}
+
+За правилата $A \rightarrow \alpha$ можем да си мислим, че означават $A$ се замения с $\alpha$.
+Искаме да видим какви думи могат да се генерират започвайки от $S$ и следвайки правилата $R$.
+
+\begin{definition}
+    За произволна безконтекстна граматика $G = \opair{\Sigma, V, S, R}$ и $l \in \mathbb{N}$ дефинираме релацията $\tri{l}_G \: \subseteq (\Sigma \cup V) \cross (\Sigma \cup V)^*$ индуктивно:
+    \begin{itemize}
+        \item $X \tri{0}_G X$ за всяко $X \in \Sigma \cup V$
+        \item Ако $X \in V, \: X_i \in \Sigma \cup V$, в $G$ имаме правилото $X \rightarrow X_1 \dots X_n$, и $X_i \tri{l_i}_G \alpha_i$ за някои $l_i \in \mathbb{N}$ и $\alpha_i \in (\Sigma \cup V)^*$,
+              то $X \tri{l + 1}_G \alpha_1 \dots \alpha_n$, където $l = \max \{ l_1, \dots, l_n \}$. Тук включваме случая с $\varepsilon$.
+              Тъй като $\max(\varnothing) = 0$, $X \tri{1}_G \varepsilon$.
+    \end{itemize}
+    Пишем $X \tri{*}_G \alpha$, ако има $l \in \mathbb{N}$ такова, че $X \tri{l}_G \alpha$.
+    Ако $G$ се подразбира, не го пишем.
+\end{definition}
+
+\begin{definition}
+    Нека $G = \opair{\Sigma, V, S, R}$ безконтекстна граматика и $A \in V$.
+    Тогава езикът на променливата $A$ ще бъде $\mathcal{L}_G(A) = \{ \alpha \in \Sigma^* \mid A \tri{*} \alpha \}$ и езикът на граматиката $G$ ще бъде $\mathcal{L}(G) = \mathcal{L}_G(S)$.
+
+    Един език $L$ наричаме \textbf{безконтекстен}, ако съществува безконтекстна граматика $G$ такава, че $\mathcal{L}(G) = L$.
+\end{definition}
+
+\begin{remark}
+    За да пестим писане, когато имаме правилата $A \rightarrow \alpha_i$ ($i \in \{ 1, \dots, n \}$), ще записваме $A \rightarrow \alpha_1 \mid \dots \mid \alpha_n$.
+    Ясно е, че като пишем граматика е напълно достатъчно да опишем правилата и да споменем коя е началната променлива.
+    Ако пък има само една променлива, даже и това не е нужно.
+\end{remark}
+
+Вече сме готови да дадем първият пример за безконтекстен език.
+
+\begin{claim}\thlabel{canonical-cfl-example}
+    Езикът $L = \{ a^nb^n \mid n \in \mathbb{N} \}$ е безконтекстен.
+\end{claim}
+
+\begin{proof}
+    Граматиката за $L$ е изключително проста (само с 2 правила):
+    \begin{center}
+        $S \rightarrow aSb \mid \varepsilon$
+    \end{center}
+    Искаме сега да докажем, че $\mathcal{L}(G) = L$.
+
+    В посоката $\mathcal{L}(G) \subseteq L$ ще трябва да покажем, че ако $S \tri{l} \alpha \in \Sigma^*$, то $\alpha \in L$.
+    Правим индукция по $l$:
+    \begin{itemize}
+        \item $S \tri{0} S \notin \Sigma^*$ \checkmark
+        \item Нека $S \tri{l + 1} \alpha \in \Sigma^*$.
+              Тогава сме приложили някое правило.
+              \begin{itemize}
+                  \item[1 сл.] Приложили сме правилото $S \rightarrow \varepsilon$.
+                      Тогава $\alpha = \varepsilon = a^0b^0 \in L$.
+                  \item[2 сл.] Приложили сме правилото $S \rightarrow aSb$.
+                      Тогава $S \tri{l} \beta$ за някое $\beta \in \Sigma^*$ и $\alpha = a \beta b$.
+                      По ИП $\beta \in L$, откъдето $\beta = a^nb^n$ за някое $n \in \mathbb{N}$.
+                      Така $\alpha = a \beta b = a \cdot a^nb^n \cdot b = a^{n+1}b^{n+1} \in L$.
+              \end{itemize}
+    \end{itemize}
+
+    Така ако $\alpha \in \mathcal{L}(G)$, то $S \tri{*} \alpha$ т.е. $S \tri{l} \alpha$ за някое $l \in \mathbb{N}$, откъдето $\alpha \in L$.
+
+    В посоката $L \subseteq \mathcal{L}(G)$ ще покажем, че за всяко $n \in \mathbb{N}, \: S \tri{n + 1} a^nb^n$.
+    Доказваме с индукция по $n$:
+    \begin{itemize}
+        \item $S \tri{0} S$ и $S \rightarrow \varepsilon$, откъдето $S \tri{1} \varepsilon = a^0b^0$ \checkmark
+        \item По ИП $S \tri{n+1} a^nb^n$, но освен това $S \rightarrow aSb$, откъдето $S \tri{n + 2} a \cdot a^nb^n \cdot b = a^{n + 1}b^{n + 1}$.
+    \end{itemize}
+
+    Така ако $\alpha \in L$, то понеже $\alpha = a^nb^n$ за някое $n \in \mathbb{N}$, то тогава $\alpha \in \mathcal{L}(G)$.
+\end{proof}
+
+\begin{problem}
+Да се докаже, че следните езици са безконтекстни:
+\begin{itemize}
+    \item $L_1 = \{ b^na^n \mid n \in \mathbb{N} \}$
+    \item $L_2 = \{ b^{2n}a^n \mid n \in \mathbb{N} \}$
+\end{itemize}
+Упътване: да се направи дребна модификация на граматиката от \thref{canonical-cfl-example}
+\end{problem}
+
+\begin{claim}\thlabel{word-wordrev}
+    Езикът $L = \{ \alpha \alpha^{rev} \mid \alpha \in \Sigma^* \}$ е безконтекстен.
+\end{claim}
+
+\begin{proof}
+    Граматиката е следната:
+    \begin{center}
+        $S \rightarrow aSa \mid bSb \mid \varepsilon$
+    \end{center}
+
+    Ще покажем, че ако $S \tri{l} \beta \in \Sigma^*$, то $\beta = \alpha \alpha^{rev}$ за някое $\alpha \in \Sigma^*$.
+    Правим индукция по $l$:
+    \begin{itemize}
+        \item $S \tri{0} S \notin \Sigma^*$ \checkmark
+        \item Нека $S \tri{l + 1} \beta \in \Sigma^*$.
+              Тогава сме приложили някое правило.
+              \begin{itemize}
+                  \item[1 сл.] Приложили сме правилото $S \rightarrow \varepsilon$.
+                      Тогава $\alpha = \varepsilon = \varepsilon \varepsilon^{rev}$.
+                  \item[2 сл.] Приложили сме правилото $S \rightarrow aSa$.
+                      Тогава $S \tri{l} \gamma$ за някое $\gamma \in \Sigma^*$ и $\beta = a \gamma a$.
+                      По ИП има $\alpha \in \Sigma^*$ такова, че $\gamma = \alpha \alpha^{rev}$.
+                      Така $\beta = a \gamma a = a \alpha \alpha^{rev} a = a \alpha (a \alpha)^{rev}$.
+                  \item[3 сл.] Приложили сме правилото $S \rightarrow bSb$.
+                      Той е аналогичен на 2 сл.
+              \end{itemize}
+    \end{itemize}
+
+    Така ако $\beta \in \mathcal{L}(G), \: S \tri{*} \beta$ т.е. $S \tri{l} \beta$ за някое $l \in \mathbb{N}$,
+    следователно $\beta = \alpha \alpha^{rev}$ за някое $\alpha \in \Sigma^*$, откъдето $\beta \in L$.
+
+    Сега ще покажем с индукция по $|\alpha|$, че $S \tri{|\alpha| + 1} \alpha \alpha^{rev}$:
+    \begin{itemize}
+        \item $S \tri{0} S$ и $S \rightarrow \varepsilon$, откъдето $S \tri{1} \varepsilon = \varepsilon \varepsilon^{rev}$ \checkmark
+        \item Нека $\alpha = x \beta$. По ИП $S \tri{|\beta| + 1} \beta \beta^{rev}$, освен това имаме правилото $S \rightarrow xSx$, откъдето $S \tri{|\beta| + 2} x \beta \beta^{rev} x$
+    \end{itemize}
+
+    Така ако $\alpha \in L$, то $\alpha = \beta \beta^{rev}$ за някое $\beta \in \Sigma^*$, но за $\beta$ знаем, че $S \tri{*} \beta \beta^{rev} = \alpha$ т.е. $\alpha \in \mathcal{L}(G)$.
+\end{proof}
+
+\begin{problem}
+Да се докаже, следните езици са безконтекстни:
+\begin{itemize}
+    \item $L_1 = \{ \alpha \in \Sigma^* \mid \alpha \text{ е палиндром с нечетна дължина} \}$
+    \item $L_2 = \{ \alpha \in \Sigma^* \mid \alpha = \alpha^{rev} \}$
+\end{itemize}
+Упътване: да се модифицира граматиката от \thref{word-wordrev}.
+\end{problem}
+
+За да свикнем повече с $\tri{*}$ и за да си улесним някои доказателства, ще покажем, че можем да ``слепваме'' изводи:
+
+\begin{claim}
+    Ако $X \tri{l} X_1 \dots X_n$ и $X_i \tri{*} \alpha_i$ за $X_i \in \Sigma \cup V, \: \alpha_i \in (\Sigma \cup V)^*$,
+    то $X \tri{*} \alpha_1 \dots \alpha_n$.
+\end{claim}
+
+\begin{proof}
+    С индукция по $l$.
+
+    \begin{itemize}
+        \item Нека $X \tri{0} X$. Ако $X \tri{*} \alpha$, то очевидно $X \tri{*} \alpha$ \checkmark
+        \item Нека $X \tri{l + 1} X_1 \dots X_n$. Тогава има $0 = j_0 < j_1 < \dots < j_k = n$ такива, че $X \rightarrow X'_1 \dots X'_k$ и $X'_i \tri{l'_i} X_{j_{i - 1} + 1} \dots X_{j_i}$ като $l = \max \{ l'_1, \dots, l'_n \}$.
+              Ако $X_i \tri{l_i} \alpha_i$ за $i \in \{ 1, \dots, n \}$, то по ИП за $t \in \{ 1, \dots, k \}$, $X'_t \tri{l'_t + l'_{t, max}} \alpha_{j_{t - 1} + 1} \dots \alpha_{j_t}$, където $l'_{t, max} = \max \{ l_{j_{t - 1} + 1}, \dots, l_{j_t} \}$.
+              Тогава $X \tri{1 + l_{max}} \alpha_1 \dots \alpha_n$, където $l_{max} = \max \{ l'_1 + l'_{1, max}, \dots, l'_k + l'_{k, max} \}$.
+    \end{itemize}
+\end{proof}
+
+\begin{claim}
+    Всеки регулярен език е безконтекстен.
+\end{claim}
+
+\begin{proof}
+    Ясно е, че $\varnothing, \{ \varepsilon \}, \{ a \}, \{ b \}$ са безконтекстни.
+    Остава да покажем, че безконтекстните езици са затворени относно регулярните операции.
+
+    Нека $G_i = \opair{\Sigma, V_i, S_i, R_i}$ са безконтекстни граматики за $i = 1, 2$.
+    Нека Б.О.О. $V_1 \cap V_2 = \varnothing$.
+    Нека $S \notin V_1 \cup V_2$.
+    Следните твърдения са верни:
+    \begin{itemize}
+        \item $S \rightarrow_G S_1 \mid S_2$ заедно с правилата $R_1, R_2$ ще генерира езикът $\mathcal{L}(G_1) \cup \mathcal{L}(G_2)$. \\
+              Ако $S \tri{*}_G \alpha$, то тогава очевидно понеже $S \rightarrow_G S_i$ ($i = 1, 2$) са единствените правила, $S_1 \tri{*}_G \alpha$ или $S_2 \tri{*}_G \alpha$.
+              Но понеже не добавяме други правила с $V_1$ и $V_2$, тогава $S_1 \tri{*}_{G_1} \alpha$ или $S_2 \tri{*}_{G_2} \alpha$.
+              Така $\alpha = \alpha_1 \alpha_2 \in \mathcal{L}(G_1) \cup \mathcal{L}(G_2)$.
+              Обратно, ако $\alpha \in \mathcal{L}(G_1) \cup \mathcal{L}(G_2)$ то $S_1 \tri{*}_{G_1} \alpha$ или $S_2 \tri{*}_{G_2} \alpha$, откъдето $S_1 \tri{*}_G \alpha$ или $S_2 \tri{*}_G \alpha$, и понеже $S \rightarrow_G S_1 \mid S_2$, $S \tri{*} \alpha$.
+              Получаваме, че $\mathcal{L}(G) = \mathcal{L}(G_1) \cup \mathcal{L}(G_2)$.
+        \item $S \rightarrow_G S_1 S_2$ заедно с правилата $R_1, R_2$ ще генерира езикът $\mathcal{L}(G_1) \cdot \mathcal{L}(G_2)$. \\
+              Ако $S \tri{*}_G \alpha$, то тогава очевидно понеже $S \rightarrow_G S_1 S_2$ е единственото правило, $S_i \tri{*}_G \alpha_i$ ($i = 1, 2$) и $\alpha = \alpha_1 \alpha_2$.
+              Но понеже не добавяме други правила с $V_1$ и $V_2$, $S_i \tri{*}_{G_i} \alpha_i$ за $i = 1, 2$.
+              Така $\alpha = \alpha_1 \alpha_2 \in \mathcal{L}(G_1) \cdot \mathcal{L}(G_2)$.
+              Обратно, ако $\alpha_i \in \mathcal{L}(G_i)$ за $i = 1, 2$, то $S_i \tri{*}_{G_i} \alpha_i$, откъдето понеже $S \rightarrow_G S_1 S_2$, $S \tri{*} \alpha_1 \alpha_2$.
+              Получаваме, че $\mathcal{L}(G) = \mathcal{L}(G_1) \cdot \mathcal{L}(G_2)$.
+        \item $S \rightarrow_G S S_i \mid \varepsilon$ заедно с правилата $R_i$ ще генерира езикът $\mathcal{L}(G_i)^*$ за $i = 1, 2$. \\
+              Тук идеята е подобна на тази при конкатенацията.
+              За интуиция доста помага факта, че $L^* = (L^* \cdot L) \cup \{ \varepsilon \}$.
+              Пълното доказателство ще оставим за упражнение на читателя.
+    \end{itemize}
+
+    Вече имайки, че регулярните операции запазват безконтекстност, индукцията е завършена.
+\end{proof}
+
+Вече можем да започнем да си мислим как изглежда множеството от различните видове езици, които познаваме:
+
+\begin{center}
+    \begin{tikzpicture}
+        \node[above,ellipse,minimum height=2em,minimum width=8.5em,draw] (a) {крайни езици};
+        \node[above,ellipse,minimum height=4em,minimum width=12.5em,draw] (b) {};
+        \node[above,ellipse,minimum height=6em,minimum width=16.5em,draw] (c) {};
+        \node[above,ellipse,minimum height=8em,minimum width=20.5em,draw] (d) {};
+        \path (a.north) node[above] {регулярни езици}
+        (b.north) node[above] {безконтекстни езици}
+        (c.north) node[above] {всички езици};
+    \end{tikzpicture}
+\end{center}
+
+По нататък ще покажем, че тази картинка не е подвеждаща т.е. има небезконтекстни езици.
