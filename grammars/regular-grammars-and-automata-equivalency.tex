@@ -1,2 +1,130 @@
 \section{Регулярни граматики и еквивалентност със автоматите}
 
+Тук ще направим нещо, което на пръв поглед може да изглежда безсмислено.
+Ще покажем частен случай на безконтекстните граматики, които са еквивалентни на автоматите като изразителна мощ.
+
+\begin{definition}
+    Една безконтекстна граматика $G = \opair{\Sigma, V, S, R}$ ще наричаме \textbf{регулярна}, ако единствените правила в $G$ са от вида:
+    \begin{itemize}
+        \item $A \rightarrow aB$ за някои $A, B \in V, \: a \in \Sigma$
+        \item $A \rightarrow \varepsilon$ за някое $A \in V$
+    \end{itemize}
+\end{definition}
+
+Това изглежда много подобно на дефиницията на автомат.
+Тук обаче вместо от състояние със буква да отидем в друго състояние, просто заместваме старото състояние с буквата и новото състояние.
+В единия случай четем символи, а в другия ги генерираме.
+Генерирането на $\varepsilon$ е аналога на това да спрем да четем думата (почти).
+
+\begin{claim}\thlabel{dfa-to-reg-grammar}
+    За всеки ДКА $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$ има регулярна граматика $G = \opair{\Sigma, V, S, R}$ с $\mathcal{L}(G) = \mathcal{L(A)}$
+\end{claim}
+
+\begin{proof}
+    Нека $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$ е ДКА.
+    Нека $Q = \{ q_1, \dots, q_n \}$ като $q_1 = s$.
+
+    Строим граматика $G = \opair{\Sigma, V, S, R}$ за $\mathcal{L(A)}$:
+    \begin{itemize}
+        \item $V = \{ P_1, \dots, P_n \}$ (на всяко състояние $q_i$ съответства променлива $P_i$)
+        \item $S = P_1$ ($q_1 = s$)
+        \item Ако $\delta(q_i, x) = q_j$, то $P_i \rightarrow x P_j$
+        \item Ако $q_i \in F$, то $P_i \rightarrow \varepsilon$
+    \end{itemize}
+
+    Твърдението, което трябва да покажем е, че за всяко $\alpha \in \Sigma^*, \: \delta^*(q_i, \alpha) = q_j \iff P_i \tri{|\alpha|} \alpha P_j$.
+    И в двете посоки се прави индукция по дължината на $|\alpha|$, като в посоката $(\Rightarrow)$ се кара по дефиниция на $\delta^*$, а в посоката $(\Leftarrow)$ - на $\tri{*}$.
+    Това остава за читателя.
+    Остават само довършителни разсъждения:
+    \begin{align*}
+        \alpha \in \mathcal{L(A)}  \iff       & (\exists i \in \{ 1, \dots, n \}) \: (\delta^*(q_1, \alpha) = q_i \: \& \: q_i \in F)              \\
+        \iff                                  & (\exists i \in \{ 1, \dots, n \}) \: (P_1 \tri{*} \alpha P_i \: \& \: P_i \rightarrow \varepsilon) \\
+        \iff                                  & (\exists i \in \{ 1, \dots, n \}) \: (P_1 \tri{*} \alpha P_i \: \& \: P_i \tri{1} \varepsilon)     \\
+        \stackrel{\textcolor{red}{!!!}}{\iff} & P_1 \tri{*} \alpha                                                                                 \\
+        \iff                                  & \alpha \in \mathcal{L}(G)
+    \end{align*}
+    \begin{warning}[\textcolor{red}{!!!}]
+        По принцип разсъждения, подобни на $(\Leftarrow)$ не са верни в общият случай.
+        Тук можем да си го позволим сега поради природата на нашата граматика.
+        Единственото нещо, което може да правят променливите $P_i$ е да генерират думи от вида $\alpha P_j$.
+        Разсъждения, подобни на $(\Rightarrow)$ обаче, ще бъдат верни, поради \thref{tri-prop}.
+    \end{warning}
+\end{proof}
+
+\begin{claim}
+    За всяка регулярна граматика $G = \opair{\Sigma, V, S, R}$ има НКА $\mathcal{N} = \opair{\Sigma, Q, S, \Delta, F}$ с $\mathcal{L(N)} = \mathcal{L}(G)$
+\end{claim}
+
+\begin{proof}
+    Нека $G = \opair{\Sigma, V, S, R}$ е регулярна граматика.
+    Нека $V = \{ A_1, \dots, A_n \}$, като $A_1 = S$.
+
+    Строим НКА $\mathcal{N} = \opair{\Sigma, Q, I, \Delta, F}$ за $\mathcal{L}(G)$:
+    \begin{itemize}
+        \item $Q = \{ q_1, \dots, q_n \}$
+        \item $I = \{ q_ 1 \} $
+        \item $\Delta(q_i, x) = \{ q_j \in Q \mid A_i \rightarrow x A_j \}$
+        \item $F = \{ q_i \in Q \mid A_i \rightarrow \varepsilon \}$
+    \end{itemize}
+
+    Ще формулираме само помощното твърдение и ще оставим всичко останало на читателя:
+    \begin{center}
+        $q_j \in \Delta^*(q_i, \alpha) \iff A_i \tri{|\alpha|} \alpha A_j$
+    \end{center}
+\end{proof}
+
+С тези две твърдения не направихме много.
+Показахме, че има някакъв вид безконтекстни граматики със изразителната мощ на автоматите.
+Това по принцип не е лошо нещо, но самата граматика е доста подобна на автомата, така че не е и като да имаме напълно нов начин за изразяване на регулярни езици.
+По ценното тук е да се види самата ``линейност'' на извода на регулярната граматика.
+Можем тази техника да я разширим и да я адаптираме за по-сложни задачи.
+
+Нека да си помислим, какво ще стане ако приложим конструкцията от \thref{dfa-to-reg-grammar}, но вместо $P_i \rightarrow x P_j$ имаме $P_j \rightarrow P_j x$.
+Ще генерираме думите на $\mathcal{L(A)}$, но в обратен ред т.е. $\mathcal{L}(G) = \mathcal{L(A)}^{rev}$.
+
+\begin{problem}
+Да се опише подробно конструкцията за $\mathcal{L(A)}^{rev}$.
+\end{problem}
+
+Какво пък ще стане, ако решим да сложим $P_i \rightarrow x P_j x$ вместо $P_i \rightarrow x P_j$.
+Ще генерираме от ляво дума от $\mathcal{L(A)}$, а от дясно същата дума но в обратен ред.
+Тогава $\mathcal{L}(G) = \{ \alpha \alpha^{rev} \mid \alpha \in \mathcal{L(A)} \}$
+
+\begin{problem}
+Да се опише подробно конструкцията за $\{ \alpha \alpha^{rev} \mid \alpha \in \mathcal{L(A)} \}$.
+\end{problem}
+
+Можем и да станем по креативни:
+\begin{claim}\thlabel{move-operation}
+    Нека $L$ е регулярен.
+    Тогава езикът $\operatorname{Move}(L) = \{ a^nb^m \mid (\exists \alpha \in L) \: (|\alpha|_a = n \: \& \: |\alpha|_b = m) \}$ е безконтекстен.
+\end{claim}
+
+\begin{proof}
+    Ще покажем само конструкцията и ще формулираме помощно твърдение; другото е за читателя.
+    Нека $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$ е ДКА.
+    Нека $Q = \{ q_1, \dots, q_n \}$ като $q_1 = s$.
+
+    Строим граматика $G = \opair{\Sigma, V, S, R}$ за $\operatorname{Move}(L)$:
+    \begin{itemize}
+        \item $V = \{ P_1, \dots, P_n \}$ (на всяко състояние $q_i$ съответства променлива $P_i$)
+        \item $S = P_1$ ($q_1 = s$)
+        \item Ако $\delta(q_i, a) = q_j$, то $P_i \rightarrow a P_j$ (слагаме буквите $a$ от ляво)
+        \item Ако $\delta(q_i, b) = q_j$, то $P_i \rightarrow P_j b$ (слагаме буквите $b$ от дясно)
+        \item Ако $q_i \in F$, то $P_i \rightarrow \varepsilon$
+    \end{itemize}
+
+    Трябва да се покаже, че:
+    \begin{center}
+        $\delta^*(q_i, \alpha) = q_j \iff P_i \tri{n + m} a^{n} P_j b^{m}$, където $n = |\alpha|_a$ и $m = |\alpha|_b$
+    \end{center}
+\end{proof}
+
+\begin{problem}
+Нека $L$ е регулярен.
+Да се покаже, че е безконтекстен езикът:
+\begin{center}
+    $\operatorname{AltMove}(L) = \{ a^nb^m \mid (\exists \alpha \in L) \: (|\alpha|_a = m \: \& \: |\alpha|_b = n) \}$
+\end{center}
+Упътване: да се направи дребна модификация на конструкцията от \thref{move-operation}
+\end{problem}
