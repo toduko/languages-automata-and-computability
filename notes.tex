@@ -19,11 +19,19 @@
 \usepackage{minted}
 \usepackage{stmaryrd}
 \usepackage[Rejne]{fncychap}
+\usepackage{forest}
 \usetikzlibrary{automata, arrows, positioning, shapes}
+\useforestlibrary{linguistics}
 
 \newcommand{\db}[1]{\llbracket #1 \rrbracket}
 \newcommand{\regexlang}[1]{\mathcal{L}\db{#1}}
 \newcommand{\tri}[1]{\stackrel{#1}{\vartriangleleft}}
+\newcommand{\rt}[1]{\operatorname{root}(#1)}
+\newcommand{\h}[1]{\operatorname{height}(#1)}
+\newcommand{\chld}[1]{\operatorname{children}(#1)}
+\newcommand{\lv}[1]{\operatorname{leaves}(#1)}
+\newcommand{\w}[1]{\operatorname{word}(#1)}
+\newcommand{\wraphspace}[2]{\hspace*{#2}#1\hspace*{#2}}
 
 \ExplSyntaxOn
 \NewDocumentCommand{\opair}{m}

@@ -1,1 +1,167 @@
 \section{Дървета на извод}
+
+\begin{definition}
+    Нека $\Sigma$ е крайна азбука и нека $T \subseteq \Sigma^*$ е краен език.
+    $T$ ще наричаме \textbf{дърво над $\Sigma$}, ако $\operatorname{Pref}(T) = T$.
+\end{definition}
+
+Това на пръв поглед изглежда доста странна дефиниция на дърво.
+Ще се опитаме да си дадем интуиция за нея.
+Можем да си мислим за всяка дума като за връх, а ребрата са между върхове от вида $\alpha$ и $\alpha x$, където $\alpha \in \Sigma^*, \: x \in \Sigma$:
+
+\begin{center}
+    \begin{forest}
+        [$\varepsilon$ [$0$ [$00$] [$01$]] [$1$ [$10$] [$11$]]]
+    \end{forest}
+\end{center}
+
+Тук $T = \Sigma^{\leq 2}$.
+Всяка дума $\alpha \in T$ е връх на $T$.
+Има ребро между $1$ и $10$ защото са на ``еднобуквена конкатенация разстояние''.
+Понеже не може да се каже същото за двойки върхове като $\opair{\varepsilon, 11}$ или $\opair{11, 00}$, между тях ребра няма.
+
+Ще бъде много удобно да въведем някои познати термини за дървета:
+
+\begin{definition}
+    Нека $T \subseteq \Sigma^*$ е дърво.
+    Дефинираме следните понятия:
+    \begin{itemize}
+        \item \textbf{височината на $T$} ще наричаме $\h{T} = \max \{ |\alpha| \mid \alpha \in T \}$
+        \item \textbf{децата на връх $\alpha \in T$} ще наричаме $\chld{\alpha} = (\{ \alpha \} \cdot \Sigma) \cap T$
+        \item \textbf{листата на $T$} ще бележим с $\lv{T} = \{ \alpha \in T \mid \chld{\alpha} = \varnothing \}$
+    \end{itemize}
+\end{definition}
+
+\begin{remark}
+    За следващата дефиниция ще приемаме, че зад всяка крайна азбука $\Sigma = \{ x_1, \dots, x_n \}$ стои линейна наредба,
+    за да можем да говорим за лексикографска наредба на думите.
+    Нея ще бележим с $<$.
+\end{remark}
+
+\begin{definition}
+    Нека $G = \opair{\Sigma, V, S, R}$ е безконтекстна граматика.
+    Нека $T \subseteq \Sigma^*$ е дърво и нека $\lambda : T \rightarrow (\Sigma_{\varepsilon} \cup V)$.
+    Ще наричаме $\mathcal{T} = \opair{T, \lambda}$ \textbf{дърво на извод, съгласувано с $G$}, ако:
+    \begin{itemize}
+        \item $\lambda(\varepsilon) \in \Sigma \cup V$
+        \item ако $\chld{\alpha} = \{ \alpha x_1, \dots, \alpha x_k \}$ като $x_1 < \dots < x_k$, то трябва да имаме правилото $\lambda(\alpha) \rightarrow_G \lambda(\alpha x_1) \dots \lambda(\alpha x_k)$ като $\lambda(\alpha x_i) \neq \varepsilon$
+        \item ако $\chld{\alpha} = \{ \alpha x \}$ и имаме правилото $\lambda(\alpha) \rightarrow_G \varepsilon$, то може $\lambda(\alpha x) = \varepsilon$
+    \end{itemize}
+    Освен това:
+    \begin{itemize}
+        \item $\rt{\mathcal{T}} = \lambda(\varepsilon)$ - това е \textbf{коренът на $\mathcal{T}$}
+        \item $\w{\mathcal{T}} = \alpha_1 \dots \alpha_n$, където $\lv{T} = \{ \alpha_1, \dots, \alpha_n \}$ и $\alpha_1 < \dots < \alpha_n$
+    \end{itemize}
+\end{definition}
+
+Можем да си мислим, че множеството $T$ задава ``формата'' на дървото,
+а функцията $\lambda$ слага като ``етикет'' променлива,
+буква или $\varepsilon$, като всичко това е съгласувано с правилата в $G$.
+
+\begin{remark}
+    Ще изневерим на нашата нотация.
+    Вместо да казваме:
+    \begin{center}
+        \textit{``Нека $\mathcal{T} = \opair{T, \lambda}$ е дърво на извод...''}
+    \end{center}
+    за по-кратко ще казваме:
+    \begin{center}
+        \textit{``Нека $T$ е дърво на извод...''}
+    \end{center}
+    Под $\w{T}$ ще имаме предвид $\w{\mathcal{T}}$, и под $\rt{T}$ ще имаме предвид $\rt{\mathcal{T}}$.
+\end{remark}
+
+Нека вземем граматиката с правилата $S \rightarrow aSb \mid \varepsilon$.
+Примерно дърво на извод би било:
+
+\begin{center}
+    \begin{forest}
+        [$S$ [$a$] [$S$ [$a$] [$S$ [$\varepsilon$]] [$b$]] [$b$]]
+        \node[text width=3.0cm] at (0, 0) {$T:$};
+    \end{forest}
+\end{center}
+
+За дървото на извод $T$ имаме, че:
+\begin{itemize}
+    \item $\w{T} = aabb$
+    \item $\h{T} = 3$
+    \item $\rt{T} = S$.
+\end{itemize}
+
+\begin{warning}
+    Ако караме по дефиницията това, което наистина се случва отзад, е малко по-различно:
+    \begin{center}
+        \begin{forest}
+            [, phantom, s sep = 4cm
+                    [$\varepsilon$ [$0$] [$1$ [$10$] [$11$ [$110$]] [$12$]] [$2$]]
+                    [$S$ [$a$] [$S$ [$a$] [$S$ [$\varepsilon$]] [$b$]] [$b$]]]
+            \node[text width=3.0cm] at (-3, -1) {$T:$};
+            \node[text width=3.0cm] at (3, -1) {$\mathcal{T}:$};
+            \node[draw=none] (tree form) at (-2, -2) {};
+            \node[draw=none] (labeled tree) at (2, -2) {};
+            \path[->, dotted] (tree form) edge [bend left] node[above] {$\lambda$}(labeled tree);
+        \end{forest}
+    \end{center}
+    Както споменахме преди малко, $T$ всъщност е само формата, а вече функцията $\lambda$ дава семантиката на дървото.
+\end{warning}
+
+\begin{claim}
+    Нека $G = \opair{\Sigma, V, S, R}$ е безконтекстна граматика и нека $X \in \Sigma \cup V$.
+    Тогава:
+    \begin{center}
+        $X \tri{l} \alpha \iff$ има дърво на извод $T$ такова, че $\rt{T} = X, \: \h{T} = l$ и $\w{T} = \alpha$
+    \end{center}
+\end{claim}
+
+\begin{proof}
+    И двете твърдения доказваме с индукция.
+
+    \begin{itemize}
+        \item[$(\Rightarrow)$] С индукция по $l$:
+            \begin{itemize}
+                \item $X \tri{0} X$. Oчевидно има дърво на извод с единствен връх $X$ \checkmark
+                \item $X \tri{l + 1} \alpha$.
+                      Тогава $X \rightarrow_G X_1 \dots X_k, \: X_1 \tri{l_1} \alpha_1, \dots, X_k \tri{l_k} \alpha_k$ като $\alpha = \alpha_1 \dots \alpha_k$ и $l = \max \{ l_1, \dots, l_k \}$.
+                      По ИП има дървета на извод $T_1, \dots, T_k$ такива, че $\rt{T_i} = X_i, \: \h{T_i} = l_i$ и $\w{T_i} = \alpha_i$.
+                      Можем да построим дърво на извод $T$ с корен $T$, като неговите преки наследници са корените на дърветата $T_1, \dots, T_k$:
+                      \begin{center}
+                          \begin{forest}
+                              [$X$ [$X_1$, for children = {l=3cm} [\wraphspace{$\alpha_1$}{1em},roof]] [$\dots$, for children = {l=3cm} [\wraphspace{$\alpha_2 \dots \alpha_{k - 1}$}{3em},roof]] [$X_k$, for children = {l=3cm} [\wraphspace{$\alpha_k$}{1em},roof]]]
+                              \node[text width=3.0cm] at (-1, 0) {$T:$};
+                              \node[text width=3.0cm] at (-1.6, -2.75) {$T_1$};
+                              \node[text width=3.0cm] at (0.55, -2.75) {$T_2, \dots, T_{k - 1}$};
+                              \node[text width=3.0cm] at (4.25, -2.75) {$T_k$};
+                          \end{forest}
+                      \end{center}
+                      За $Т$ знаем, че $\rt{T} = X, \: \h{T} = 1 + \max \{ \h{T_1}, \dots, \h{T_k} \} = 1 + \max \{ l_1, \dots, l_k \} = l + 1$ и $\w{T} = \alpha_1 \dots \alpha_k = \alpha$.
+            \end{itemize}
+        \item[$(\Leftarrow)$] С индукция по $\h{T}$:
+            \begin{itemize}
+                \item Единственото дърво $T$ с $\rt{T} = X$ и $\h{T} = 0$ е дървото само с връх $X$, но $X \tri{0} X = \w{T}$ \checkmark
+                \item Ако $T$ е дърво с корен $X$ и единствен наследник $\varepsilon$, то тогава $\h{T} = 1$ и има правилото $X \rightarrow_G \varepsilon$.
+                      Понеже $X \tri{0} X$, $X \tri{1} \varepsilon = \w{T}$.
+                      Ако пък $T$ е дърво с корен $X$ и преки наследници $X_1, \dots, X_k$, като ще наричаме поддърветата вкоренени в тях $T_1, \dots, T_k$.
+                      Нека $\w{T} = \alpha, \: \w{T_i} = \alpha_i, \: \h{T_i} = l_i$.
+                      Ясно е, че $\alpha = \alpha_1 \dots \alpha_k$ и $\h{T} = 1 + \max \{ l_1, \dots l_k \}$.
+                      По ИП $X_i \tri{l_i} \alpha_i$.
+                      Тъй като $X_1, \dots, X_k$ са преки наследници на корена $X$ на $T$, то тогава има правило $X \rightarrow X_1 \dots X_k$, откъдето $X \tri{l + 1} \alpha_1 \dots \alpha_k = \alpha$.
+            \end{itemize}
+    \end{itemize}
+\end{proof}
+
+С това доказахме, че $\mathcal{L}(G) = \{ \alpha \in \Sigma^* \mid \text{има дърво на извод } T \text{ съглавувано с } G \text{ и } \rt{T} = S, \: \w{T} = \alpha \}$ за всяка безконтекстна граматика $G = \opair{\Sigma, V, S, R}$.
+Вече вместо за $\tri{*}$ да си мислим просто като за една релация, можем да си мислим за дървета на извод.
+Зад нея вече стои някаква ``по-смислена'' семантика.
+
+\begin{problem}
+Нека граматиката $G = \opair{\Sigma, \{ S, A, B, C \}, S, R}$ се определя чрез следните правила:
+\begin{align*}
+     & S \rightarrow A \mid BA \mid BCAC \mid CC   \\
+     & A \rightarrow AaB \mid bbC \mid aCa \mid a  \\
+     & B \rightarrow baA \mid ACA \mid \varepsilon \\
+     & C \rightarrow AbCb \mid a \mid b
+\end{align*}
+Да се построят дървета на извод за думите $\alpha_1 = aaabbb, \alpha_2 = baaabbbaa, \alpha_3 = aabbbaabbbaabbb$.
+
+Упътване: за $\alpha_1$ има дърво на извод с корен $C$, за $\alpha_2$ с корен $B$ и за $\alpha_3$ с корен $S$.
+\end{problem}
