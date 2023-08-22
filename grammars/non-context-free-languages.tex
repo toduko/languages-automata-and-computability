@@ -1,1 +1,115 @@
 \section{Небезконтекстни езици}
+
+Сега ще покажем съществуването на небезконтекстни езици.
+За целта ще разгледаме безконтекстната версия на \nameref{pumping-lemma}:
+
+\begin{lemma}[Лема за покачването]\thlabel{pumping-lemma-cf}
+    Нека $L$ е безконтекстен език. Тогава:
+    \begin{align*}
+         & (\exists p \geq 1)                                                                       \\
+         & (\forall \alpha \in L, \: |\alpha| \geq p)                                               \\
+         & (\exists x, y, u, v, w \in \Sigma^*, \: xyuvw = \alpha, \: |yuv| \leq p, \: |yv| \geq 1) \\
+         & (\forall i \in \mathbb{N}) [xy^iuv^iw \in L]
+    \end{align*}
+\end{lemma}
+
+\begin{proof}
+    Нека $L$ е безконтекстен език.
+    Нека $G = \opair{\Sigma, V, S, R}$ е безконтекстна граматика за $L$.
+
+    Полагаме $b = \max \{ |\gamma| \mid A \rightarrow_G \gamma \text{ е правило в } G \}$ и $p = b^{|V| + 1}$.
+    За $b$ можем да си мислим, че това е най-голямата разклоненост на дърво на извод.
+    Няма как да има връх в дърво на извод с повече от $b$ брой преки наследници.
+    Тогава едно дърво на извод в $G$ с височина $h$ не може да има дума с дължина повече от $b^h$.
+    Така ако $\alpha \in L$ и $|\alpha| \geq p$, в което и да е дърво на извод $T$ такова, че $\w{T} = \alpha$, имаме $\h{T} \geq |V|$.
+    Тогава в пътя на едно такова дърво $T$ от корена до някои листа ще има повторение на променливи.
+    Нека $T$ е дърво на извод за $\alpha$ с минимален брой елементи.
+    Знаем, че има повторение на някаква променлива $A \in V$.
+    Нека това повторение е възможно най-надолу.
+    Със сигурност това ще бъде измежду последните $|V|$ върха в някои път между корена и листата.
+    На картинка имаме следното:
+    \begin{center}
+        \begin{forest}
+            [$S$ [\wraphspace{$x$}{1em},roof] [$A$ [\wraphspace{$y$}{1em}, roof] [$A$ [\wraphspace{$u$}{1em}, roof]] [\wraphspace{$v$}{1em}, roof]] [\wraphspace{$w$}{1em},roof]]
+            \node[text width=3.0cm] at (0, 0) {$T:$};
+        \end{forest}
+    \end{center}
+    Понеже срещанията на а се случват достатъчно надолу, $|yuv| \leq p$.
+    Понеже дървото $T$ е с минимален брой върхове $|yv| geq 1$.
+    Ако това не беше вярно, $yv = \varepsilon$ и можехме да премахнем първото срещане на $A$, с което строим по-малко дърво на извод.
+    Остава само да проверим, че $xy^iuv^iw \in L$ за всяко $i \in \mathbb{N} \: (\star)$.
+    От \thref{tri-der-equiv}, $A \tri{*} yAv$.
+    Ще покажем с индукция по $i$ че $A \tri{*} y^iAv^i$ за всяко $i \in \mathbb{N}$.
+    \begin{itemize}
+        \item $A \tri{0} A = y^0Av^0$ \checkmark
+        \item Нека $A \tri{*} y^iAv^i$, тогава понеже $A \tri{*} yAv$, $A \tri{*} y^iyAvv^i = y^{i + 1}Av^{i + 1}$ (от \thref{tri-prop})
+    \end{itemize}
+    От \thref{tri-der-equiv}, $A \tri{*} u$, откъдето използвайки $(\star)$ получаваме, че $A \tri{*} y^iuv^i$ за всяко $i \in \mathbb{N}$.
+    Също така $S \tri{*} xAw$, откъдето $S \tri{*} xy^iuv^i$ за всяко $i \in \mathbb{N}$, с което сме готови.
+\end{proof}
+
+Разбира се, ние ще използваме по често следствието от лемата.
+
+\begin{corollary}[Лема за покачването (контрапозиция)]\thlabel{non-cf}
+    Ако е изпълнено, че:
+    \begin{align*}
+         & (\forall p \geq 1)                                                                       \\
+         & (\exists \alpha \in L, \: |\alpha| \geq p)                                               \\
+         & (\forall x, y, u, v, w \in \Sigma^*, \: xyuvw = \alpha, \: |yuv| \leq p, \: |yv| \geq 1) \\
+         & (\exists i \in \mathbb{N}) [xy^iuv^iw \notin L]
+    \end{align*}
+    то тогава $L$ не е безконтекстен.
+\end{corollary}
+
+Започваме с каноничния пример за небезконтекстен език:
+\begin{claim}\thlabel{canonical-non-cf}
+    Езикът $L = \{ a^nb^nc^n \mid n \in \mathbb{N} \}$ не е безконтекстен.
+\end{claim}
+
+\begin{proof}
+    Нека $p \geq 1$.
+    Нека $\alpha = a^pb^pc^p$.
+    Ясно е, че $\alpha \in L$ и $|\alpha| \geq p$.
+    Нека $x, y, u, v, w \in \Sigma^*$ са такива, че $\: xyuvw = \alpha, \: |yuv| \leq p, \: |yv| \geq 1$.
+    Очевидно няма как $yv = a^nc^m$ за $n, m > 0$.
+    Тогава имаме няколко варианта за $yv$:
+    \begin{itemize}
+        \item[1 сл.] $yv = a^t$ за някое $1 \leq t \leq p$.
+            Тогава $xy^0uv^0w = xuw = a^{p - t}b^pc^p \notin L$ ($p - t < p$)
+        \item[2 сл.] $yv = b^t$ за някое $1 \leq t \leq p$ - аналогично на 1 сл.
+        \item[3 сл.] $yv = c^t$ за някое $1 \leq t \leq p$ - аналогично на 1 сл.
+        \item[4 сл.] $yv = a^{t_1}b^{t_2}$ за някое $1 \leq t_1, t_2 \leq p, \: t_1 + t_2 \leq p$.
+            Тогава $xy^0uv^0w = xuw = a^{p - t}b^{p - t}c^p \notin L$ ($p - t < p$)
+        \item[5 сл.] $yv = b^{t_1}c^{t_2}$ за някое $1 \leq t_1, t_2 \leq p, \: t_1 + t_2 \leq p$ - аналогично на 4 сл.
+    \end{itemize}
+    От \nameref{non-cf} следва, че $L$ не е безконтекстен.
+\end{proof}
+
+\begin{problem}\thlabel{pl-attention-example}
+Да се докаже, че следните езици не са безконтекстна:
+\begin{itemize}
+    \item $L_1 = \{ a^nb^{2n}c^n \mid n \in \mathbb{N} \}$
+    \item $L_2 = \{ a^nb^{3n}c^{5n} \mid n \in \mathbb{N} \}$
+    \item $L_3 = \{ a^nb^mc^n \mid n \leq m \}$
+    \item $L_4 = \{ a^nb^mc^k \mid n \leq m \leq k \}$
+\end{itemize}
+Упътване: за $L_1$ и $L_2$ да се адаптира решението от \thref{canonical-non-cf}, а за $L_3$ и $L_4$ тряба да се използват думи от същия вид.
+\end{problem}
+
+\begin{warning}
+    За тази версия на лемата, е много по-важен избора на дума.
+    Тук трябва да се стремим думата да е възможно най-близко до това да излезне от езика.
+    Да вземем за пример $L_3$ от \thref{pl-attention-example}.
+    Ако вземем дума от вида $a^pb^{p+t}c^p$, за $p, t \geq 1$, то ако $yv = b$, думата няма да излезе от $L_3$ каквото и да правим.
+    Подобни разсъждения могат да се направят и за $L_4$.
+    Когато става въпрос за небезконтекстност, трябва да сме по-нежни и по-деликатни.
+\end{warning}
+
+\begin{problem}
+Да се докаже, че следните езици не са безконтекстни:
+\begin{itemize}
+    \item $L_1 = \{ \alpha \alpha \mid \alpha \in \Sigma^* \}$
+    \item $L_2 = \{ \alpha \alpha \alpha \mid \alpha \in \Sigma^* \}$
+    \item $L_3 = \{ \alpha \alpha^{rev} \alpha \mid \alpha \in \Sigma^* \}$
+\end{itemize}
+\end{problem}
