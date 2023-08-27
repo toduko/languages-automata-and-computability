@@ -1,1 +1,108 @@
 \section{Нормална форма на Чомски}
+
+Тук ще покажем, че всеки безконтекстен език с точност до липсата на $\varepsilon$ може да се представи чрез граматика във ``хубав'' вид.
+За целта постъпково ще си ``опростяваме'' нашата граматика т.е. ще гледаме да променим свойствата на граматика запазвайки езика (с точност до липсата на $\varepsilon$).
+
+\subsection*{Премахване на дългите правила}
+
+Под дълго правило имаме предвид $X \rightarrow X_1 \dots X_k$, където $X_i \in \Sigma \cup V$ и $k \geq 3$.
+За да премахнем едно такова правило просто добававяме променливите $Y_1, \dots, Y_{k - 2}$ и заменяме горното правило с:
+
+\begin{center}
+    $X \rightarrow X_1 Y_1, \: Y_1 \rightarrow X_2 Y_2, \: \dots, \: Y_{k - 2} \rightarrow X_{k - 1} X_k$
+
+\end{center}
+Прилагайки тази конструкция за всички правила получаваме граматика със същия език, която има само правила от вида $A \rightarrow \beta$, където $|\beta| \leq 2$.
+
+\subsection*{Премахване не $\varepsilon$ правилата}
+
+Целта ни ще бъде да премахнем всички правила от вида $X \rightarrow \varepsilon$ като запазим езика (без $\varepsilon$).
+Ще направим рекурсия:
+
+\begin{itemize}
+    \item $\operatorname{Eps}(0) = \varnothing$
+    \item $\operatorname{Eps}(n+1) = \{ A \in V \mid (\exists \beta \in \operatorname{Eps}(n)^*) \: (A \rightarrow \beta) \}$
+
+\end{itemize}
+
+Първо в $\operatorname{Eps}(1)$ ще бъдат променливите, които генерират $\varepsilon$, после в $\operatorname{Eps}(2)$ ще бъдат променливите, които генерират тях и т.н.
+Лесно може да се покаже, че:
+
+\begin{center}
+    $\operatorname{Eps}(n) = \{ A \in V \mid A \tri{\leq n} \varepsilon \}$
+\end{center}
+
+С $\operatorname{Eps}$ ще бележим най-малката неподвижна точка на оператора със същото име.
+За сега обаче не сме направили нищо.
+Трябва да променим правилата.
+Ако има правило $X \rightarrow X_1 \dots X_k$, при условието че $X_1 \dots X_k \neq \varepsilon$, добавяме всички правила от вида $X \rightarrow Y_1 \dots Y_k$, където:
+
+\begin{itemize}
+    \item ако $X_i \notin \operatorname{Eps}$, то $Y_i = X_i$
+    \item ако $X_i \in \operatorname{Eps}$, то $Y_i = X_i$ или $Y_i = \varepsilon$
+\end{itemize}
+
+Очевидно е, че в новата граматика няма да има $\varepsilon$ правила.
+
+\subsection*{Премахване на преименуващите правила}
+
+Целта ни тук ще бъде да премахнем правила от вида $A \rightarrow B$.
+Обаче тогава трябва да видим какви думи генерира $B$ и по някакъв начин да ги добавим към тези, които генерира $A$.
+Отново правим рекурсия:
+
+\begin{itemize}
+    \item $\operatorname{Rename}(0) = V \cross V$
+    \item $\operatorname{Rename}(n + 1) = \operatorname{Rename}(n) \cup \{ \opair{A, C} \mid (\exists B \in V) \: (A \rightarrow B \: \& \: \opair{B, C} \in \operatorname{Rename}(n)) \}$
+\end{itemize}
+
+Цялата идея е да се види колко далече може да стигне една променлива с преименуване.
+Лесно може да се съобрази, че:
+
+\begin{center}
+    $\operatorname{Rename}(n) = \{ \opair{A, B} \mid A \tri{\leq n} B \}$
+\end{center}
+
+С $\operatorname{Rename}$ ще бележим най-малката неподвижна точка на оператора със същото име.
+Вече можем да кажем кои ще са новите правила в граматиката:
+
+\begin{center}
+    $R_{no rename} = \{ \opair{A, \beta} \in V \cross (\Sigma \cup V)^* \mid (\exists B \in V) \: (\underbrace{\opair{A, B} \in \operatorname{Rename}}_{A \text{ може да се замени с } B} \& \underbrace{\opair{B, \alpha} \in R \setminus (V \cross V)}_{B \rightarrow \alpha \text{ не е преименуващо правило}}) \}$
+\end{center}
+
+\subsection*{Премахване на правилата, които генерират повече от 1 буква}
+
+Ако имаме правило от вида $X \rightarrow x_1 x_2$, където $x_1, x_2 \in \Sigma \cup V$.
+За всяко $x_i \in \Sigma$ можем да добавим нова променлива $X_i$ с правилото $X_i \rightarrow x_i$ и да заменим в предното правило $x_i$ със $X_i$.
+Например за правилото $A \rightarrow bc$ можем да добавим нови променливи $B$ и $C$, заменяйки старото правило с правилата:
+
+\begin{center}
+    $A \rightarrow BC, \: B \rightarrow b, \: C \rightarrow c$
+\end{center}
+
+Прилагайки тези алгоритми, точно в тази последователност получаваме следното:
+
+\begin{definition}
+    Една безконтекстна граматика $G = \opair{\Sigma, V, S, R}$ е в \textbf{нормална форма на Чомски} (накратко НФЧ), ако всичките и правила са от вида:
+
+    \begin{itemize}
+        \item $A \rightarrow BC$ за някои $A, B, C \in V$
+        \item $A \rightarrow a$ за някои $A \in V, \: a \in \Sigma$
+    \end{itemize}
+\end{definition}
+
+От алгоритмите, които разгледахме се вижда, че за всеки безконтекстен език $L$ има граматика $G$ в НФЧ такава, че $\mathcal{L}(G) = L \setminus \{ \varepsilon \}$.
+
+\begin{remark}
+    Ако искаме да добавим $\varepsilon$ в езика можем да го направим много лесно.
+    Добавяме нова променлива $S_0$ и правилата $S_0 \rightarrow \varepsilon$ заедно с $S_0 \rightarrow \alpha$ за всяко правило $S \rightarrow \alpha$.
+    Тогава правилата ще бъдат от вида:
+
+    \begin{itemize}
+        \item $S \rightarrow \varepsilon$
+        \item $A \rightarrow BC$ за някои $A, B, C \in V$ като $B, C \neq S$
+        \item $A \rightarrow a$ за някои $A \in V, \: a \in \Sigma$
+    \end{itemize}
+
+    За простота няма да се занимаваме с този вид граматика.
+    Ще приемем, че случаите, в които участва $\varepsilon$ са тривиални са разглеждане, и няма да се занимваме с тях.
+\end{remark}
