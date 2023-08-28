@@ -79,8 +79,6 @@
     $A \rightarrow BC, \: B \rightarrow b, \: C \rightarrow c$
 \end{center}
 
-Прилагайки тези алгоритми, точно в тази последователност получаваме следното:
-
 \begin{definition}
     Една безконтекстна граматика $G = \opair{\Sigma, V, S, R}$ е в \textbf{нормална форма на Чомски} (накратко НФЧ), ако всичките и правила са от вида:
 
@@ -90,7 +88,7 @@
     \end{itemize}
 \end{definition}
 
-От алгоритмите, които разгледахме се вижда, че за всеки безконтекстен език $L$ има граматика $G$ в НФЧ такава, че $\mathcal{L}(G) = L \setminus \{ \varepsilon \}$.
+Прилагайки тези алгоритми в тази последователност, получаваме при вход безконтекстна граматика $G$ получаваме граматика $G'$ в НФЧ с $\mathcal{L}(G') = \mathcal{L}(G) \setminus \{ \varepsilon \}$.
 
 \begin{remark}
     Ако искаме да добавим $\varepsilon$ в езика можем да го направим много лесно.
@@ -106,3 +104,102 @@
     За простота няма да се занимаваме с този вид граматика.
     Ще приемем, че случаите, в които участва $\varepsilon$ са тривиални са разглеждане, и няма да се занимваме с тях.
 \end{remark}
+
+\begin{claim}
+    За всеки безконтекстен език $L$, езикът $sub(L)$ (от \thref{sub-lang-def}) също е безконтекстен.
+\end{claim}
+
+\begin{proof}
+    Само ще покажем конструкцията и откъде идва удобството от НФЧ при конструкции, като пълното доказателство остава за читателя.
+
+    Ще е хубаво да имаме предвид някои хубави свойства на поддумите:
+
+    \begin{itemize}
+        \item ако $\alpha$ е поддума на $\beta$ можем да си мислим как ``задраскваме'' някои букви от $\beta$ и получаваме $\alpha$
+        \item $sub(L_1 \cdot L_2) = sub(L_1) \cdot sub(L_2)$
+    \end{itemize}
+
+    А имайки граматика в НФЧ можем да разсъждаваме така:
+
+    \begin{itemize}
+        \item ако си мислим изолирано за правилата от вида $A \rightarrow a$ можем много лесно да направим ``задраскването''
+        \item за правилата от вида $A \rightarrow BC$ можем да си мислим, че към $\mathcal{L}_G(A)$ се добавя $\mathcal{L}_G(B) \cdot \mathcal{L}_G(C)$
+    \end{itemize}
+
+    Сега нека опишем вече конструкцията.
+    Нека $G = \opair{\Sigma, V, S, R}$ е граматика в НФЧ за $L$.
+    В новата граматика $G_{sub}$, която строим ще имаме същите променливи, същата начална променлива, като правилата са следните:
+
+    \begin{itemize}
+        \item имаме същите правила от $G$
+        \item ако $A \rightarrow a$ е правило в $G$, то добавяме правилото $A \rightarrow \varepsilon$ (тук става ``задраскването'')
+    \end{itemize}
+
+    Сега да опишем на картинка какво ще направим.
+    Да кажем, че генерираме думата $a_1 a_2 a_3 a_4$ в оригиналния език.
+    Искаме в новия език да можем да генерираме думата $a_1 a_4$:
+
+    \begin{center}
+        \begin{forest}
+            [$S$ [$A$ [$C$ [$a_1$]] [$D$ [$\cancel{a_2}$ \\ $\varepsilon$, align=center]]] [$B$ [$E$ [$\cancel{a_3}$ \\ $\varepsilon$, align=center]] [$F$ [$a_4$]]]]
+        \end{forest}
+    \end{center}
+
+    Понеже сме имали правилото $D \rightarrow a_2$ сме добавили правилото $D \rightarrow \varepsilon$, същото за $E$ и $a_3$.
+    Това ни позволи да премахнем тези букви.
+
+    Ако искаме да сме подробни, можем да покажем, че за всички $A \in V, \: \alpha \in \Sigma$ и $n \in \mathbb{N}$:
+
+    \begin{itemize}
+        \item ако $A \tri{n}_G \alpha$, то $A \tri{n}_{G_{sub}} \beta$ за всяка поддума $\beta$ на $\alpha$
+        \item ако $A \tri{n}_{G_{sub}} \alpha$, то има $\beta$ такава, че $A \tri{n}_G \beta$ и $\alpha$ е поддума на $\beta$.
+    \end{itemize}
+\end{proof}
+
+\begin{claim}
+    За всеки безконтекстен език $L$ езикът $L^{rev}$ е безконтекстен.
+\end{claim}
+
+\begin{proof}
+    Нека $G = \opair{\Sigma, V, S, R}$ е граматика в НФЧ за $L$.
+    В новата граматика $G_{rev}$ за $L^{rev}$ имаме същите променливи и начална променлива.
+    Новите правила са следните:
+
+    \begin{itemize}
+        \item ако $A \rightarrow_G a$, то тогава $A \rightarrow_{G_{rev}} a$
+        \item ако $A \rightarrow_G BC$, то тогава $A \rightarrow_{G_{rev}} CB$
+    \end{itemize}
+
+    Използвайки, че $(\beta_1 \beta_2)^{rev} = \beta_2^{rev} \beta_1^{rev}$, лесно се показва, че за всички $A \in V, \: \alpha \in \Sigma$ и $n \in \mathbb{N}$
+
+    \begin{center}
+        $A \tri{n}_G \alpha \iff A \tri{n}_{G_{rev}} \alpha^{rev}$
+    \end{center}
+
+    И двете посоки са аналогични, за това ще направим само едната:
+
+    \begin{itemize}
+        \item ако $A \tri{0}_G \alpha$, то $\alpha = A \notin \Sigma^*$ \checkmark
+        \item ако $A \tri{n + 1}_G \alpha$, то сме приложили правило:
+              \begin{itemize}
+                  \item[1 сл.] приложили сме правило от вида $A \rightarrow_G a$: \\
+                      Тогава $\alpha = a, \: n = 0$ и $A \rightarrow_{G_rev} a$, откъдето $A \tri{1}_{G_{rev}} a = \alpha$
+                  \item[2 сл.] приложили сме правило от вида $A \rightarrow_G BC$: \\
+                      Тогава $B \tri{n_1}_G \alpha_1, \: C \tri{n_2}_G \alpha_2$, като $\alpha = \alpha_1 \alpha_2$ и $n = \max \{ n_1, n_2 \}$.
+                      Тогава по ИП, $B \tri{n_1}_{G_{rev}} \alpha_1^{rev}$ и $C \tri{n_2}_{G_{rev}} \alpha_2^{rev}$.
+                      Също така има правилото $A \rightarrow_{G_{rev}} CB$, откъдето $A \tri{n + 1} \alpha_2^{rev} \alpha_1^{rev} = (\alpha_1 \alpha_2)^{rev}$.
+              \end{itemize}
+    \end{itemize}
+
+    Показвайки твърдението получаваме, че $\mathcal{L}_{G_{rev}}(A) = \mathcal{L}_G(A)^{rev}$ за всяка променлива $A$, в частност:
+
+    \begin{center}
+        $\mathcal{L}(G_{rev}) = \mathcal{L}_{G_{rev}}(S) = \mathcal{L}_G(S)^{rev} = \mathcal{L}(G) = L^{rev}$
+    \end{center}
+\end{proof}
+
+Хубавото на такива конструкции е, че промените, които правим не са големи.
+Тук дърветата на извод имат същата ``форма''.
+Разбира се, при сложни примери ще трябва малко повече да си поиграем,
+но много помага да си мислим за това което бихме искали да направим,
+как би станало върху дървото на извод и дали тази информация може хубаво да се кодира в правилата.
