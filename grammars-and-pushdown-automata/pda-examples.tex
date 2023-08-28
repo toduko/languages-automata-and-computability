@@ -1,1 +1,174 @@
 \section{Класически примери за стекови автомати}
+
+Тук ще покажем някои прости езици, които се разпознават от стекови автомати.
+
+\begin{claim}
+    Езикът $L = \{ a^nb^n \mid n \in \mathbb{N} \}$ се разпознава от стеков автомат.
+\end{claim}
+
+\begin{proof}
+    Стековият автомат $P = \opair{\Sigma, \Gamma, \sharp, Q, s, \Delta, f}$ е следния:
+
+    \begin{itemize}
+        \item $Q = \{ s, p, f \}$ и $\Gamma = \{ \sharp, a \}$
+        \item $\Delta(s, \varepsilon, \sharp) = \{ \opair{f, \varepsilon} \}$ - директно разпознаваме $\varepsilon$
+        \item $\Delta(s, a, \sharp) = \{ \opair{s, a \sharp} \}$ - трупаме $a$ в стека
+        \item $\Delta(s, a, a) = \{ \opair{s, aa} \}$ - трупаме $a$ в стека
+        \item $\Delta(s, b, a) = \{ \opair{p, \varepsilon} \}$ - минаваме в режим на премахване от стека и четене само на $b$
+        \item $\Delta(p, b, a) = \{ \opair{p, \varepsilon} \}$ - премахваме натрупаните $a$ в стека
+        \item $\Delta(p, \varepsilon, \sharp) = \{ \opair{f, \varepsilon} \}$ - когато няма нищо в стека $a$ и $b$ са били срещати равен брой пъти
+        \item Във всички останали случаи функцията $\Delta$ връща $\varnothing$ (по нататък няма да го пишем)
+    \end{itemize}
+
+    За да покажем, че $L \subseteq \mathcal{L}(P)$, трябва да се покаже (оставяме на читателя), че за всяко $n \in \mathbb{N}$:
+
+    \begin{itemize}
+        \item $\opair{s, a^n \beta, \sharp} \vdash^n \opair{s, \beta, a^n \sharp}$ \\
+              Това просто казва, че състоянието $s$ се използва за да трупа $a$ в стека.
+        \item $\opair{p, b^n, a^n \sharp} \vdash^n \opair{p, \varepsilon, \sharp}$ \\
+              Това просто казва, че състоянието $p$ се използва за да премахне натрупаните $b$ в стека.
+    \end{itemize}
+
+    Имайки това $\opair{s, a^n b^n, \sharp} \vdash^n \opair{s, b^n, a^n \sharp} \vdash^n \opair{p, \varepsilon, \sharp} \vdash \opair{f, \varepsilon, \varepsilon}$, откъдето $a^nb^n \in \mathcal{L}(P)$.
+
+    За да покажем, че $\mathcal{L}(P) \subseteq L$, трябва да се покаже (оставяме на читателя), че за всяко $n \in \mathbb{N}$:
+
+    \begin{itemize}
+        \item ако $\opair{s, \alpha \beta, \sharp} \vdash^n \opair{s, \beta, \gamma \sharp}$, то $\alpha = \gamma = a^n$ \\
+              Тук трябва да се използва, че от $s$ няма преходи с други букви, които да остават в $s$.
+        \item ако $\opair{p, \beta, \gamma \sharp} \vdash^n \opair{p, \varepsilon, \sharp}$, то $\beta = b^n$ и $\gamma = a^n$ \\
+              Тук трябва да се използва, че от $p$ няма преходи с други букви, които да остават в $p$.
+    \end{itemize}
+
+    Нека $\alpha \in \mathcal{L}(P)$.
+    Тогава $\opair{s, \alpha, \sharp} \vdash^{n} \opair{f, \varepsilon, \varepsilon}$.
+    Ясно е, че $\varepsilon \in L$, така че нека Б.О.О. $\alpha \neq \varepsilon$.
+    Тогава знаем, че сме минали през всички състояния.
+    Нека $\alpha_1, \alpha_2 \in \Sigma^*$ са такива, че $\alpha = \alpha_1 \alpha_2$ и
+
+    \begin{center}
+        $\underbrace{\opair{s, \alpha_1 \alpha_2, \sharp} \vdash^{n_1} \opair{p, \alpha_2, \gamma \sharp}}_{\substack{\text{трябва да направим такъв преход} \\ \text{четейки дума, различна от } \varepsilon}} \vdash^{n_2} \underbrace{\opair{p, \varepsilon, \sharp} \vdash \opair{f, \varepsilon, \varepsilon}}_{\substack{\text{единственият начин} \\ \text{да разпознаем дума} \\ \text{различна от } \varepsilon}}$
+    \end{center}
+
+    Тогава от горното твърдение $\alpha_1 = \gamma = a^{n_1}$, $\alpha_2 = b^{n_2}$ и $\gamma = a^{n_2}$.
+    Така $\alpha = a^{n_1} b^{n_1} = a^{n_2} b^{n_2} \in L$.
+\end{proof}
+
+\begin{problem}
+Да се построят стекови автомати за следните езици:
+
+\begin{itemize}
+    \item $L_1 = \{ a^n b^{2n} \mid n \in \mathbb{N} \}$
+    \item $L_2 = \{ a^{2n} b^n \mid n \in \mathbb{N} \}$
+    \item $L_3 = \{ a^{2n} b^{3n} \mid n \in \mathbb{N} \}$
+\end{itemize}
+
+Упътване: не трябва да се правят много промени, трябва само да се промени малко работата със стека
+\end{problem}
+
+\begin{claim}\thlabel{pda-equal-a-b}
+    Съществува стеков автомат за езика $L = \{ \alpha \in \Sigma^* \mid |\alpha|_a = |\alpha|_b \}$.
+\end{claim}
+
+\begin{proof}
+    Стековият автомат $P = \opair{\Sigma, \Gamma, \sharp, Q, s, \Delta, f}$ е следния (доказателството остава за читателя):
+
+    \begin{itemize}
+        \item $Q = \{ s, f \}$ и $\Gamma = \{ a, b, \sharp \}$
+        \item $\Delta(s, x, \sharp) = \{ \opair{s, x \sharp} \}$ за $x \in \Sigma$ - при празен стек добавяме буквата, която е в повече
+        \item $\Delta(s, x, x) = \{ \opair{s, xx} \}$ за $x \in \Sigma$ - продължаваме да добавяме буквата в повече
+        \item $\Delta(s, a, b) = \Delta(s, b, a) = \{ \opair{s, \varepsilon} \}$ - при срещане на другата буква махаме от стека
+        \item $\Delta(s, \varepsilon, \sharp) = \{ \opair{f, \varepsilon} \}$ - ако стека е празен броят на различните букви е равен
+    \end{itemize}
+
+    \pagebreak
+
+    За да се докаже, че $L = \mathcal{L}(P)$ можем да покажем, че за всяка дума $\gamma$ и за всяко естествено $n$:
+
+    \begin{itemize}
+        \item $a^n \gamma \in L \iff \opair{s, \gamma, a^n \sharp} \vdash^* \opair{s, \varepsilon, \sharp}$
+        \item $b^n \gamma \in L \iff \opair{s, \gamma, b^n \sharp} \vdash^* \opair{s, \varepsilon, \sharp}$
+    \end{itemize}
+
+    Трябва да се направи индукция по $|\gamma|$, също така двете части се показват едновременно.
+
+    Накрая заключаваме, че:
+
+    \begin{center}
+        $\alpha \in L \iff \opair{s, \alpha, a^0 \sharp} \vdash^* \opair{s, \varepsilon, \sharp} \vdash \opair{f, \varepsilon, \varepsilon} \iff \alpha \in \mathcal{L}(P)$
+    \end{center}
+\end{proof}
+
+Една често срещана задача за стек, е да се провери дали един израз е ``добре скобуван''.
+
+\begin{definition}
+    Ще наричаме една дума $\alpha$ \textbf{добре скобуван относно $[$ и $]$}, ако за всяко $\beta \preceq_{pref} \alpha$, $|\beta|_[ \geq |\beta|_]$ и $|\alpha|_[ = |\alpha|_]$
+    Ще бележим този факт с $bal(\alpha, [, ])$.
+\end{definition}
+
+Пример за добра скобуван израз относно $($ и $)$ би бил думата (((23+4)$\times$(21-12))+6)/(73-23).
+Илюстрирано по-добре:
+
+\begin{center}
+    $\underset{1}{\textcolor{red}{(}}$
+    $\underset{2}{\textcolor{blue}{(}}$
+    $\underset{3}{\textcolor{yellow}{(}}$
+    23
+    +
+    4
+    $\underset{2}{\textcolor{yellow}{)}}$
+    $\times$
+    $\underset{3}{\textcolor{yellow}{(}}$
+    21
+    -
+    12
+    $\underset{2}{\textcolor{yellow}{)}}$
+    $\underset{1}{\textcolor{blue}{)}}$
+    +
+    6
+    $\underset{0}{\textcolor{red}{)}}$
+    /
+    $\underset{1}{\textcolor{red}{(}}$
+    73
+    -
+    23
+    $\underset{0}{\textcolor{red}{)}}$
+\end{center}
+
+Тук много лесно се вижда, че никога броят на $($ не надвишава броя на $)$.
+
+\begin{claim}\thlabel{pda-bal-par}
+    Езикът $L = \{ \alpha \in \Sigma^* \mid bal(\alpha, a, b) \}$ се разпознава от стеков автомат.
+\end{claim}
+
+\begin{proof}
+    Стековият автомат $P = \opair{\Sigma, \Gamma, \sharp, Q, s, \Delta, f}$ е следния (доказателството остава за читателя):
+
+    \begin{itemize}
+        \item $Q = \{ s, f \}$ и $\Gamma = \{ a, \sharp \}$
+        \item $\Delta(s, a, \sharp) = \{ \opair{s, a \sharp} \}$ - добавяме ``отварящите скоби'' в стека
+        \item $\Delta(s, a, a) = \{ \opair{s, aa} \}$ - добавяме ``отварящите скоби'' в стека
+        \item $\Delta(s, b, a) = \{ \opair{s, \varepsilon} \}$ - махаме ``отварящите скоби'' от стека като четем ``затварящи''
+        \item $\Delta(s, \varepsilon, \sharp) = \{ \opair{f, \varepsilon} \}$ - когато стека е празен, прочетената дума до сега е балансирана
+    \end{itemize}
+
+    За да се докаже, че $L = \mathcal{L}(P)$ можем да покажем, че за всяка дума $\gamma$ и за всяко естествено $n$:
+
+    \begin{center}
+        $a^n \gamma \in L \iff \opair{s, \gamma, a^n \sharp} \vdash^* \opair{s, \varepsilon, \sharp}$
+    \end{center}
+
+    Доказателството върви по същият начин като в \thref{pda-equal-a-b}.
+
+    Накрая заключаваме, че:
+
+    \begin{center}
+        $\alpha \in L \iff \opair{s, \alpha, a^0 \sharp} \vdash^* \opair{s, \varepsilon, \sharp} \vdash \opair{f, \varepsilon, \varepsilon} \iff \alpha \in \mathcal{L}(P)$
+    \end{center}
+\end{proof}
+
+\begin{problem}
+Да се направи стеков автомат за $L = \{ \alpha \in \{ a, b, c, d\}^* \mid bal(\alpha, a, b) \: \& \: bal(\alpha, c, d) \}$.
+
+Упътване: напълно аналогично на \thref{pda-bal-par}
+\end{problem}
