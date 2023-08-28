@@ -1,1 +1,186 @@
 \section{Стекови автомати}
+
+Сега ще видим как можем да си мислим за безконтекстните граматики по друг, ``по-познат'' начин.
+
+\begin{definition}
+    \textbf{Стеков автомат} ще наричаме всяко $P = \opair{\Sigma, \Gamma, \sharp, Q, s, \Delta, f}$, където:
+
+    \begin{itemize}
+        \item $\Sigma$ е крайна входна азбука
+        \item $\Gamma$ е крайна стекова азбука
+        \item $\sharp \in \Gamma$ е символ за дъното на стека
+        \item $Q$ е крайно множество от състояния
+        \item $s \in Q$ е начално състояние
+        \item $\Delta : Q \cross \Sigma_{\varepsilon} \cross \Gamma \rightarrow \mathcal{P}(Q \cross \Gamma^{\leq 2})$ е функция на преходите
+        \item $f \in Q$ е финално състояние
+    \end{itemize}
+\end{definition}
+
+За един преход $\opair{q, \beta} \in \Delta(p, x, A)$ можем да си мислим по следния начин:
+\begin{center}
+    \textit{четейки $x$ (което е буква или $\varepsilon$) и намирайки се в състоянието $p$, \\ ако на върха на стека е буквата $A$, \\ можем да отидем в състоянието $q$ като буквата $A$ се маха от върха на стека и се заменя с $\beta$}
+\end{center}
+
+\begin{definition}
+    \textbf{Конфигурация в стеков автомат $P = \opair{\Sigma, \Gamma, \sharp, Q, s, \Delta, f}$} ще наричаме всяка тройка от вида $\opair{q, \alpha, \gamma} \in Q \cross \Sigma^* \cross \Gamma^*$.
+\end{definition}
+
+Можем да си мислим за $\opair{q, \alpha, \gamma}$ по следния начин:
+
+\begin{center}
+    \textit{в момента се намираме в състояние $q$, в стека е думата $\gamma$, и остава да прочетем $\alpha$}
+\end{center}
+
+\begin{definition}
+    Въвеждаме релацията $\vdash_P$ за едностъпков преход между конфигурации по следното правило:
+
+    \begin{center}
+        ако $\opair{q, \beta} \in \Delta(p, x, A)$, то $\opair{p, x \alpha, A \gamma} \vdash_P \opair{q, \alpha, \beta \gamma}$
+    \end{center}
+
+    Също така въвеждаме релацията $\vdash_P^{l}$ за многостъпков преход между конфигурации по следното правило:
+
+    \begin{itemize}
+        \item $\kappa \vdash_P^0 \kappa$
+        \item ако $\kappa_1 \vdash_P \kappa_2$ и $\kappa_2 \vdash_P^l \kappa_3$, то $\kappa_1 \vdash_P^{l + 1} \kappa_3$
+    \end{itemize}
+
+    Казваме, че $\kappa_1 \vdash_P^* \kappa_2$ има $l \in \mathbb{N}$ такова, че $\kappa_1 \vdash_P^l \kappa_2$.
+\end{definition}
+
+\begin{remark}
+    Ако $P$ се подразбира няма да го пишем.
+\end{remark}
+
+\begin{definition}
+    \textbf{Езика на стеков автомат $P = \opair{\Sigma, \Gamma, \sharp, Q, s, \Delta, f}$} ще бележим с
+
+    \begin{center}
+        $\mathcal{L}(P) = \{ \alpha \in \Sigma^* \mid \opair{s, \alpha, \sharp} \vdash_P^* \opair{f, \varepsilon, \varepsilon} \}$
+    \end{center}
+\end{definition}
+
+Сега ще покажем някои полезни свойства на $\vdash^*$.
+
+\begin{claim}
+    Ако $\kappa_1 \vdash^{l_1} \kappa_2$ и $\kappa_2 \vdash^{l_2} \kappa_3$, то $\kappa_1 \vdash^{l_1 + l_2} \kappa_3$
+\end{claim}
+
+\begin{proof}
+    С индукция по $l_1$:
+
+    \begin{itemize}
+        \item Нека $\kappa_1 \vdash^0 \kappa_2$ и $\kappa_2 \vdash^l \kappa_3$, тогава $\kappa_1 = \kappa_2$ \checkmark
+        \item Нека $\kappa_1 \vdash^{l_1 + 1} \kappa_2$ и $\kappa_2 \vdash^{l_2} \kappa_3$.
+              Тогава $\kappa_1 \vdash \kappa'$ и $\kappa' \vdash^{l_1} \kappa_2$.
+              По ИП $\kappa' \vdash^{l_1 + l_2} \kappa_3$, откъдето $\kappa_1 \vdash^{1 + l_1 + l_2} \kappa_3$.
+    \end{itemize}
+\end{proof}
+
+\begin{claim}
+    Ако $\opair{p, \alpha_1, \gamma_1} \vdash^l \opair{q, \varepsilon, \varepsilon}$, то $\opair{p, \alpha_1 \alpha_2, \gamma_1 \gamma_2} \vdash^l \opair{q, \alpha_2, \gamma_2}$.
+\end{claim}
+
+\begin{proof}
+    С индукция по $l$:
+
+    \begin{itemize}
+        \item Ако $\opair{p, \alpha_1, \gamma_1} \vdash^0 \opair{q, \varepsilon, \varepsilon}$, то $p = q, \: \alpha_1 = \varepsilon$ и $\gamma_1 = \varepsilon$.
+              Тогава очевидно $\opair{p, \alpha_1 \alpha_2, \gamma_1 \gamma_2} \vdash^0 \opair{q, \alpha_2, \gamma_2}$ \checkmark
+        \item Ако $\opair{p, x \alpha_1, A \gamma_1} \vdash^{l + 1} \opair{q, \varepsilon, \varepsilon}$, то $\opair{p, x \alpha_1, A \gamma_1} \vdash \opair{r, \alpha_1, \beta \gamma_1} \vdash^l \opair{q, \varepsilon, \varepsilon}$, където $\opair{r, \beta} \in \Delta(p, x, A)$.
+
+              По ИП $\opair{r, \alpha_1 \alpha_2, \beta \gamma_1 \gamma_2} \vdash^l \opair{q, \alpha_2, \gamma_2}$, откъдето $\opair{p, x \alpha_1 \alpha_2, A \gamma_1 \gamma_2} \vdash^{l + 1} \opair{q, \alpha_2, \gamma_2}$.
+    \end{itemize}
+\end{proof}
+
+\pagebreak
+
+\begin{corollary}
+    Ако $\opair{p, \alpha_1, A_1} \vdash^{l_1} \opair{r, \varepsilon, \varepsilon}$ и $\opair{r, \alpha_2, A_2} \vdash^{l_2} \opair{q, \varepsilon, \varepsilon}$, то $\opair{p, \alpha_1 \alpha_2, A_1 A_2} \vdash^{l_1 + l_2} \opair{q, \varepsilon, \varepsilon}$
+\end{corollary}
+
+\begin{claim}
+    Нека $\opair{p, \alpha, A \gamma} \vdash^l \opair{q, \varepsilon, \varepsilon}$.
+    Тогава има $l_1, l_2 \in \mathbb{N}$, състояние $r$ и думи $\alpha_1, \alpha_2$ такива, че:
+
+    \begin{itemize}
+        \item $l = l_1 + l_2$
+        \item $\alpha = \alpha_1 \alpha_2$
+        \item $\opair{p, \alpha_1, A} \vdash^{l_1} \opair{r, \varepsilon, \varepsilon}$
+        \item $\opair{r, \alpha_2, \gamma} \vdash^{l_2} \opair{q, \varepsilon, \varepsilon}$
+    \end{itemize}
+\end{claim}
+
+\begin{proof}
+    С индукция по $l$ (очевидно $l \geq 1$):
+
+    \begin{itemize}
+        \item Ако $\opair{p, \alpha, A \gamma} \vdash^1 \opair{q, \varepsilon, \varepsilon}$, то $\gamma = \varepsilon, \: \alpha \in \Sigma_{\varepsilon}$ и $\opair{q, \varepsilon} \in \Delta(p, \alpha, A)$.
+              Полагаме $l_1 = 1, \: l_2 = 0, \: \alpha_1 = \alpha, \: \alpha_2 = \varepsilon, \: r = q$ и сме готови \checkmark
+        \item Нека $\opair{p, \alpha, A \gamma} \vdash^{l + 1} \opair{q, \varepsilon, \varepsilon}$.
+              Тогава сме направили поне един преход.
+              Нека $\alpha = x \lambda$.
+
+              \begin{itemize}
+                  \item[1 сл.] На първа стъпка сме имали прехода $\opair{p', BC} \in \Delta(p, x, A)$.
+                      Тогава $\opair{p', \lambda, BC \gamma} \vdash^l \opair{q, \varepsilon, \varepsilon}$.
+                      По ИП:
+
+                      \begin{itemize}
+                          \item $l_1' + l_2' = l$
+                          \item $\lambda_1 \lambda_2 = \lambda$
+                          \item $\opair{p', \lambda_1, B} \vdash^{l_1'} \opair{r', \varepsilon, \varepsilon}$
+                          \item $\opair{r', \lambda_2, C \gamma} \vdash^{l_2'} \opair{q, \varepsilon, \varepsilon}$
+                      \end{itemize}
+
+                      Понеже $l_2' \leq l$ пак да приложим ИП:
+
+                      \begin{itemize}
+                          \item $k_1 + k_2 = l_2$
+                          \item $\beta_1 \beta_2 = \lambda_2$
+                          \item $\opair{r', \beta_1, C} \vdash^{k_1} \opair{r'', \varepsilon, \varepsilon}$
+                          \item $\opair{r'', \beta_2, \gamma} \vdash^{k_2} \opair{q, \varepsilon, \varepsilon}$
+                      \end{itemize}
+
+                      Полагаме $l_1 = 1 + l_1' + k_1, \: l_2 = k_2, \: r = r'', \: \alpha_1 = x \lambda_1 \beta_1, \: \alpha_2 = \beta_2$ и получаваме, че:
+
+                      \begin{itemize}
+                          \item $l_1 + l_2 = 1 + l_1' + k_1 + k_2 = 1 + l_1' + l_2' = 1 + l$
+                          \item $\alpha_1 \alpha_2 = x \lambda_1 \beta_1 \beta_2 = x \lambda_1 \lambda_2 = x \lambda = \alpha$
+                          \item $\opair{p, x \lambda_1 \beta_1, A} \vdash \opair{p', \lambda_1 \beta_1, BC} \vdash^{l_1'} \opair{r', \beta_1, C} \vdash^{k_1} \opair{r'', \varepsilon, \varepsilon}$, откъдето $\opair{p, \alpha_1, A} \vdash^{l_1} \opair{r, \varepsilon, \varepsilon}$
+                          \item $\opair{r'', \beta_2, \gamma} \vdash^{k_2} \opair{q, \varepsilon, \varepsilon}$, откъдето $\opair{r, \alpha_2, \gamma} \vdash^{l_2} \opair{q, \varepsilon, \varepsilon}$
+                      \end{itemize}
+                  \item[2 сл.] На първа стъпка сме имали прехода $\opair{p', B} \in \Delta(p, x, A)$.
+                      Тогава $\opair{p', \lambda, B \gamma} \vdash^l \opair{q, \varepsilon, \varepsilon}$.
+                      По ИП:
+
+                      \begin{itemize}
+                          \item $l_1' + l_2' = l$
+                          \item $\lambda_1 \lambda_2 = \lambda$
+                          \item $\opair{p', \lambda_1, B} \vdash^{l_1'} \opair{r', \varepsilon, \varepsilon}$
+                          \item $\opair{r', \lambda_2, \gamma} \vdash^{l_2'} \opair{q, \varepsilon, \varepsilon}$
+                      \end{itemize}
+
+                      Полагаме $l_1 = 1 + l_1', \: l_2 = l_2', \: r = r', \: \alpha_1 = x \lambda_1, \: \alpha_2 = \lambda_2$ и получаваме, че:
+
+                      \begin{itemize}
+                          \item $l_1 + l_2 = 1 + l_1' + l_2' = 1 + l$
+                          \item $\alpha_1 \alpha_2 = x \lambda_1 \lambda_2 = x \lambda = \alpha$
+                          \item $\opair{p, x \lambda_1, A} \vdash \opair{p', \lambda_1, B} \vdash^{l_1'} \opair{r', \varepsilon, \varepsilon}$, откъдето $\opair{p, \alpha_1, A} \vdash^{l_1} \opair{r, \varepsilon, \varepsilon}$
+                          \item $\opair{r', \lambda_2, \gamma} \vdash^{l_2'} \opair{q, \varepsilon, \varepsilon}$, откъдето $\opair{r, \alpha_2, \gamma} \vdash^{l_2} \opair{q, \varepsilon, \varepsilon}$
+                      \end{itemize}
+                  \item[3 сл.] На първа стъпка сме имали прехода $\opair{p', \varepsilon} \in \Delta(p, x, A)$.
+                      Тогава $\opair{p', \lambda, \gamma} \vdash^l \opair{q, \varepsilon, \varepsilon}$.
+                      Тогава полагаме $l_1 = 1, \: l_2 = l, \: r = p', \: \alpha_1 = x, \alpha_2 = \lambda$ и получаваме, че:
+
+                      \begin{itemize}
+                          \item $l_1 + l_2 = 1 + l$
+                          \item $\alpha_1 \alpha_2 = x \lambda = \alpha$
+                          \item $\opair{p, x, A} \vdash \opair{p', \varepsilon, \varepsilon}$, откъдето $\opair{p, \alpha_1, A} \vdash^{l_1} \opair{r, \varepsilon, \varepsilon}$
+                          \item $\opair{p', \lambda, \gamma} \vdash^l \opair{q, \varepsilon, \varepsilon}$, откъдето $\opair{r, \alpha_2, \gamma} \vdash^{l_2} \opair{q, \varepsilon, \varepsilon}$
+                      \end{itemize}
+              \end{itemize}
+    \end{itemize}
+
+    С това доказателството е завършено.
+\end{proof}
