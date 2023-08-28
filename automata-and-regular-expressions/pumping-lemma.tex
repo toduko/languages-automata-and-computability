@@ -50,18 +50,16 @@
     \end{proof}
 
     Знаем, че $\alpha = xyz \in L$.
-    Тогава $\delta^*(s, xyz) \in F$.
-    От тук следва, че $\delta^*(\delta^*(s, xy), z) \in F$, следователно $\delta^*(\delta^*(\delta^*(s, x), y), z) \in F$.
+    Тогава $\delta^*(s, xyz) = \delta^*(\delta^*(s, xy), z) = \delta^*(\delta^*(\delta^*(s, x), y), z) \in F$.
+
     Така получаваме, че $\delta^*(s, x) = q_{i_{t_1}}$ и от там $\delta^*(\delta^*(q_{i_{t_1}}, y), z) \in F$.
-    От \thref{pl-helper} имаме, че $(\forall i \in \mathbb{N}) (\delta^*(q_{i_{t_1}}, y^i) = q_{i_{t_2}} = q_{i_{t_1}})$.
+    От \thref{pl-helper} имаме, че за всяко $ i \in \mathbb{N}$,  $\delta^*(q_{i_{t_1}}, y^i) = q_{i_{t_2}} = q_{i_{t_1}}$.
     Освен това знаем, че $\delta^*(q_{i_{t_2}}, z) \in F$.
-    Следователно
-    $(\forall i \in \mathbb{N}) (\delta^*(\delta^*(q_{i_{t_1}}, y^i), z) \in F)$.
-    От тук можем да заключим, че
-    $(\forall i \in \mathbb{N}) (\delta^*(\delta^*(\delta^*(s, x), y^i), z) \in F)$
-    и вървейки в обратната посока (``сливането'' на всички $\delta^*$ в едно) получаваме, че
-    $(\forall i \in \mathbb{N}) (\delta^*(s, xy^iz) \in F)$,
-    с което доказахме лемата.
+    
+    Следователно за всяко $i \in \mathbb{N}$, $\delta^*(\delta^*(q_{i_{t_1}}, y^i), z) \in F$.
+    От тук можем да заключим, че $\delta^*(\delta^*(\delta^*(s, x), y^i), z) \in F$ за всяко $ i \in \mathbb{N}$.
+    и вървейки в обратната посока (``сливането'' на всички $\delta^*$ в едно) получаваме,
+    че за всяко $ i \in \mathbb{N}$, $\delta^*(s, xy^iz) \in F$, с което доказахме лемата.
 \end{proof}
 
 Тук отново няма да използваме твърдението в тази форма, а неговата контрапозиция:
