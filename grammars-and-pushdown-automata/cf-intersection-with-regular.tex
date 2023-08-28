@@ -1,1 +1,159 @@
 \section{Сечение на безконтекстен език с регулярен}
+
+Сега ще разгледаме една много хубава операция, с едно нейно хубаво приложение.
+Въпреки че не можем да сечем два безконтекстни езика с надеждите винаги да получим безконтекстен език, можем да заслабим малко това условие.
+
+\begin{claim}
+    За всеки безконтекстен език $L$ и регулярен език $M$, езикът $L \cap M$ е безконтекстен.
+\end{claim}
+
+\begin{proof}
+    Нека $G = \opair{\Sigma, V, R, S}$ е граматика в НФЧ за $L$ и нека $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$ е ДКА за $M$.
+    Да си представим някаква дума $\alpha = a_1 a_2 a_3 a_4 \in L \cap M$.
+    Някои неща които знаем за нея:
+
+    \begin{itemize}
+        \item има дърво на извод за $\alpha$, съгласувано с $G$:
+              \begin{center}
+                  \begin{forest}
+                      [$S$ [$A$ [$X$ [$a_1$]] [$Y$ [$a_2$]]] [$B$ [$Z$ [$a_3$]] [$W$ [$a_4$]]]]
+                  \end{forest}
+              \end{center}
+        \item $\delta^*(s, \alpha) \in F$:
+              \begin{center}
+                  \begin{tikzpicture}[shorten >=1pt,node distance=2.5cm,>=stealth',thick]
+                      \node[initial, state, initial text=] (1) {$s$};
+                      \node[state] [right of=1] (2) {$p_1$};
+                      \node[state] [right of=2] (3) {$p_2$};
+                      \node[state] [right of=3] (4) {$p_3$};
+                      \node[state, accepting] [right of=4] (5) {$f$};
+                      \path[->] (1) edge [] node[above] {$a_1$} (2);
+                      \path[->] (2) edge [] node[above] {$a_2$} (3);
+                      \path[->] (3) edge [] node[above] {$a_3$} (4);
+                      \path[->] (4) edge [] node[above] {$a_4$} (5);
+                  \end{tikzpicture}
+              \end{center}
+    \end{itemize}
+
+    Това, което ще направим, е да се опитаме да кодираме информацията за автомата в дърветата на извод:
+
+    \begin{center}
+        \begin{forest}
+            [$\opair{s, S, f}$ [$\opair{s, A, p_2}$ [$\opair{s, X, p_1}$ [$a_1$]] [$\opair{p_1, Y, p_2}$ [$a_2$]]] [$\opair{p_2, B, f}$ [$\opair{p_2, Z, p_3}$ [$a_3$]] [$\opair{p_3, W, f}$ [$a_4$]]]]
+        \end{forest}
+    \end{center}
+
+    Новите променливи в граматиката ще са от вида $\opair{p, A, q}$ като идеята е да се генерират всички думи $\alpha$ такива, че:
+
+    \begin{center}
+        $A \tri{*} \alpha$ и $\delta^*(p, \alpha) = q$
+    \end{center}
+
+    Нека опишем сега формално конструкцията за новата ни граматика $G' = \opair{\Sigma, V', S', R'}$:
+
+    \begin{itemize}
+        \item $V' = (Q \cross V \cross Q) \cup \{ S' \}$, където $S' \notin Q \cross V \cross Q$
+        \item за всички $A \in V$ и $p, q, r \in Q$, ако $A \rightarrow_G BC$, то $\opair{p, A, q} \rightarrow_{G'} \opair{p, B, r} \opair{r, C, q}$ \\
+              Тук граматиката се опитва да ``познае'' думата, която генерира какъв път ще измине в автомата.
+              Предварително тя няма как да го знае, тъй като самата граматика не знае каква дума ще генерира.
+        \item за всички $A \in V, \: p, q \in Q$ и $a \in \Sigma$, ако $A \rightarrow_G a$, то $\opair{p, A, q} \rightarrow_{G'} a$ \\
+              Тук вече става истинската ``синхронизация''.
+              Ако граматиката е познала преходите на думата, която е решила да генерира, то тя вече наистина ще я генерира.
+              Ако не е познала, понеже не са правилни или няма такива, то няма да се генерира нищо.
+        \item за всяко $f \in F$, $S' \rightarrow_{G'} \opair{s, S, f}$
+    \end{itemize}
+
+    Сега трябва да покажем, че за всички $A \in V$ и $p, q \in Q$:
+
+    \begin{center}
+        $\mathcal{L}_{G'}(\opair{p, A, q}) = \mathcal{L}_G(A) \cap \{ \alpha \in \Sigma^* \mid \delta^*(p, \alpha) = q \}$
+    \end{center}
+
+    Този надпис хубаво илюстрира как разделяме голямото сечение на $L$ и $M$ на по-малки сечения, което е идеята на конструкцията.
+
+    \begin{claim}
+        За всички $A \in V, \: p, q \in Q, \: n \in \mathbb{N}$ и $\alpha \in \Sigma^*$:
+
+        \begin{center}
+            $\opair{p, A, q} \tri{n}_{G'} \alpha \iff A \tri{n}_G \alpha \: \& \: \delta^*(p, \alpha) = q$
+        \end{center}
+    \end{claim}
+
+    \begin{proof} С индукция по $n \in \mathbb{N}$.
+
+        \begin{itemize}
+            \item базата е тривиално изпълнена и в двете посоки \checkmark
+            \item ще покажем ИС и в двете посоки:
+
+                  \begin{itemize}
+                      \item[($\Rightarrow$)] Нека $\opair{p, A, q} \tri{n + 1}_{G'} \alpha$.
+                          Тогава сме приложили някое правило.
+                          \begin{itemize}
+                              \item[1 сл.] Приложили сме правилото $\opair{p, A, q} \rightarrow_{G'} a$.
+                                  Тогава $\alpha = a$, $\delta(p, a) = q$ и $A \rightarrow_G a$, откъдето $A \tri{1} \alpha$.
+                              \item[2 сл.] Приложили сме правилото $\opair{p, A, q} \rightarrow_{G'} \opair{p, B, r} \opair{r, C, q}$.
+                                  Тогава съществуват $\alpha_1, \alpha_2 \in \Sigma^*$ такива, че $\opair{p, B, r} \tri{n_1}_{G'} \alpha_1$ и $\opair{r, C, q} \tri{n_2}_{G'} \alpha_2$ като $\alpha = \alpha_1 \alpha_2$ и $n = \max \{ n_1, n_2 \}$.
+                                  Също така $A \rightarrow BC$.
+
+                                  По ИП:
+
+                                  \begin{itemize}
+                                      \item $B \tri{n_1}_G \alpha_1$ и $\delta^*(p, \alpha_1) = r$
+                                      \item $C \tri{n_2}_G \alpha_2$  и $\delta^*(r, \alpha_2) = q$
+                                  \end{itemize}
+
+                                  Така можем да заключим, че $A \tri{n + 1}_G \alpha_1 \alpha_2 = \alpha$ и $\delta^*(p, \alpha) = \delta^*(p, \alpha_1 \alpha_2) = \delta^*(\delta^*(p, \alpha_1), \alpha_2) = q$
+                          \end{itemize}
+                      \item[($\Leftarrow$)] Нека $A \tri{n + 1}_G \alpha$ и $\delta^*(p, \alpha) = q$.
+                          Тогава сме приложили някое правило.
+                          \begin{itemize}
+                              \item[1 сл.] Приложили сме правилото $A \rightarrow_G a$.
+                                  Тогава $\alpha = a$ и понеже $\delta(p, a) = q$, $\opair{p, A, q} \rightarrow_{G'} a$, откъдето получаваме, че $\opair{p, A, q} \tri{1} \alpha$.
+                              \item[2 сл.] Приложили сме правилото $A \rightarrow BC$.
+                                  Тогава съществуват $\alpha_1, \alpha_2 \in \Sigma^*$ такива, че $B \tri{n_1}_G \alpha_1$ и $C \tri{n_2}_G \alpha_2$ като $\alpha = \alpha_1 \alpha_2$ и $n = \max \{ n_1, n_2 \}$.
+                                  Нека $r = \delta^*(p, \alpha_1)$.
+                                  Очевидно $\delta^*(r, \alpha_2) = q$.
+                                  Също така имаме правилото $\opair{p, A, q} \rightarrow_{G'} \opair{p, B, r} \opair{r, C, q}$.
+
+                                  По ИП:
+
+                                  \begin{itemize}
+                                      \item $\opair{p, B, r} \tri{n_1} \alpha_1$
+                                      \item $\opair{r, C, q} \tri{n_2} \alpha_2$
+                                  \end{itemize}
+
+                                  Така можем да заключим, че $\opair{p, A, q} \tri{n + 1}_{G'} \alpha$
+                          \end{itemize}
+                  \end{itemize}
+        \end{itemize}
+    \end{proof}
+
+    Имайки всичко това остават само да завършим с:
+
+    \begin{align*}
+        \alpha \in \mathcal{L}(G') & \iff \alpha \in \mathcal{L}_{G'}(S')                                                                                    \\
+                                   & \iff \alpha \in \bigcup\limits_{f \in F} \mathcal{L}_{G'}(\opair{s, S, f})                                              \\
+                                   & \iff \alpha \in \bigcup\limits_{f \in F} (\mathcal{L}_G(S) \cap \{ \alpha \in \Sigma^* \mid \delta^*(s, \alpha) = f \}) \\
+                                   & \iff \alpha \in \mathcal{L}(G) \cap \bigcup\limits_{f \in F} \{ \alpha \in \Sigma^* \mid \delta^*(s, \alpha) = f \}     \\
+                                   & \iff \alpha \in \mathcal{L}(G) \cap \mathcal{L(A)}                                                                      \\
+                                   & \iff \alpha \in L \cap M
+    \end{align*}
+\end{proof}
+
+\begin{corollary}\thlabel{non-cf-intersect-with-regular}
+    Ако $L \cap M$ не е безконтекстен език и $M$ е регулярен език, то $L$ не е безконтекстен.
+\end{corollary}
+
+\begin{proof}
+    Ако $L$ беше безконтекстен, то тогава $L \cap M$ щеше също да бъде безконтекстен, имайки че $M$ е регулярен език.
+\end{proof}
+
+\begin{claim}
+    Езикът $L = \{ \alpha \in \Sigma^* \mid |\alpha|_a = |\alpha|_b = |\alpha|_c \}$ не е безконтекстен.
+\end{claim}
+
+\begin{proof}
+    Знаем, че езикът $L_0 = \{ a^nb^nc^n \mid n \in \mathbb{N} \}$ не е безконтекстен.
+    Очевидно $L_0 = L \cap (\{ a \}^* \{ b \}^* \{ c \}^*)$.
+    От \thref{non-cf-intersect-with-regular} получаваме, че $L$ не е безконтекстен.
+\end{proof}
