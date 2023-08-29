@@ -99,43 +99,7 @@
     \end{center}
 \end{proof}
 
-Една често срещана задача за стек, е да се провери дали един израз е ``добре скобуван''.
-
-\begin{definition}
-    Ще наричаме една дума $\alpha$ \textbf{добре скобуван относно $[$ и $]$}, ако за всяко $\beta \preceq_{pref} \alpha$, $|\beta|_[ \geq |\beta|_]$ и $|\alpha|_[ = |\alpha|_]$
-    Ще бележим този факт с $bal(\alpha, [, ])$.
-\end{definition}
-
-Пример за добра скобуван израз относно $($ и $)$ би бил думата (((23+4)$\times$(21-12))+6)/(73-23).
-Илюстрирано по-добре:
-
-\begin{center}
-    $\underset{1}{\textcolor{red}{(}}$
-    $\underset{2}{\textcolor{blue}{(}}$
-    $\underset{3}{\textcolor{yellow}{(}}$
-    23
-    +
-    4
-    $\underset{2}{\textcolor{yellow}{)}}$
-    $\times$
-    $\underset{3}{\textcolor{yellow}{(}}$
-    21
-    -
-    12
-    $\underset{2}{\textcolor{yellow}{)}}$
-    $\underset{1}{\textcolor{blue}{)}}$
-    +
-    6
-    $\underset{0}{\textcolor{red}{)}}$
-    /
-    $\underset{1}{\textcolor{red}{(}}$
-    73
-    -
-    23
-    $\underset{0}{\textcolor{red}{)}}$
-\end{center}
-
-Тук много лесно се вижда, че никога броят на $($ не надвишава броя на $)$.
+Една често срещана задача за стек, е да се провери дали един израз е ``добре скобуван'' (\thref{bal-par-def}).
 
 \begin{claim}\thlabel{pda-bal-par}
     Езикът $L = \{ \alpha \in \Sigma^* \mid bal(\alpha, a, b) \}$ се разпознава от стеков автомат.

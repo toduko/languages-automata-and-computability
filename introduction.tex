@@ -207,6 +207,9 @@
 \begin{problem}[свойства на Pref, Suff, Infix]\thlabel{prefix-suffix-infix-props}
 Да се докаже, че:
 \begin{itemize}
+    \item $\operatorname{Pref}(L) = \operatorname{Suff}(L^{rev})^{rev}$
+    \item $\operatorname{Suff}(L) = \operatorname{Pref}(L^{rev})^{rev}$
+    \item $\operatorname{Pref}(L_1 \cdot L_2) = \operatorname{Pref}(L_1) \cup (L_1 \cdot \operatorname{Pref}(L_2))$
     \item $\operatorname{Pref}(L_1 \cdot L_2) = \operatorname{Pref}(L_1) \cup (L_1 \cdot \operatorname{Pref}(L_2))$
     \item $\operatorname{Suff}(L_1 \cdot L_2) = \operatorname{Suff}(L_2) \cup (\operatorname{Suff}(L_1) \cdot L_2)$
     \item $\operatorname{Infix}(L_1 \cdot L_2) = \operatorname{Infix}(L_1) \cup \operatorname{Infix}(L_2) \cup (\operatorname{Suff}(L_1) \cdot \operatorname{Pref}(L_2))$

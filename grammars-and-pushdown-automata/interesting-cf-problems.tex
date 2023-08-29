@@ -1,0 +1,201 @@
+\section{Няколко интересни задачи}
+
+Тук ще разгледаме няколко хубави задачи за безконтекстни граматики.
+Първата ще има малко по-нестандартно решение.
+
+\begin{claim}\thlabel{equal-a-b-cfg}
+    Езикът $L = \{ \alpha \in \Sigma^* \mid |\alpha|_a = |\alpha|_b \}$е безконтекстен.
+\end{claim}
+
+\begin{proof}
+    Граматиката за $L$ е следната:
+
+    \begin{center}
+        $S \rightarrow aSb \mid bSa \mid SS \mid \varepsilon$
+    \end{center}
+
+    Сега нека покажем, че $\mathcal{L}(G) = L$:
+
+    \begin{itemize}
+        \item[$(\subseteq)$] За тази посока ще покажем с индукция по $n \in \mathbb{N}$, че ако $S \tri{n} \alpha$ и $\alpha \in \Sigma^*$, то $\alpha \in L$
+            \begin{itemize}
+                \item ако $S \tri{0} \alpha$, то $\alpha = S \notin \Sigma^*$ \checkmark
+                \item ако $S \tri{n + 1} \alpha$, тогава сме приложили някое правило
+                      \begin{itemize}
+                          \item[1 сл.] Приложили сме правилото $S \rightarrow \varepsilon$.
+                              Тогава $\alpha = \varepsilon \in L$
+                          \item[2 сл.] Приложили сме правилото $S \rightarrow aSb$.
+                              Тогава $S \tri{n} \beta$, като $\alpha = a \beta b$.
+                              Лесно се вижда, че имаме равенствата $|\alpha|_a = 1 + |\beta|_a \stackrel{\text{ИП}}{=} 1 + |\beta|_b = |\alpha|_b$, откъдето $\alpha \in L$
+                          \item[3 сл.] Приложили сме правилото $S \rightarrow bSa$.
+                              Този случай е аналогичен на 2 сл.
+                          \item[4 сл.] Приложили сме правилото $S \rightarrow SS$.
+                              Тогава $S \tri{n_1} \beta_1$ и $S \tri{n_2} \beta_2$, като $n = \max \{ n_1, n_2 \}$ и $\alpha = \beta_1 \beta_2$.
+                              Така $|\alpha|_a = |\beta_1|_a + |\beta_2|_a \stackrel{\text{ИП}}{=} |\beta_1|_b + |\beta_2|_b = |\alpha|_b$, откъдето $\alpha \in L$
+                      \end{itemize}
+            \end{itemize}
+        \item[$(\supseteq)$]  За тази посока ще покажем с индукция по $|\alpha|$, че ако $\alpha \in L$, то $S \tri{*} \alpha$
+            \begin{itemize}
+                \item $S \rightarrow \varepsilon$ е правило в $G$, и $S \tri{0} S$, откъдето $S \tri{1} \varepsilon$ \checkmark
+                \item Нека $|\alpha| = 2n + 2$ (дължината очевидно трябва да е четна).
+                      Ако $\alpha = a \beta b$ за някое $\beta \in \Sigma^*$, то понеже $|\beta|_a = |\alpha|_a - 1 = |\alpha|_b - 1 = |\beta|_b$, по ИП $S \tri{*} \beta$.
+                      Но в $G$ има правилото $S \rightarrow aSb$, откъдето $S \tri{*} \alpha$.
+                      Случаят, в който $\alpha = b \beta a$ е аналогичен.
+                      Интересните случаи са, когато $\alpha = x \beta x$ за $x \in \Sigma$.
+                      И двата са симетрични, така че ще разгледаме само когато $\alpha = a \beta a$.
+                      Нека $\alpha = \alpha_1 \dots \alpha_{2n + 2}$, като $\alpha_i \in \Sigma$.
+                      Нека $f_\alpha(i) = |\alpha_1 \dots \alpha_i|_a - |\alpha_1 \dots \alpha_i|_b$.
+                      Например ако $\beta = aabb$, то $f_\beta(0) = 0, f_\beta(1) = 1, f_\beta(2) = 2, f_\beta(3) = 1$ и $f_\beta(4) = 0$.
+                      Ясно е, че понеже $\alpha \in L$, $f_\alpha(|\alpha|) = 0$. Понеже $\alpha_1 = a$, $f_\alpha(1) = 1$, и понеже $\alpha_{2n + 2} = a$, $f_\alpha(2n + 1) = -1$.
+                      Това, което можем да направим, е да продължим $f_\alpha$ до непрекъсната $g_\alpha : [0, 2n + 2] \rightarrow \mathbb{R}$ по следния начин:
+                      \begin{itemize}
+                          \item $g_\alpha(i) = f_\alpha(i)$ за всяко $i \in \{ 0, \dots, 2n + 2 \}$
+                          \item $g_\alpha(i + \varepsilon) = (1 - \varepsilon) f_\alpha(i) + \varepsilon f_\alpha(i + 1)$ за всяко $i \in { 0, \dots, 2n + 1}$ и $\varepsilon \in (0, 1)$
+                      \end{itemize}
+                      Очевидно $g_\alpha$ е непрекъсната в реалните (и не целите) си точки.
+                      Нека проверим, че е така и в целите:
+                      \begin{itemize}
+                          \item $\lim\limits_{\varepsilon \rightarrow 0} g_\alpha(i + \varepsilon) = \lim\limits_{\varepsilon \rightarrow 0} [(1 - \varepsilon) f_\alpha(i) + \varepsilon f_\alpha(i + 1)] = f_\alpha(i) = g_\alpha(i)$
+                          \item $\lim\limits_{\varepsilon \rightarrow 1} g_\alpha(i + \varepsilon) = \lim\limits_{\varepsilon \rightarrow 1} [(1 - \varepsilon) f_\alpha(i) + \varepsilon f_\alpha(i + 1)] = f_\alpha(i + 1) = g_\alpha(i + 1)$
+                      \end{itemize}
+                      Имаме непрекъсната функция $g_\alpha$, за която знаем, че $g_\alpha(1) = 1$ и $g_\alpha(2n + 1) = -1$.
+                      Тогава от Теоремата на Болцано, има $i \in (1, 2n + 1)$ такъв, че $g_\alpha(i) = 0$.
+                      Нещо повече, конструирали сме $g$ така, че да връща цели стойности само когато и подаваме цели стойности.
+                      За това $i \in \{ 2, \dots, 2n \}$.
+                      Това означава, че $g_\alpha(i) = f_\alpha(i) = |\alpha_1 \dots \alpha_i|_a - |\alpha_1 \dots \alpha_i|_b = 0$, откъдето $\beta_1 = \alpha_1 \dots \alpha_i \in L$.
+                      Е тогава очевидно също и $\beta_2 = \alpha_{i + 1} \dots \alpha_{2n + 1} \in L$.
+                      По ИП $S \tri{*} \beta_1$ и $S \tri{*} \beta_2$.
+                      Така понеже имаме правилото $S \rightarrow SS$, $S \tri{*} \beta_1 \beta_2 = \alpha$.
+            \end{itemize}
+    \end{itemize}
+\end{proof}
+
+\begin{definition}\thlabel{bal-par-def}
+    Ще наричаме една дума $\alpha$ \textbf{добре скобуван относно $[$ и $]$}, ако за всяко $\beta \preceq_{pref} \alpha$, $|\beta|_[ \geq |\beta|_]$ и $|\alpha|_[ = |\alpha|_]$
+    Ще бележим този факт с $bal(\alpha, [, ])$.
+\end{definition}
+
+Пример за добра скобуван израз относно $($ и $)$ би бил думата (((23+4)$\times$(21-12))+6)/(73-23).
+Илюстрирано по-добре:
+
+\begin{center}
+    $\underset{1}{\textcolor{red}{(}}$
+    $\underset{2}{\textcolor{blue}{(}}$
+    $\underset{3}{\textcolor{yellow}{(}}$
+    23
+    +
+    4
+    $\underset{2}{\textcolor{yellow}{)}}$
+    $\times$
+    $\underset{3}{\textcolor{yellow}{(}}$
+    21
+    -
+    12
+    $\underset{2}{\textcolor{yellow}{)}}$
+    $\underset{1}{\textcolor{blue}{)}}$
+    +
+    6
+    $\underset{0}{\textcolor{red}{)}}$
+    /
+    $\underset{1}{\textcolor{red}{(}}$
+    73
+    -
+    23
+    $\underset{0}{\textcolor{red}{)}}$
+\end{center}
+
+Тук много лесно се вижда, че никога броят на $($ не надвишава броя на $)$.
+
+\begin{problem}
+Да се построи граматика за езика $L = \{ \alpha \in \{ [, ] \} \mid bal(a, [, ]) \}$
+
+Упътване: много подобно на \thref{equal-a-b-cfg}
+\end{problem}
+
+\pagebreak
+
+\begin{claim}
+    Ако $L$ е безконтекстен, тогава $\operatorname{Pref}(L)$ също е безконтекстен.
+\end{claim}
+
+\begin{proof}
+    Нека $G = \opair{\Sigma, V, S, R}$ е граматика в НФЧ без безполезни променливи за $L$.
+    Под безполезни променливи се има предвид такива, които не генерират нищо от $\Sigma^*$.
+
+    Строим граматика $G_{pref} = \opair{\Sigma, V_{pref}, \overleftarrow{S}, R_{pref}}$ за $\operatorname{Pref}(L)$:
+
+    \begin{itemize}
+        \item $V_{pref} = V \cup \overleftarrow{V}$, където $\overleftarrow{V} = \{ \overleftarrow{A} \mid A \in V \}$ и $V \cap \overleftarrow{V} = \varnothing$
+        \item правилата от старата граматика се запазват
+        \item ако $A \rightarrow_G BC$, то $\overleftarrow{A} \rightarrow_{G_{pref}} B \overleftarrow{C} \mid \overleftarrow{B}$
+        \item ако $A \rightarrow_G a$, то $\overleftarrow{A} \rightarrow_{G_{pref}} a \mid \varepsilon$
+    \end{itemize}
+
+    Цялата идея на конструкцията е, че $\operatorname{Pref}(L_1 \cdot L_2) = \operatorname{Pref}(L_1) \cup (L_1 \cdot \operatorname{Pref}(L_2))$ (от \nameref{prefix-suffix-infix-props}).
+
+    За да покажем, че $\operatorname{Pref}(L) \subseteq \mathcal{L}(G_{pref})$, ще докажем, че за всяко $A \in V, \: \alpha \in \Sigma^*$:
+
+    \begin{center}
+        ако $A \tri{*}_G \alpha$, то $\overrightarrow{A} \tri{*}_{G_{pref}} \beta$ за всяко $\beta \preceq_{pref} \alpha$ т.е. $\operatorname{Pref}(\mathcal{L}_G(A)) \subseteq \mathcal{L}_{G_{pref}}(\overrightarrow{A})$
+    \end{center}
+
+    Доказваме с индукция по големината на извода:
+
+    \begin{itemize}
+        \item ако $A \tri{0} \alpha$, то $\alpha = A \notin \Sigma^*$ \checkmark
+        \item ако $A \tri{n + 1} \alpha$, то сме приложили някое правило
+              \begin{itemize}
+                  \item[1 сл.] Приложили сме правилото $A \rightarrow_G BC$.
+                      Тогава $B \tri{n_1} \beta_1$ и $C \tri{n_1} \beta_2$, като $n = \max \{ n_1, n_2 \}$ и $\alpha = \beta_1 \beta_2$.
+                      Нека $\gamma \preceq_{pref} \alpha$.
+                      Тогава има два варианта (от \nameref{prefix-suffix-infix-props}):
+                      \begin{itemize}
+                          \item $\gamma \preceq_{pref} \beta_1$ - тогава по ИП $\overrightarrow{B} \tri{*} \gamma$, и понеже имаме правилото $\overrightarrow{A} \rightarrow \overrightarrow{B}$, $\overrightarrow{A} \tri{*} \gamma$.
+                          \item $\gamma = \beta_1 \lambda$ и $\lambda \preceq_{pref} \beta_2$ - тогава по ИП $\overrightarrow{C} \tri{*} \lambda$, и понеже имаме правилото $\overrightarrow{A} \rightarrow B \overrightarrow{C}$, $\overrightarrow{A} \tri{*} \beta_1 \lambda = \gamma$.
+                      \end{itemize}
+                  \item[2 сл.] Приложили сме правилото $A \rightarrow_G a$.
+                      Тогава $\alpha = a$ и всичките префикси на $\alpha$ са $a$ и $\varepsilon$.
+                      Тъй като $A \rightarrow_G a$, $\overrightarrow{A} \rightarrow_{G_{pref}} a \mid \varepsilon$, откъдето $\overrightarrow{A} \tri{*} a$ и $\overrightarrow{A} \tri{*} \varepsilon$
+              \end{itemize}
+    \end{itemize}
+
+    За да покажем, че $\mathcal{L}(G_{pref}) \subseteq \operatorname{Pref}(L)$, ще докажем, че за всяко $A \in V, \: \alpha \in \Sigma^*$:
+
+    \begin{center}
+        ако $\overrightarrow{A} \tri{*}_{G_{pref}} \alpha$, то има $\beta \in \Sigma^*$, че $A \tri{*}_G \alpha \beta$ т.е. $\mathcal{L}_{G_{pref}}(\overrightarrow{A}) \subseteq \operatorname{Pref}(\mathcal{L}_G(A))$
+    \end{center}
+
+    Доказваме с индукция по големината на извода:
+
+    \begin{itemize}
+        \item ако $\overrightarrow{A} \tri{0} \alpha$, то $\alpha = \overrightarrow{A} \notin \Sigma^*$ \checkmark
+        \item ако $\overrightarrow{A} \tri{n + 1} \alpha$, то сме приложили някое правило
+              \begin{itemize}
+                  \item[1 сл.] Приложили сме правилото $\overrightarrow{A} \rightarrow_{G_{pref}} B \overrightarrow{C}$.
+                      Тогава $B \tri{n_1}_{G_{pref}} \beta_1$ $\overrightarrow{C}_{G_{pref}} \tri{n_2} \beta_2$ като $n = \max \{ n_1, n_2 \}$ и $\alpha = \beta_1 \beta_2$.
+                      По ИП има $\lambda \in \Sigma^*$ такова, че $C \tri{*}_G \beta_2 \lambda$.
+                      От правилото, което сме приложили знаем, че $A \rightarrow_G BC$, откъдето $A \tri{*} \beta_1 \beta_2 \lambda = \alpha \lambda$.
+                  \item[2 сл.] Приложили сме правилото $\overrightarrow{A} \rightarrow_G \overrightarrow{B}$.
+                      Тогава $\overrightarrow{B} \tri{n}_{G_{pref}} \alpha$ и по ИП има $\beta_1 \in \Sigma^*$ такова, че $B \tri{*}_G \alpha \beta_1$.
+                      От правилото, което сме приложили знаем, че $A \rightarrow BC$.
+                      Тъй като $C$ не е безполезна променлива, има $\beta_2 \in \Sigma^*$ такова, че $C \tri{*}_G \beta_2$.
+                      Тогава $A \tri{*}_G \alpha \beta_1 \beta_2$.
+                  \item[3 сл.] Приложили сме правилото $\overrightarrow{A} \rightarrow_{G_{pref}} a$.
+                      Тогава $A \rightarrow_G a$, откъдето $A \tri{*}_G a = a \varepsilon$.
+                  \item[4 сл.] Приложили сме правилото $\overrightarrow{A} \rightarrow_{G_{pref}} \varepsilon$.
+                      Тогава $A \rightarrow_G a$, откъдето $A \tri{*}_G a = \varepsilon a$.
+              \end{itemize}
+    \end{itemize}
+
+    Накрая завършваме с:
+
+    \begin{center}
+        $\operatorname{Pref}(L) = \operatorname{Pref}(\mathcal{L}(G)) = \operatorname{Pref}(\mathcal{L}_G(S)) = \mathcal{L}_{G_{pref}}(\overrightarrow{S}) = \mathcal{L}(G_{pref})$
+    \end{center}
+\end{proof}
+
+\begin{problem}
+Да се покаже, че ако $L$ е безконтекстен, то тогава $\operatorname{Suff}(L)$ и $\operatorname{Infix}(L)$ също са безконтекстни.
+
+Упътване: конструкция за $\operatorname{Suff}$ е много подобна, а тази за $\operatorname{Infix}$ е комбинация от двете; може и да се използват \nameref{prefix-suffix-infix-props}
+\end{problem}
