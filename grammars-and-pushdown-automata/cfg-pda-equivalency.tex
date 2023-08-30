@@ -1,1 +1,130 @@
 \section{Еквивалентност на безконтекстните граматики и стековите автомати}
+
+Както видяхме има езици, които се разпознават и от стекови автомати, и от безконтекстни граматики.
+Оказва се, че всеки език, който се разпознава от безконтекстна граматика се разпознава от стеков автомат и обратното.
+
+\begin{lemma}
+    За всяка безконтекстна граматика $G$ съществува стеков автомат $P$ с $\mathcal{L}(P) = \mathcal{L}(G)$.
+\end{lemma}
+
+\begin{proof}
+    Б.О.О. нека $G = \opair{\Sigma, V, S, R}$ е граматика в НФЧ.
+
+    Строим стеков автомат $P = \opair{\Sigma, \Gamma, \sharp, Q, s, \Delta, f}$ за $\mathcal{L}(G)$:
+
+    \begin{itemize}
+        \item $Q = \{ s, p, f \}$
+        \item $\Gamma = \Sigma \cup V \cup \{ \sharp \}$
+        \item $\Delta(s, \varepsilon, \sharp) = \{ \opair{p, S \sharp} \}$ - в началото започваме с началната променлива в стека
+        \item $\Delta(p, \varepsilon, A) = \{ \opair{p, \alpha} \mid A \rightarrow_G \alpha \in R \}$ за всяко $A \in V$ - симулираме генерирането на променливи
+        \item $\Delta(p, x, x) = \opair{p, \varepsilon}$ за всяко $x \in \Sigma$ - симулираме генерирането на букви
+        \item $\Delta(p, \varepsilon, \sharp) = \{ \opair{f, \varepsilon} \}$ - когато сме няма променливи в стека и няма букви за четене завършваме работа
+    \end{itemize}
+
+    Сега ще покажем, че за всяко $A \in V$ и $\alpha \in \Sigma^*$:
+
+    \begin{center}
+        $A \tri{*} \alpha \iff \opair{p, \alpha, A} \vdash^* \opair{p, \varepsilon, \varepsilon}$
+    \end{center}
+
+    И за двете посоки правим индукция по $n \in \mathbb{N}$.
+    Базите са тривиално изпълнени.
+    Ще опишем подробно ИС.
+
+    \begin{itemize}
+        \item[$(\Rightarrow)$] Нека $A \tri{n + 1} \alpha$.
+            Тогава сме приложили някое правило:
+            \begin{itemize}
+                \item[1 сл.] Приложили сме правило $A \rightarrow a$.
+                    Тогава $\alpha = a$.
+                    Понеже имаме такова правило можем да направим прехода $\opair{p, \varepsilon a, A} \vdash \opair{p, a, a} \vdash \opair{p, \varepsilon, \varepsilon}$.
+                \item[2 сл.] Приложили сме правило $A \rightarrow BC$.
+                    Тогава $B \tri{n_1} \alpha_1$ и $C \tri{n_2} \alpha_2$ като $\alpha = \alpha_1 \alpha_2$ и $n = \max \{ n_1, n_2 \}$.
+                    По ИП  имаме, че $\opair{p, \alpha_1, B} \vdash^* \opair{p, \varepsilon, \varepsilon}$ и $\opair{p, \alpha_2, C} \vdash^* \opair{p, \varepsilon, \varepsilon}$,
+                    откъдето заради \thref{pda-conf-prop-1} можем да направим прехода $\opair{p, \varepsilon \alpha_1 \alpha_2, A} \vdash \opair{p, \alpha_1 \alpha_2, BC} \vdash^* \opair{p, \alpha_2, C} \vdash^* \opair{p, \varepsilon, \varepsilon}$.
+            \end{itemize}
+        \item[$(\Leftarrow)$] Нека $\opair{p, \alpha, A} \vdash^{n + 1} \opair{p, \varepsilon, \varepsilon}$.
+            Тогава имаме следните два варианта:
+            \begin{itemize}
+                \item[1 сл.] Направили сме преходите $\opair{p, \varepsilon \alpha, A} \vdash \opair{p, \alpha, a} \vdash^* \opair{p, \varepsilon, \varepsilon}$.
+                    Тогава имаме правилото $A \rightarrow a$ и $\alpha = a$.
+                    Очевидно $A \tri{*} a$.
+                \item[2 сл.] Направили сме преходите $\opair{p, \varepsilon \alpha, A} \vdash \opair{p, \alpha, BC} \vdash^* \opair{p, \varepsilon, \varepsilon}$.
+                    Тогава имаме правилото $A \rightarrow BC$ и по \thref{pda-conf-prop-2} има $\alpha_1$ и $\alpha_2$ такива,
+                    че $\alpha = \alpha_1 \alpha_2$, $\opair{p, \alpha_1, B} \vdash^* \opair{p, \varepsilon, \varepsilon}$ и $\opair{p, \alpha_2, C} \vdash^* \opair{p, \varepsilon, \varepsilon}$.
+                    По ИП $B \tri{*} \alpha_1$ и $C \tri{*} \alpha_2$, откъдето $A \tri{*} \alpha_1 \alpha_2 = \alpha$.
+            \end{itemize}
+    \end{itemize}
+
+    Накрая получаваме, че:
+    \begin{align*}
+        \alpha \in \mathcal{L}(G) & \iff S \tri{*} \alpha                                                                                                                                            \\
+                                  & \iff \opair{s, \varepsilon \alpha, \sharp} \vdash \opair{p, \alpha, S \sharp} \vdash^* \opair{p, \varepsilon, \sharp} \vdash \opair{f, \varepsilon, \varepsilon} \\
+                                  & \iff \alpha \in \mathcal{L}(P)
+    \end{align*}
+\end{proof}
+
+\begin{lemma}
+    За всеки стеков автомат $P$ съществува безконтекстна граматика $G$ с $\mathcal{L}(G) = \mathcal{L}(P)$.
+\end{lemma}
+
+\begin{proof}
+    Нека $P = \opair{\Sigma, \Gamma, \sharp, Q, s, \Delta, f}$ е стеков автомат.
+
+    Строим $G = \opair{\Sigma, V, S, R}$ за $\mathcal{L}(P)$:
+
+    \begin{itemize}
+        \item $V = Q \cross \Gamma \cross Q$
+        \item $S = \opair{s, \sharp, f}$
+        \item ако $\opair{q, \varepsilon} \in \Delta(p, x, A)$, то имаме правилото $\opair{p, A, q} \rightarrow_G x$
+        \item ако $\opair{r, B} \in \Delta(p, x, A)$, то имаме правилото $\opair{p, A, q} \rightarrow_G x \opair{r, B, q}$ за всяко $q \in Q$
+        \item ако $\opair{r, BC} \in \Delta(p, x, A)$, то имаме правилото $\opair{p, A, q} \rightarrow_G x \opair{r, B, r'} \opair{r', C, q}$ за всяко $q, r' \in Q$
+    \end{itemize}
+
+    Сега трябва да покажем, че за всяко $p, q \in Q, \: A \in \Gamma$ и $\alpha \in \Sigma^*$:
+
+    \begin{center}
+        $\opair{p, A, q} \tri{*} \alpha \iff \opair{p, \alpha, A} \vdash^* \opair{q, \varepsilon, \varepsilon}$.
+    \end{center}
+
+    И за двете посоки правим индукция по $n \in \mathbb{N}$.
+    Базите са тривиално изпълнени.
+    Ще опишем подробно ИС.
+
+    \begin{itemize}
+        \item[($\Rightarrow$)] Нека $\opair{p, A, q} \tri{n + 1} \alpha$.
+            Тогава сме приложили някое правило:
+            \begin{itemize}
+                \item[1 сл.] Приложили сме правилото $\opair{p, A, q} \rightarrow x$.
+                    Тогава $\alpha = x$, откъдето по конструкция $\opair{p, x, A} \vdash \opair{q, \varepsilon, \varepsilon}$.
+                \item[2 сл.] Приложили сме правилото $\opair{p, A, q} \rightarrow x \opair{r, B, q}$.
+                    Тогава $\alpha = x \lambda$ и $\opair{r, B, q} \tri{n} \lambda$, откъдето можем да видим, че $\opair{p, x \lambda, A} \vdash \opair{r, \lambda, B} \stackrel{\text{ИП}}{\vdash^*} \opair{q, \varepsilon, \varepsilon}$.
+                \item[3 сл.] Приложили сме правилото $\opair{p, A, q} \rightarrow x \opair{r, B, r'} \opair{r', C, q}$.
+                    Тогава $\opair{r, B, r'} \tri{n_1} \lambda_1$ и $\opair{r', C, q} \tri{n_2} \lambda_2$ като $\alpha = x \lambda_1 \lambda_2$ и $n = \max \{ n_1, n_2 \}$.
+                    По ИП $\opair{r, \lambda_1, B} \vdash^* \opair{r', \varepsilon, \varepsilon}$ и $\opair{r', \lambda_2, C} \vdash^* \opair{q, \varepsilon, \varepsilon}$,
+                    откъдето по \thref{pda-conf-prop-1} и конструкция на граматиката $\opair{p, x \lambda_1 \lambda_2, A} \vdash \opair{r, \lambda_1 \lambda_2, BC} \vdash^* \opair{r', \lambda_2, C} \vdash^* \opair{q, \varepsilon, \varepsilon}$.
+            \end{itemize}
+        \item[($\Leftarrow$)] Нека $\opair{p, x \lambda, A} \vdash^{n + 1} \opair{q, \varepsilon, \varepsilon}$.
+            Тогава имаме следните три варианта:
+            \begin{itemize}
+                \item[1 сл.] Направили сме преходите $\opair{p, x \lambda, A} \vdash \opair{r, \lambda, \varepsilon} \vdash^* \opair{q, \varepsilon, \varepsilon}$.
+                    Тогава очевидно $\lambda = \varepsilon$ и $r = q$, откъдето в $G$ имаме правилото $\opair{p, A, q} \rightarrow x$.
+                    Така $\opair{p, A, q} \tri{*} x = x \lambda$.
+                \item[2 сл.] Направили сме преходите $\opair{p, x \lambda, A} \vdash \opair{r, \lambda, B} \vdash^* \opair{q, \varepsilon, \varepsilon}$.
+                    Тогава имаме правилото $\opair{p, A, q} \rightarrow x \opair{r, B, q}$.
+                    По ИП $\opair{r, B, q} \tri{*} \lambda$, откъдето $\opair{p, A, q} \tri{*} x \lambda$.
+                \item[3 сл.] Направили сме преходите $\opair{p, x \lambda, A} \vdash \opair{r, \lambda, BC} \vdash^* \opair{q, \varepsilon, \varepsilon}$.
+                    Тогава по \thref{pda-conf-prop-2} има $\lambda_1, \lambda_2 \in \Sigma^*$ и $r' \in Q$ такива,
+                    че $\lambda = \lambda_1 \lambda_2$, $\opair{r, \lambda_1, B} \vdash^* \opair{r', \varepsilon, \varepsilon}$ и $\opair{r', \lambda_2, C} \vdash^* \opair{q, \varepsilon, \varepsilon}$.
+                    Също така имаме правилото $\opair{p, A, q} \rightarrow x \opair{r, B, r'} \opair{r', C, q}$.
+                    По ИП $\opair{r, B, r'} \tri{*} \lambda_1$ и $\opair{r', C, q} \tri{*} \lambda_2$, откъдето $\opair{p, A, q} \tri{*} x \lambda_1 \lambda_2 = x \lambda$.
+            \end{itemize}
+    \end{itemize}
+
+    Накрая получаваме, че:
+    \begin{align*}
+        \alpha \in \mathcal{L}(G) & \iff \opair{s, \sharp, f} \tri{*} \alpha                                    \\
+                                  & \iff \opair{s, \alpha, \sharp} \vdash^* \opair{f, \varepsilon, \varepsilon} \\
+                                  & \iff \alpha \in \mathcal{L}(P)
+    \end{align*}
+\end{proof}
