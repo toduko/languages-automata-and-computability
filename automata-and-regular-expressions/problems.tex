@@ -1,6 +1,6 @@
 \section{Задачи за упражнение}
 
-\begin{definition}
+\begin{definition}\thlabel{homomorphism-def}
     Функция $h : \Sigma_1^* \rightarrow \Sigma_2^*$ ще наричаме \textbf{хомоморфизъм}, ако:
     \begin{center}
         $h(\alpha \cdot \beta) = h(\alpha) \cdot h(\beta)$ за всички $\alpha, \beta \in \Sigma_1^*$
@@ -47,8 +47,8 @@
 Упътване: да се използват предната задача и хомоморфизми
 \end{problem}
 
-\begin{definition}
-    Функция $h : \Sigma_1^* \rightarrow \mathcal{P}(\Sigma_2^*)$ ще наричаме \textbf{силен хомоморфизъм}, ако:
+\begin{definition}\thlabel{reg-homomorphism-def}
+    Функция $h : \Sigma_1^* \rightarrow \mathcal{P}(\Sigma_2^*)$ ще наричаме \textbf{регулярен хомоморфизъм}, ако:
     \begin{itemize}
         \item $h(\alpha)$ е регулярен за всяко $\alpha \in \Sigma_1^*$
         \item $h(\alpha \cdot \beta) = h(\alpha) \cdot h(\beta)$ за всички $\alpha, \beta \in \Sigma_1^*$
@@ -56,11 +56,11 @@
 \end{definition}
 
 \begin{problem}
-Да се докаже, че за произволен силен хомоморфизъм $h$ е вярно, че $h(\varepsilon) = \{ \varepsilon \}$
+Да се докаже, че за произволен регулярен хомоморфизъм $h$ е вярно, че $h(\varepsilon) = \{ \varepsilon \}$
 \end{problem}
 
-\begin{problem}\thlabel{strong-homomorphism-regular}
-Да се докаже, че за произволен силен хомоморфизъм $h$ и регулярен език $L$, $\bigcup h[L]$ е регулярен
+\begin{problem}\thlabel{reg-homomorphism}
+Да се докаже, че за произволен регулярен хомоморфизъм $h$ и регулярен език $L$, $\bigcup h[L]$ е регулярен
 
 Упътване: да се направи индукция по строенето на регулярните езици
 \end{problem}
