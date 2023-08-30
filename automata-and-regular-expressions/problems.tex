@@ -8,17 +8,17 @@
 \end{definition}
 
 \begin{problem}
-Да се докаже, че за произволен хомоморфизъм $h$ е вярно, че $h(\varepsilon) = \varepsilon$
+Да се докаже, че за произволен хомоморфизъм $h$ е вярно, че $h(\varepsilon) = \varepsilon$.
 \end{problem}
 
 \begin{problem}\thlabel{homomorphism-regular}
-Да се докаже, че за произволен хомоморфизъм $h$ и регулярен език $L$, езикът $h[L]$ е регулярен
+Да се докаже, че за произволен хомоморфизъм $h$ и регулярен език $L$, езикът $h[L]$ е регулярен.
 
 Упътване: да се направи индукция по строенето на регулярните езици
 \end{problem}
 
 \begin{problem}\thlabel{homomorphism-inverse-regular}
-Да се докаже, че за произволен хомоморфизъм $h$ и регулярен език $L$, езикът $h^{-1}[L]$ е регулярен
+Да се докаже, че за произволен хомоморфизъм $h$ и регулярен език $L$, езикът $h^{-1}[L]$ е регулярен.
 
 Упътване: да се направи автомат, който докато чете $\alpha$, прави преходи с $h(\alpha)$ в автомат за $L$
 \end{problem}
@@ -50,7 +50,7 @@
 \begin{definition}\thlabel{reg-homomorphism-def}
     Функция $h : \Sigma_1^* \rightarrow \mathcal{P}(\Sigma_2^*)$ ще наричаме \textbf{регулярен хомоморфизъм}, ако:
     \begin{itemize}
-        \item $h(\alpha)$ е регулярен за всяко $\alpha \in \Sigma_1^*$
+        \item $h(x)$ е регулярен за всяко $x \in \Sigma_1$
         \item $h(\alpha \cdot \beta) = h(\alpha) \cdot h(\beta)$ за всички $\alpha, \beta \in \Sigma_1^*$
     \end{itemize}
 \end{definition}
@@ -60,7 +60,7 @@
 \end{problem}
 
 \begin{problem}\thlabel{reg-homomorphism}
-Да се докаже, че за произволен регулярен хомоморфизъм $h$ и регулярен език $L$, $\bigcup h[L]$ е регулярен
+Да се докаже, че за произволен регулярен хомоморфизъм $h$ и регулярен език $L$, $\bigcup h[L]$ е регулярен.
 
 Упътване: да се направи индукция по строенето на регулярните езици
 \end{problem}
