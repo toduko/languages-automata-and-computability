@@ -1,1 +1,71 @@
 \section{Задачи за упражнение}
+
+\begin{problem}
+Да се докаже, че сечението с регулярен език запазва безконтекстност изцяло с автомати.
+
+Упътване: конструкцията е много подобна на тази с детерминираните автомати
+\end{problem}
+
+\begin{problem}\thlabel{homomorphism-cf}
+Да се докаже, че за произволен хомоморфизъм (\thref{homomorphism-def}) $h$ и безконтекстен език $L$, езикът $h[L]$ е безконтекстен.
+
+Упътване: да се вземе граматика в НФЧ и да се помисли как трябва да се променят дърветата на извод
+\end{problem}
+
+\begin{problem}
+Използвайки, че езикът $\{ a^nb^n \mid n \in \mathbb{N} \}$ е безконтекстен, да се докаже, че следните езици са безконтекстни:
+
+\begin{itemize}
+    \item $L_1 = \{ b^na^n \mid n \in \mathbb{N} \}$
+    \item $L_2 = \{ b^{2n}a^n \mid n \in \mathbb{N} \}$
+\end{itemize}
+
+Упътване: да се представят езиците като хомоморфизми върху $L$
+\end{problem}
+
+\begin{problem}
+Нека $L$ е регулярен.
+Използвайки, че е безконтекстен (\thref{move-operation}) езикът
+
+\begin{center}
+    $\operatorname{Move}(L) = \{ a^n b^m \mid (\exists \alpha \in L) \: (|\alpha|_a = n \: \& \: |\alpha|_b = m) \}$
+\end{center}
+
+да се докаже, че следните езици са безконтекстни:
+
+\begin{itemize}
+    \item $L' = \{ \alpha_1 \dots \alpha_n \beta_1 \dots \beta_m \mid (\exists \alpha \in L) \: (|\alpha|_a = n \: \& \: |\alpha|_b = m) \: \& \: \alpha_i \in L_1 \: \& \: \beta_i \in L_2 \}$
+    \item $L'' = \{ \alpha_1 \dots \alpha_{2n} \beta_1 \dots \beta_{3m} \mid (\exists \alpha \in L) \: (|\alpha|_a = n \: \& \: |\alpha|_b = m) \: \& \: \alpha_i \in L_1 \: \& \: \beta_i \in L_2 \}$
+    \item $L''' = \{ \beta_1 \dots \beta_m \alpha_1 \dots \alpha_n \mid (\exists \alpha \in L) \: (|\alpha|_a = n \: \& \: |\alpha|_b = m) \: \& \: \alpha_i \in L_1 \: \& \: \beta_i \in L_2 \}$
+\end{itemize}
+
+Упътване: да се представят езиците като хомоморфизми или композиция от хомоморфизми върху $\operatorname{Move}(L)$
+\end{problem}
+
+\begin{definition}\thlabel{cf-homomorphism-def}
+    Функция $h : \Sigma_1^* \rightarrow \mathcal{P}(\Sigma_2^*)$ ще наричаме \textbf{безконтекстен хомоморфизъм}, ако:
+    \begin{itemize}
+        \item $h(x)$ е безконтекстен за всяко $x \in \Sigma_1$
+        \item $h(\alpha \cdot \beta) = h(\alpha) \cdot h(\beta)$ за всички $\alpha, \beta \in \Sigma_1^*$
+    \end{itemize}
+\end{definition}
+
+\begin{problem}
+Да се докаже, че за произволен безконтекстен хомоморфизъм $h$ е вярно, че $h(\varepsilon) = \{ \varepsilon \}$.
+\end{problem}
+
+\begin{problem}\thlabel{cf-homomorphism}
+Да се докаже, че за произволен безконтекстен хомоморфизъм $h$ и безконтекстен език $L$, езикът $\bigcup h[L]$ е безконтекстен.
+
+Упътване: същата конструкцията като \thref{homomorphism-cf}
+\end{problem}
+
+\begin{problem}\thlabel{a^nb^ka^nb^k}
+Да се покаже, че $L = \{ a^n b^k c^n d^k \mid n, k \in \mathbb{N} \}$ не е безконтекстен.
+\end{problem}
+
+\begin{problem}
+Да се покаже, че операцията $\operatorname{Cyc}_{rev}(L) = \{ \alpha \beta^{rev} \in \Sigma^* \mid \beta \alpha \in L \}$ не запазва безконтекстност.
+
+Упътване: за използвайте \thref{non-cf-intersect-with-regular} като пресичате $\{ x_1 \}^* \{ x_2 \}^* \{ x_3 \}^* \{ x_4 \}^*$ с някой безконтекстен език, подобен на езика от \thref{a^nb^ka^nb^k}.
+\end{problem}
