@@ -5,10 +5,12 @@ on:
     branches: ["master"]
     paths:
       - '**/*.tex'
+      - '.github/workflows/publish-pdf.yml'
   pull_request:
     branches: ["master"]
     paths:
       - '**/*.tex'
+      - '.github/workflows/publish-pdf.yml'
 
 jobs:
   build_and_deploy:
@@ -33,14 +35,17 @@ jobs:
           root_file: notes.tex
           latexmk_shell_escape: true
 
+      - name: Rename file
+        run: mv notes.pdf languages-automata-and-computability.pdf
+
       - name: Deploy PDF
         uses: dmnemec/copy_file_to_another_repo_action@main
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
-          source_file: "notes.pdf"
+          source_file: "languages-automata-and-computability.pdf"
           destination_repo: "toduko/toduko.github.io"
-          destination_folder: "languages-automata-and-computability"
+          destination_folder: "notes"
           destination_branch: "master"
           user_email: "teddyepich@gmail.com"
           user_name: "toduko"
