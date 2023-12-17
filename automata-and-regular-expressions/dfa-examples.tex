@@ -131,9 +131,9 @@
 \begin{proof}
     С индукция по $|\alpha|$.
     \begin{itemize}
-        \item База: $|\alpha| = 0$, тогава $\alpha = \varepsilon$.
+        \item $|\alpha| = 0$, тогава $\alpha = \varepsilon$.
               Наистина $\delta^*(0, \varepsilon) = 0 \: (mod \: 2)$ \checkmark
-        \item ИС: $|\alpha| = n + 1$, тогава $\alpha = \beta x$ за $\beta \in \Sigma^*, |\beta| = n, \: x \in \Sigma$.
+        \item $|\alpha| = n + 1$, тогава $\alpha = \beta x$ за $\beta \in \Sigma^*, |\beta| = n, \: x \in \Sigma$.
               Тогава:
               \begin{center}
                   $\delta^*(0, \beta x) = \delta(\delta^*(0, \beta), x) \stackrel{\text{ИП}}{=} \delta(|\beta| \: (mod \: 2), x) = |\beta| + 1 \: (mod \: 2) = |\beta x| \: (mod \: 2) = |\alpha| \: (mod \: 2)$
