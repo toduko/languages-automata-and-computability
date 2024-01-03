@@ -32,9 +32,9 @@
     $\operatorname{Eps}(n) = \{ A \in V \mid A \tri{\leq n} \varepsilon \}$
 \end{center}
 
-С $\operatorname{Eps}$ ще бележим най-малката неподвижна точка на оператора със същото име.
-За сега обаче не сме направили нищо.
-Трябва да променим правилата.
+Тъй като $\operatorname{Eps}(n) \subseteq \operatorname{Eps}(n+1) \subseteq V$, то от някъде нататък ще получаваме едно и също множество.
+Нека това множество бележим с $\operatorname{Eps}$.
+Нека сега променим правилата.
 Ако има правило $X \rightarrow X_1 \dots X_k$, при условието че $X_1 \dots X_k \neq \varepsilon$, добавяме всички правила от вида $X \rightarrow Y_1 \dots Y_k$, където:
 
 \begin{itemize}
@@ -62,7 +62,8 @@
     $\operatorname{Rename}(n) = \{ \opair{A, B} \mid A \tri{\leq n} B \}$
 \end{center}
 
-С $\operatorname{Rename}$ ще бележим най-малката неподвижна точка на оператора със същото име.
+Тъй като $\operatorname{Rename}(n) \subseteq \operatorname{Rename}(n+1) \subseteq V \cross V$, то от някъде нататък ще получаваме едно и също множество.
+Нека това множество бележим с $\operatorname{Rename}$.
 Вече можем да кажем кои ще са новите правила в граматиката:
 
 \begin{center}
