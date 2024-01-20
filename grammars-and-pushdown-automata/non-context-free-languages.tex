@@ -30,12 +30,12 @@
     На картинка имаме следното:
     \begin{center}
         \begin{forest}
-            [$S$ [\wraphspace{$x$}{1em},roof] [$A$ [\wraphspace{$y$}{1em}, roof] [$A$ [\wraphspace{$u$}{1em}, roof]] [\wraphspace{$v$}{1em}, roof]] [\wraphspace{$w$}{1em},roof]]
+            [$S$ [[\wraphspace{$x$}{1em},roof]] [$A$ [[\wraphspace{$y$}{1em}, roof]] [$A$ [[\wraphspace{$u$}{1em}, roof]]] [[\wraphspace{$v$}{1em}, roof]]] [[\wraphspace{$w$}{1em},roof]]]
             \node[text width=3.0cm] at (0, 0) {$T:$};
         \end{forest}
     \end{center}
     Понеже срещанията на а се случват достатъчно надолу, $|yuv| \leq p$.
-    Понеже дървото $T$ е с минимален брой върхове $|yv| geq 1$.
+    Понеже дървото $T$ е с минимален брой върхове $|yv| \geq 1$.
     Ако това не беше вярно, $yv = \varepsilon$ и можехме да премахнем първото срещане на $A$, с което строим по-малко дърво на извод.
     Остава само да проверим, че $xy^iuv^iw \in L$ за всяко $i \in \mathbb{N} \: (\star)$.
     От \thref{tri-der-equiv}, $A \tri{*} yAv$.
