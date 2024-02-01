@@ -2,7 +2,7 @@
 
 Тук качвам кода на [моите](https://github.com/toduko) записки за упражнения по *ЕАИ / ДСТР-2* курса, който се води във [ФМИ СУ](https://fmi.uni-sofia.bg/).
 
-Истинските записки може да намерите [тук](https://toduko.github.io/languages-automata-and-computability/notes.pdf)
+Истинските записки може да намерите [тук](https://toduko.github.io/notes/languages-automata-and-computability.pdf)
 
 ## :thought_balloon: Какво има (и/или ще има) в записките?
 
