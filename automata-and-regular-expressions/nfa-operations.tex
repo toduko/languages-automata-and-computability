@@ -42,7 +42,7 @@
     Нека $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$ е ДКА за $L$.
     Строим автомат $\mathcal{N}$ за $\operatorname{ChangeSomeLetters}(L)$:
     \begin{itemize}
-        \item $\mathcal{N} = \opair{\Sigma, Q, \{ s \}, \Delta, F}$
+        \item $\mathcal{N} = \opair{\Sigma, Q, S, \Delta, F}$
         \item $S = \{ s \}$
         \item $\Delta(p, x) = \{ \delta(p, a), \delta(p, b) \}$ за $p \in Q, \: x \in \Sigma$
     \end{itemize}
@@ -54,7 +54,7 @@
 
     Имайки това твърдение получаваме, че:
     \begin{align*}
-        \alpha \in \mathcal{L(N)} & \iff \Delta^*(S, \alpha) \cup F \neq \varnothing \iff (\exists \beta \in \Sigma^{|\alpha|}) \: (\delta^*(s, \beta) \in F) \\
+        \alpha \in \mathcal{L(N)} & \iff \Delta^*(S, \alpha) \cap F \neq \varnothing \iff (\exists \beta \in \Sigma^{|\alpha|}) \: (\delta^*(s, \beta) \in F) \\
                                   & \iff (\exists \beta \in \Sigma^{|\alpha|}) \: (\beta \in L) \iff \alpha \in \operatorname{ChangeSomeLetters}(L)
     \end{align*}
 \end{proof}
@@ -126,11 +126,11 @@
 \begin{proof}
     Нека $\mathcal{N}_{rev} = \opair{\Sigma, Q, F, \Delta_{rev}, S}$, където:
     \begin{center}
-        $\Delta_{rev} = \{ \opair{p, x, q} \mid \opair{q, x, p} \in \Delta \}$
+        $\Delta_{rev} = \{ \opair{p, x, q} \mid p \in \Delta(q, x) \}$
     \end{center}
     Тривиално може да се покаже с индукция, че за $\alpha \in \Sigma^*, \: p, q \in Q$:
     \begin{center}
-        $q \in \Delta^*(p, \alpha) \iff p \in \Delta_{rev}^*(q, \alpha) \: (\star)$
+        $q \in \Delta^*(\{ p \}, \alpha) \iff p \in \Delta_{rev}^*(\{ q \}, \alpha) \: (\star)$
     \end{center}
     След това приключваме със:
     \begin{align*}
