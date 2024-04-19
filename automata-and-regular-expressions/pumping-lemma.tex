@@ -7,7 +7,7 @@
     Нека $L$ е регулярен език. Тогава:
     \begin{align*}
          & (\exists p \geq 1)                                                             \\
-         & (\forall \alpha \in L, \: |\alpha| \geq 1)                                     \\
+         & (\forall \alpha \in L, \: |\alpha| \geq p)                                     \\
          & (\exists x, y, z \in \Sigma^*, \: xyz = \alpha, \: |xy| \leq p, \: |y| \geq 1) \\
          & (\forall i \in \mathbb{N}) [xy^iz \in L]
     \end{align*}
@@ -55,7 +55,7 @@
     Така получаваме, че $\delta^*(s, x) = q_{i_{t_1}}$ и от там $\delta^*(\delta^*(q_{i_{t_1}}, y), z) \in F$.
     От \thref{pl-helper} имаме, че за всяко $ i \in \mathbb{N}$,  $\delta^*(q_{i_{t_1}}, y^i) = q_{i_{t_2}} = q_{i_{t_1}}$.
     Освен това знаем, че $\delta^*(q_{i_{t_2}}, z) \in F$.
-    
+
     Следователно за всяко $i \in \mathbb{N}$, $\delta^*(\delta^*(q_{i_{t_1}}, y^i), z) \in F$.
     От тук можем да заключим, че $\delta^*(\delta^*(\delta^*(s, x), y^i), z) \in F$ за всяко $ i \in \mathbb{N}$.
     и вървейки в обратната посока (``сливането'' на всички $\delta^*$ в едно) получаваме,
@@ -68,7 +68,7 @@
     Ако е изпълнено, че:
     \begin{align*}
          & (\forall p \geq 1)                                                             \\
-         & (\exists \alpha \in L, \: |\alpha| \geq 1)                                     \\
+         & (\exists \alpha \in L, \: |\alpha| \geq p)                                     \\
          & (\forall x, y, z \in \Sigma^*, \: xyz = \alpha, \: |xy| \leq p, \: |y| \geq 1) \\
          & (\exists i \in \mathbb{N}) [xy^iz \notin L],
     \end{align*}
