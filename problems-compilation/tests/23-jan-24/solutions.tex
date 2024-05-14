@@ -1,0 +1,168 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[english, bulgarian]{babel}
+\usepackage{amssymb}
+\usepackage{hyperref, fancyhdr, lastpage, fancyvrb, tcolorbox, titlesec}
+\usepackage{array, tabularx, colortbl}
+\usepackage{tikz}
+\usepackage{venndiagram}
+\usepackage{amsthm, bm}
+\usepackage{relsize}
+\usepackage{amsmath,physics}
+\usepackage{mathtools}
+\usepackage{subcaption}
+\usepackage{theoremref}
+\usepackage{circuitikz}
+\usepackage[a4paper, left=0.50in, right=0.50in, top=1.0in, bottom=1.0in]{geometry}
+\usepackage{stmaryrd}
+\usepackage{forest}
+\usepackage{cancel}
+\usepackage{stackrel}
+\usetikzlibrary{automata, arrows, positioning, shapes}
+\useforestlibrary{linguistics}
+
+\ExplSyntaxOn
+\NewDocumentCommand{\opair}{m}
+{
+    \langle\mspace{2mu}
+    \clist_set:Nn \l_tmpa_clist { #1 }
+    \clist_use:Nn \l_tmpa_clist {,\mspace{3mu plus 1mu minus 1mu}\allowbreak}
+    \mspace{2mu}\rangle
+}
+\ExplSyntaxOff
+
+\hypersetup{
+    colorlinks=true,
+    linktoc=all,
+    linkcolor=blue
+}
+
+\setlength\parindent{0pt}
+
+\newtheorem{problem}{Задача}
+\newtheorem*{claim}{Твърдение}
+\theoremstyle{definition}
+\newtheorem*{solution}{Решение}
+
+\begin{document}
+\title{Решения на задачите от писмен изпит по ЕАИ на специалност ``Информатика'', проведено на 23 януари 2024 г.}
+\date{}
+
+\maketitle
+
+\begin{problem} {\bf (1 т)} Нека $G$ е граматиката с начална променлива $S$, зададена чрез следните правила:
+
+$$S \rightarrow aT \mid aM \mid aX$$
+$$T \rightarrow bS \mid \varepsilon$$
+$$M \rightarrow bM \mid bX \mid \varepsilon$$
+$$X \rightarrow aS$$
+Да се построи краен детерминиран автомат $\mathcal{A}$, за който е изпълнено $\mathcal{L}(\mathcal{A})=\mathcal{L}(G)$, като се използват изучавани конструкции или се докаже коректността на автомата.
+\end{problem}
+
+\begin{solution}
+    Първо строим недетерминиран автомат $\mathcal{N}$ и после го детерминизираме, за да получим $\mathcal{A}$:
+
+    \begin{figure*}[h]
+        \begin{subfigure}{0.5\linewidth}
+            \centering
+            \begin{tabular}{|c|c|c|}
+                \hline
+                $\mathcal{N}$   & $a$       & $b$    \\
+                \hline
+                $\rightarrow s$ & $t, m, x$ &        \\
+                \hline
+                $*t$            &           & $s$    \\
+                \hline
+                $*m$            &           & $m, x$ \\
+                \hline
+                $x$             & $s$       &        \\
+                \hline
+            \end{tabular}
+            \caption*{НКА $\mathcal{N}$ за $\mathcal{L}(G)$}
+        \end{subfigure}
+        \begin{subfigure}{0.5\linewidth}
+            \centering
+            \begin{tabular}{|c|c|c|}
+                \hline
+                $\mathcal{A}$   & $a$           & $b$           \\
+                \hline
+                $\rightarrow s$ & $t, m, x$     & $\varnothing$ \\
+                \hline
+                $*t, m, x$      & $s$           & $s, m, x$     \\
+                \hline
+                $*s, m, x$      & $s, t, m, x$  & $m, x$        \\
+                \hline
+                $*s, t, m, x$   & $s, t, m, x$  & $s, m, x$     \\
+                \hline
+                $*m, x$         & $s$           & $m, x$        \\
+                \hline
+                $\varnothing$   & $\varnothing$ & $\varnothing$ \\
+                \hline
+            \end{tabular}
+            \caption*{ДКА $\mathcal{A}$ за $\mathcal{L(N)} = \mathcal{L}(G)$}
+        \end{subfigure}
+    \end{figure*}
+
+    През цялото време сме използвали изучавани конструкции, така че няма какво да доказваме.
+\end{solution}
+
+\begin{problem} {\bf (2 т)}
+\begin{itemize}
+
+    \item {\bf (1 т)} Докажете, че следният език е регулярен:
+          $$L_1 = \{a^n \# a^{m \cdot (n \; mod \; 2)} b^{m \cdot ((n+1) \; mod \; 2)} \mid n, m \in \mathbb{N}\}$$
+    \item {\bf (1 т)} Докажете, че следният език не е регулярен:
+          $$L_2 = \{a^n \# a^{m \cdot (n \; mod \; 2)} b^{m \cdot ((n+1) \; mod \; 3)} \mid n, m \in \mathbb{N}\}$$
+
+\end{itemize}
+\end{problem}
+
+\begin{solution}
+    За $L_1$ получаваме следното изразяване:
+    \begin{align*}
+        L_1 & = \{ a^n \# a^{m \cdot{(n \; mod \; 2))}} \underbrace{b^{m \cdot (n + 1 \; mod \; 2)}}_{\substack{\varepsilon \text{, понеже }                                                                     \\ (n + 1 \; mod \; 2) = 0}} \mid n, m \in \mathbb{N} \: \& \: n \text{ е нечетно} \} \cup \{ a^n \# \underbrace{a^{m \cdot{(n \; mod \; 2))}}}_{\substack{\varepsilon \text{, понеже }                                                                     \\ (n \; mod \; 2) = 0}} b^{m \cdot (n + 1 \; mod \; 2)} \mid n, m \in \mathbb{N} \: \& \: n \text{ е четно} \} \\
+            & = \{ a^n \# a^m \mid n, m \in \mathbb{N} \: \& \: n \text{ е нечетно} \} \cup \{ a^n \# b^m \mid n, m \in \mathbb{N} \: \& \: n \text{ е четно} \}                                                 \\
+            & = (\{ a^n \mid n \in \mathbb{N} \: \& \: n \text{ е нечетно} \} \cdot \{ \# \} \cdot  \{ a \}^*) \cup (\{ a^n \mid n \in \mathbb{N} \: \& \: n \text{ е четно} \} \cdot \{ \# \} \cdot  \{ b \}^*) \\
+            & = (\{ a^{2n + 1} \mid n \in \mathbb{N} \} \cdot \{ \# \} \cdot  \{ a \}^*) \cup (\{ a^{2n} \mid n \in \mathbb{N} \} \cdot \{ \# \} \cdot  \{ b \}^*)                                               \\
+            & = (\{ a \} \cdot \{ a^{2n} \mid n \in \mathbb{N} \} \cdot \{ \# \} \cdot  \{ a \}^*) \cup (\{ a^{2n} \mid n \in \mathbb{N} \} \cdot \{ \# \} \cdot  \{ b \}^*)                                     \\
+            & = (\{ a \} \cdot \{ (aa)^n \mid n \in \mathbb{N} \} \cdot \{ \# \} \cdot  \{ a \}^*) \cup (\{ (aa)^n \mid n \in \mathbb{N} \} \cdot \{ \# \} \cdot  \{ b \}^*)                                     \\
+            & = (\{ a \} \cdot \{ aa \}^* \cdot \{ \# \} \cdot \{ a \}^*) \cup (\{ aa \}^* \cdot \{ \# \} \cdot \{ b \}^*)
+    \end{align*}
+
+    Получихме $L_1$ чрез прилагане на регулярните операции, започвайки от регулярни езици.
+    Така $L_1$ е регулярен.
+
+    \pagebreak
+
+    За $L_2$ нека разгледаме класовете от вида $[a \# a^n]_{\approx_{L_2}}$.
+    Нека $n, k \in \mathbb{N}$ и $n \neq k$.
+    Тогава:
+    \begin{itemize}
+        \item $a \# a^{n (1 \; mod \; 2)} b^{n (1 + 1 \; mod \; 3)} = a \# a^n b^{2n} \in L$
+        \item $a \# a^{k (1 \; mod \; 2)} b^{n (1 + 1 \; mod \; 3)} = a \# a^k b^{2n} \notin L$, понеже $n \neq k$
+    \end{itemize}
+    От тук можем да заключим, че $a \# a^n \not\approx_{L_2} a \# a^k$ за $n \neq k$.
+    Така намерихме безброй много елементи на множеството $\{ [\alpha]_{\approx_{L_2}} \mid \alpha \in \Sigma^* \}$, откъдето $L_2$ не е регулярен.
+\end{solution}
+
+\begin{problem} {\bf (1 т)}
+Нека $L = \{\omega.\omega^{rev} \mid \omega \in \{a,b\}^{\ast}\}$. Докажете, че следният език е контекстно-свободен:
+$$L_3 = \{ a^n b^n \# \beta \mid n \in \mathbb{N} \: \& \: \beta \in L^{(n \; mod \; 3)} \}$$
+\end{problem}
+
+\begin{solution}
+    За $L_3$ получаваме следното изразяване:
+    \begin{align*}
+        L_3 & = \bigcup\limits_{r \in \{0, 1, 2\}} (\{ a^n b^n \mid n \in \mathbb{N} \: \& \: (n \; mod \; 3) = r \} \cdot L^r)          \\
+            & = \bigcup\limits_{r \in \{0, 1, 2\}} (\{ a^r \} \cdot \{ a^{3n} b^{3n} \mid n \in \mathbb{N} \} \cdot \{ b^r \} \cdot L^r)
+    \end{align*}
+
+    Достатъчно е да направим граматики за $\{ a^{3n} b^{3n} \mid n \in \mathbb{N} \}$ и $L$:
+    $$S \rightarrow aaa S bbb \mid \varepsilon \text{ - граматика за } \{ a^{3n} b^{3n} \mid n \in \mathbb{N} \}$$
+    $$S_L \rightarrow a S_L a \mid b S_L b \mid \varepsilon \text{ - граматика за } L$$
+
+    Коректността на тези или подобни граматики е доказвана на упражнение, но на изпита се очаква от студента да направи доказателство.
+\end{solution}
+
+\end{document}

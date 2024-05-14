@@ -1,0 +1,196 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[english, bulgarian]{babel}
+\usepackage{amssymb}
+\usepackage{hyperref, fancyhdr, lastpage, fancyvrb, tcolorbox, titlesec}
+\usepackage{array, tabularx, colortbl}
+\usepackage{tikz}
+\usepackage{venndiagram}
+\usepackage{amsthm, bm}
+\usepackage{relsize}
+\usepackage{amsmath,physics}
+\usepackage{mathtools}
+\usepackage{subcaption}
+\usepackage{theoremref}
+\usepackage{circuitikz}
+\usepackage[a4paper, left=0.50in, right=0.50in, top=1.0in, bottom=1.0in]{geometry}
+\usepackage{stmaryrd}
+\usepackage{forest}
+\usepackage{cancel}
+\usepackage{stackrel}
+\usetikzlibrary{automata, arrows, positioning, shapes}
+\useforestlibrary{linguistics}
+
+\ExplSyntaxOn
+\NewDocumentCommand{\opair}{m}
+{
+    \langle\mspace{2mu}
+    \clist_set:Nn \l_tmpa_clist { #1 }
+    \clist_use:Nn \l_tmpa_clist {,\mspace{3mu plus 1mu minus 1mu}\allowbreak}
+    \mspace{2mu}\rangle
+}
+\ExplSyntaxOff
+
+\hypersetup{
+    colorlinks=true,
+    linktoc=all,
+    linkcolor=blue
+}
+
+\setlength\parindent{0pt}
+
+\newtheorem{problem}{Задача}
+\newtheorem*{claim}{Твърдение}
+\theoremstyle{definition}
+\newtheorem*{solution}{Решение}
+
+\begin{document}
+\title{Решения на задачите от семестриалното контролно по ЕАИ на специалност ``Компютърни науки'', проведено на 28 април 2024 г.}
+\date{}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\calL}{\mathcal{L}}
+
+\maketitle
+
+\begin{problem} {\bf (5 точки)}
+Намерете минималния детерминиран краен автомат, който разпознава регулярния език
+\[
+    \calL \llbracket (aba + bb)^* a \rrbracket.
+\]
+\end{problem}
+
+\begin{solution}
+    \phantom{}
+    \begin{enumerate}
+        \item $\calL \llbracket (aba + bb)^* a \rrbracket = \calL \llbracket (aba + bb)(aba + bb)^* a + a \rrbracket = \calL \llbracket aba(aba + bb)^* a + bb(aba + bb)^* a + a \rrbracket := L_1$.
+        \item $a^{-1}(L_1) = \calL \llbracket ba(aba + bb)^* a + \varepsilon \rrbracket := L_2$ -- нов език, понеже $\varepsilon \in L_2$ и $\varepsilon \notin L_1$.
+        \item $b^{-1}(L_1) = \calL \llbracket b(aba + bb)^* a \rrbracket := L_3$ -- нов език, понеже $ba \in L_3$ и $ba \notin L_1, L_2$.
+        \item $a^{-1}(L_2) = \varnothing$ -- очевидно нов език.
+        \item $b^{-1}(L_2) = \calL \llbracket a(aba + bb)^* a \rrbracket := L_4$ -- нов език, понеже $aa \in L_4$ и $aa \notin L_1, L_2, L_3$.
+        \item $a^{-1}(L_3) = \varnothing$.
+        \item $b^{-1}(L_3) = L_1$
+        \item $a^{-1}(L_4) = L_1$.
+        \item $b^{-1}(L_4) = \varnothing$.
+        \item $a^{-1}(\varnothing) = \varnothing$
+        \item $b^{-1}(\varnothing) = \varnothing$.
+    \end{enumerate}
+    Минималният автомат е следният:
+    \begin{center}
+        \begin{tikzpicture}[shorten >=1pt,node distance=2.5cm,>=stealth',thick]
+            \node[initial, state, initial text=] (1) {$L_1$};
+            \node[state, accepting] [right of=1] (2) {$L_2$};
+            \node[state] [above of=1] (3) {$L_3$};
+            \node[state] [below of=2] (4) {$L_4$};
+            \node[state] [right of=2] (5) {$\varnothing$};
+            \draw[->] (1) -- node[above] {$a$} (2);
+            \path[->] (1) edge [bend right] node[right] {$b$} (3);
+            \draw[->] (2) -- node[right] {$b$} (4);
+            \draw[->] (4) -- node[below] {$a$} (1);
+            \draw[->] (4) -- node[below] {$b$} (5);
+            \draw[->] (2) -- node[above] {$a$} (5);
+            \draw[->] (3) edge [bend left] node[above] {$a$} (5);
+            \path[->] (5) edge [loop right] node[right] {$a, b$} (5);
+            \path[->] (3) edge [bend right] node[left] {$b$} (1);
+        \end{tikzpicture}
+    \end{center}
+\end{solution}
+
+\pagebreak
+
+\begin{problem} {\bf (10 точки)}
+За една дума $\alpha$ и език $L$, да означим с $\|\alpha\|_L$ броя на префиксите $\beta$ на $\alpha$, за които $\beta \in L$.
+\begin{itemize}
+    \item[а)] Докажете, че ако $L$ е регулярен език, то $L_1 = \{ \alpha \in \Sigma^* \mid \|\alpha\|_L \text{ е четно} \}$ е регулярен език. {\bf (5 точки)}
+    \item[б)] Посочете регулярен език $L$, за който езикът $L_2 = \{ \alpha \cdot \beta \in \Sigma^* \mid \|\alpha\|_L = \|\beta\|_L \}$ не е регулярен. {\bf (5 точки)}
+\end{itemize}
+\end{problem}
+
+\begin{solution}
+    \phantom{}
+    \begin{itemize}
+        \item[а)] Нека $\A = \opair{\Sigma, Q, s, \delta, F}$ е детерминиран краен автомат за $L$.
+              Тогава за всяко $\alpha \in \Sigma^*$ имаме, че $\|\alpha\|_L$ ще бъде броят на срещания на финални състояния в $\A$, при прочитане на $\alpha$.
+              Това означава, че за да намерим четността на $\|\alpha\|_L$ е достатъчно да знаем четността на срещнатите финални състояния при четене на $\alpha$.
+              Строим автомат $\A_1 = \opair{\Sigma, Q_1, s_1, \delta_1, F_1}$ за $L_1$:
+              \begin{itemize}
+                  \item $Q_1 = Q \cross \{ 0, 1 \}$ -- пазим къде се намираме в $\A$ и каква е четността на срещанията на финални състояния при прочитане на входната дума;
+                  \item $s_1 = \opair{s, b}$, където $b = 0$ при $\varepsilon \notin L$ и $b = 1$ иначе;
+                  \item $F_1 = Q \cross \{ 0 \}$ -- не се интересуваме къде конкретно се намираме в $\A$, искаме само четен брой срещания на финални състояния при прочитане на входната дума;
+                  \item $\delta_1(\opair{p, b}, x) = \begin{cases}
+                                \opair{\delta(p, x), b}     & \text{, ако } \delta(p, x) \notin F \\
+                                \opair{\delta(p, x), 1 - b} & \text{, иначе}
+                            \end{cases}$ за всяко $x \in \Sigma, \; p \in Q, \; b \in \{ 0, 1 \}$ -- при всяко ново срещане на финално състояние модифицираме брояча.
+              \end{itemize}
+              Сега с индукция по $|\alpha|$ ще покажем, че $\delta_1^*(s_1, \alpha) = \opair{\delta^*(s, \alpha), \|\alpha\| \, (\operatorname{mod} \, 2)}$:
+              \begin{itemize}
+                  \item В базата имаме $\delta_1^*(s_1, \varepsilon) = s_1$.
+                        Единственият префикс на $\varepsilon$ е думата $\varepsilon$.
+                        Ако $\varepsilon \notin L$, то $\|\varepsilon\|_L = 0$, иначе $\|\varepsilon\|_L = 1$.
+                        Така наистина $s_1 = \opair{\delta^*(s, \varepsilon), \|\varepsilon\|_L}$.
+                  \item За индуктивната стъпка, $\delta_1^*(s_1, \beta x) = \delta_1(\delta_1^*(s_1, \beta), x) \stackrel{\text{(ИП)}}{=} \delta_1(\opair{\delta^*(s, \beta), \|\beta\|_L \, (\operatorname{mod} \, 2)}, x)$.
+                        Тогава имаме, че $\delta_1(\opair{\delta^*(s, \beta), \|\beta\|_L \, (\operatorname{mod} \, 2) }, x) = \opair{\delta(\delta^*(s, \beta), x), b} = \opair{\delta^*(s, \beta x), b}$, където
+                        \[
+                            b = \begin{cases}
+                                \|\beta\|_L \, (\operatorname{mod} \, 2)     & \text{, ако } \delta^*(s, \beta x) \notin F \\
+                                1 - \|\beta\|_L \, (\operatorname{mod} \, 2) & \text{, иначе}
+                            \end{cases}
+                        \]
+                        Всички префикси на $\beta x$ са или думата $\beta x$ или са префикси на $\beta$.
+                        Тогава $\|\beta x\|_L = \|\beta\|_L$, ако $\beta x \notin L$, и $\|\beta x\|_L = \|\beta\|_L + 1$ иначе.
+                        Ако $\delta^*(s, \beta x) \notin F$, то тогава накрая не сме срещнали финално състояние т.е. $\beta x \notin L$, откъдето и $\|\beta x\|_L = \|\beta\|_L$.
+                        Така получаваме, че $\|\beta x\|_L \, (\operatorname{mod} \, 2) = \|\beta\|_L \, (\operatorname{mod} \, 2)$.
+                        Ако пък $\delta^*(s, \beta x) \in F$, то тогава накрая ще сме срещнали финално състояние т.е. $\beta x \in L$, откъдето имаме, че $\|\beta x\|_L = \|\beta\|_L + 1$.
+                        Следователно $\|\beta x\|_L \, (\operatorname{mod} \, 2) = 1 - \|\beta\|_L \, (\operatorname{mod} \, 2)$.
+                        Така наистина $b = \|\beta x\|_L \, (\operatorname{mod} \, 2)$, с което сме готови.
+              \end{itemize}
+              Накрая имаме следните еквивалентности:
+              \[
+                  \alpha \in \calL(\A_1) \iff \delta_1^*(s_1, \alpha) \in F_1 \iff \opair{\delta^*(s, \alpha), \|\alpha\|_L \, (\operatorname{mod} \, 2)} \in Q \cross \{ 0 \} \iff \|\alpha\|_L \text{ е четно} \iff \alpha \in L_1.
+              \]
+        \item[б)] Ще покажем, че за $L = \{ b \} \cdot \{ a \}^*$ езикът $L_2$ не е регулярен.
+              Разглеждаме езиците от вида $(b a^n)^{-1}(L)$ за $n \in \N$.
+              Нека $n, k \in \N$ и $n \neq k$.
+              \begin{itemize}
+                  \item Да разгледаме думата $b a^n \cdot b a^n$.
+                        Ако положим $\alpha = \beta = b a^n$, тогава $\|\alpha\|_L = \|\beta\|_L = n + 1$, откъдето е изпълнено, че $\alpha \cdot \beta = b a^n \cdot b a^n \in L_2$.
+                        Така $b a^n \in (b a^n)^{-1}(L_2)$.
+                  \item Да разгледаме думата $b a^k \cdot b a^n$.
+                        Нека $b a^k \cdot b a^n = \alpha \cdot \beta$.
+                        \begin{itemize}
+                            \item[1 сл.] Ако $\alpha = \varepsilon$ и $\beta = b a^k \cdot b a^n$, то тогава $\|\alpha\|_L = 0 < \|\beta\|_L = k + 1$.
+                            \item[2 сл.] Ако $\alpha = b a^k$ и $\beta = b a^n$, то тогава $\|\alpha\|_L = k + 1 \neq n + 1 = \|\beta\|_L$.
+                            \item[3 сл.] Ако $\beta$ не започва с $b$, то тогава $\|\beta\|_L = 0$, но $\|\alpha\|_L > 0$, тъй като $\alpha$ със сигурност започва с $b$.
+                        \end{itemize}
+                        Така $b a^k \cdot b a^n \notin L_2$, откъдето $b a^n \notin (b a^k)^{-1}(L_2)$.
+              \end{itemize}
+              Следователно $(b a^n)^{-1}(L_2) \neq (b a^k)^{-1}(L_2)$ за $n \neq k$.
+              Накрая получаваме, че $\{ (b a^n)^{-1}(L_2) \mid n \in \N \}$ е безкрайно подмножество на $\{ \alpha^{-1}(L_2) \mid \alpha \in \Sigma^* \}$, откъдето $L_2$ не е регулярен.
+
+              \pagebreak
+              Алтернативно можем да покажем, че за $L = \{ a \}^*$ езикът $L_2$ не е регулярен.
+              Разглеждаме езиците от вида $(a^{2n + 1})^{-1}(L)$ за $n \in \N$.
+              Нека $n, k \in \N$ като $n < k$.
+              \begin{itemize}
+                  \item Да разгледаме думата $a^{2n + 1} \cdot b \cdot a^{2n + 1}$.
+                        Ако положим $\alpha = a^{2n + 1} b$ и $\beta = a^{2n + 1}$, то $\|\alpha\|_L = 2n + 2 = \|\beta\|_L$.
+                        Така $a^{2n + 1} \cdot b \cdot a^{2n + 1} \in L_2$, откъдето $b \cdot a^{2n + 1} \in (a^{2n + 1})^{-1}(L_2)$.
+                  \item Да разгледаме думата $a^{2k + 1} \cdot b \cdot a^{2n + 1}$.
+                        Нека $a^{2k + 1} \cdot b \cdot a^{2n + 1} = \alpha \cdot \beta$.
+                        \begin{itemize}
+                            \item[1 сл.] Ако $\beta$ не съдържа $b$, то тогава $\|\beta\|_L = |\beta| + 1 \leq 2n + 2 < 2k + 2 = \|\alpha\|_L$.
+                            \item[2 сл.] Ако $\beta = a^t \cdot b \cdot a^{2n + 1}$, то тогава $\alpha = a^{2k + 1 - t}$ и $\|\beta\|_L = t + 1$, откъдето $\|\alpha\|_L= 2k + 1 - t + 1$.
+                                  Тъй като числото $2k + 1$ е нечетно, то не може да се представи като сума на две нечетни или две четни числа.
+                                  Тогава $t$ и $2k + 1 - t$ имат различна четност, значи и $t + 1 = \|\beta\|_L$ и $2k + 1 - t + 1 = \|\alpha\|_L$ имат различна четност.
+                                  Така $\|\alpha\|_L \neq \|\beta\|_L$.
+                        \end{itemize}
+                        Така $a^{2k + 1} \cdot b \cdot a^{2n + 1} \notin L_2$, откъдето $b \cdot a^{2n + 1} \notin (a^{2k + 1})^{-1}(L_2)$.
+              \end{itemize}
+              Следователно $(a^{2n + 1})^{-1}(L_2) \neq (a^{2k + 1})^{-1}(L_2)$ за $n \neq k$.
+              Накрая получаваме, че $\{ (a^{2n + 1})^{-1}(L_2) \mid n \in \N \}$ е безкрайно подмножество на $\{ \alpha^{-1}(L_2) \mid \alpha \in \Sigma^* \}$, откъдето $L_2$ не е регулярен.
+    \end{itemize}
+\end{solution}
+
+\end{document}

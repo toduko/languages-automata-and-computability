@@ -1,0 +1,141 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[english, bulgarian]{babel}
+\usepackage{amssymb}
+\usepackage{hyperref, fancyhdr, lastpage, fancyvrb, tcolorbox, titlesec}
+\usepackage{array, tabularx, colortbl}
+\usepackage{tikz}
+\usepackage{venndiagram}
+\usepackage{amsthm, bm}
+\usepackage{relsize}
+\usepackage{amsmath,physics}
+\usepackage{mathtools}
+\usepackage{subcaption}
+\usepackage{theoremref}
+\usepackage{circuitikz}
+\usepackage[a4paper, left=0.50in, right=0.50in, top=1.0in, bottom=1.0in]{geometry}
+\usepackage{stmaryrd}
+\usepackage{forest}
+\usepackage{cancel}
+\usepackage{stackrel}
+\usetikzlibrary{automata, arrows, positioning, shapes}
+\useforestlibrary{linguistics}
+
+\ExplSyntaxOn
+\NewDocumentCommand{\opair}{m}
+ {
+  \langle\mspace{2mu}
+  \clist_set:Nn \l_tmpa_clist { #1 }
+  \clist_use:Nn \l_tmpa_clist {,\mspace{3mu plus 1mu minus 1mu}\allowbreak}
+  \mspace{2mu}\rangle
+}
+\ExplSyntaxOff
+
+\hypersetup{
+    colorlinks=true,
+    linktoc=all,
+    linkcolor=blue
+}
+
+\setlength\parindent{0pt}
+
+\newtheorem{problem}{Задача}
+\newtheorem*{claim}{Твърдение}
+\theoremstyle{definition}
+\newtheorem*{solution}{Решение}
+\newtheorem*{definition}{Дефиниция}
+
+\newcommand{\diff}{\operatorname{diff}}
+\newcommand{\err}{\operatorname{err}}
+\newcommand{\der}[1]{\stackbin[G]{#1}{\Rightarrow}}
+\makeatletter
+\newcommand*{\rom}[1]{\expandafter\@slowromancap\romannumeral #1@}
+\makeatother
+
+\begin{document}
+\title{Решения на задачите от контролно 2 по ЕАИ на специалност ``Информатика'', проведено на 13 януари 2024 г.}
+\date{}
+
+\maketitle
+
+\begin{problem}
+Да се построи безконтекстна граматика за езика $L = (\mathcal{L}(\mathcal{N}) \cup \{ab, b, \varepsilon\}) \cdot \mathcal{L}(G)^*$ като се използват изучавани конструкции или се докаже коректността на граматиката, където:
+$$G=\opair{ \{a,b\}, \{S,X\}, S, \{S \rightarrow aSb \mid XX, \: X \rightarrow a \mid SS\}}$$
+$$\mathcal{N} = \langle \{a,b\}, \{s, f_1, f_2\}, s, \Delta, \{f_1, f_2\} \rangle$$
+$$\Delta(s, a) = \{f_1, f_2\}, \: \Delta(s,b)=\{f_2\}, \: \Delta(f_1, a)=\{f_1\}, \: \Delta(f_1,b) = \{s\} $$
+\end{problem}
+
+\begin{solution}
+    Получаваме граматика за $L$, като използваме изучавани конструкции по следния начин:
+    \begin{enumerate}
+        \item $G_1 = \opair{\{a,b\}, \underbrace{\{ S_1, F_1, F_2\}}_{V_1}, S1, \underbrace{\{ S_1 \rightarrow aF_1 \mid aF_2 \mid bF_2, \: F_1 \rightarrow aF_1 \mid bS_1 \mid \varepsilon, \: F_2 \rightarrow \varepsilon\}}_{R_1}}$ за $\mathcal{L(N)}$
+        \item $G_2 = \opair{\{a,b\}, \underbrace{\{ S_2\}}_{V_2}, S_2, \underbrace{\{ S_2 \rightarrow ab \mid b \mid \varepsilon \}}_{R_2}}$ за $\{ ab, b, \varepsilon \}$
+        \item $G_3 = \opair{\{a,b\}, \underbrace{\{ S_3 \} \cup V_1 \cup V_2 }_{V_3}, S_3, \underbrace{\{S_3 \rightarrow S_1 \mid S_2 \} \cup R_1 \cup R_2}_{R_3}}$ за $\mathcal{L(N)} \cup \{ ab, b, \varepsilon \}$
+        \item $G_4 = \opair{\{a,b\}, \underbrace{\{ S_4, S, X \} }_{V_4}, S_4, \underbrace{\{S \rightarrow aSb \mid XX, \: X \rightarrow a \mid SS\} \cup \{ S_4 \rightarrow S_4S \mid \varepsilon \}}_{R_4}}$ за $\mathcal{L}(G)^*$
+        \item $G_5 = \opair{\{a,b\}, \{ S_5 \} \cup V_3 \cup V_4, S_5, \{ S_5 \rightarrow S_3 S_4 \} \cup R_3 \cup R_4}$ за $L$
+    \end{enumerate}
+\end{solution}
+
+\begin{problem}
+Да се построи безконтекстна граматика $G$ за езикa $L = \{\alpha \# \beta \mid \alpha, \beta \in \{a,b\}^* \text{ и } |\beta|_b = 2|\alpha|_a\}$ и да се докаже, че построената граматика разпознава дадения език.
+\end{problem}
+
+\begin{solution}
+    Можем да построим следната граматика за $L$:
+    $$S \rightarrow bS \mid Sa \mid aSbAb \mid \# $$
+    $$A \rightarrow aA \mid \varepsilon$$
+    Ясно е, че $\mathcal{L}_G(A) = \{ a \}^*$.
+    Направо ще покажем, че: $$S \der{*} \alpha \: \& \: \alpha \in \{ a, b, \# \}^* \iff \alpha \in L$$
+    \item[$(\Rightarrow)$] Доказваме с индукция по дължината на извода:
+    \begin{itemize}
+        \item ако $S \der{0} \alpha$, то $\alpha = S \notin \{ a, b, \# \}^*$ \checkmark
+        \item ако $S \der{n+1} \alpha \in \{ a, b \}^*$, то има $\beta \in \{S, A, a, b\}^*$, за което $S \der{} \beta$ и $\beta \der{n} \alpha$
+              \begin{itemize}
+                  \item[1 сл.] $\beta = \#$ - тогава $\alpha = \# \in L$.
+                  \item[2 сл.] $\beta = bS$ - тогава има $\gamma \in \{ a, b \}^*$, за което $S \der{n} \gamma$ и $\alpha = b \gamma$.
+                      По (ИП) $\gamma \in L$, откъдето $\gamma = \gamma_1 \# \gamma_2$, където $\gamma_1, \gamma_2 \in \{ a, b \}^*$ и $|\gamma_2|_b = 2|\gamma_1|_a$.
+                      Тогава $|\gamma_2|_b = 2|b \gamma_1|_a$, откъдето $\alpha = b \gamma = b \gamma_1 \# \gamma_2 \in L$.
+                  \item[3 сл.] $\beta = Sa$ - аналогичен на 2 сл.
+                  \item[4 сл.] $\beta = aSbAb$ - тогава има $\gamma \in \{ a, b \}^*$ и $n_1, n_2, k \in \mathbb{N}$, за които $S \der{n_1} \gamma, \: A \der{n_2} a^k, \: \alpha = a \gamma b a^k b$ и $n = n_1 + n_2$.
+                      По (ИП) $\gamma \in L$, откъдето $\gamma = \gamma_1 \# \gamma_2$, където $\gamma_1, \gamma_2 \in \{ a, b \}^*$ и $|\gamma_2|_b = 2|\gamma_1|_a$.
+                      Тогава понеже имаме $|\gamma_2 b a^k b|_b = 2 + |\gamma_2|_b = 2 + 2|\gamma_1|_a \stackrel{\gamma \in L}{=} 2|a \gamma_1|_a$, думата $\alpha = a \gamma b a^k b = a \gamma_1 \# \gamma_2 b a^k b \in L$.
+              \end{itemize}
+    \end{itemize}
+    \item[$(\Leftarrow)$] Доказваме с индукция по $|\alpha|$:
+    \begin{itemize}
+        \item ако $|\alpha| = 0$, то $\alpha = \varepsilon \notin L$ \checkmark
+        \item ако $|\alpha| = n + 1$ и $\alpha \in L$, то $\alpha = \beta \# \gamma$ и $|\gamma|_b = 2|\beta|_a$ и имаме следните възможности:
+              \begin{itemize}
+                  \item[1 сл.] $\beta = \gamma = \varepsilon$ - тогава $\alpha = \#$, и тъй като $S \rightarrow_G \#$, имаме $S \der{*} \#$ е извод за $\alpha$.
+                  \item[2 сл.] $\beta = b \beta_1$ - тогава $|\gamma|_b = 2|\beta|_a = 2|b \beta_1|_a = 2|\beta_1|_a$, откъдето $\beta_1 \# \gamma \in L$ по (ИП) $S \der{*} \beta_1 \# \gamma$.
+                      Извода за $\alpha$ е $S \der{} b S \der{*} b \beta_1 \# \gamma$.
+                  \item[3 сл.] $\gamma = \gamma_1 a$ - аналогичен на 2 сл.
+                  \item[4 сл.] $\beta = a \beta_1$ и $\gamma = \gamma_1 b a^k b$ за някое $k \in \mathbb{N}$ - докато 2 сл. и 3 сл. не се изключват взаимно, за да попаднем в него, трябва да не сме в нито един от останалите.
+                      Имайки поне едно $a$ в $\beta$ изисква поне две $b$ в $\gamma$ за да компенсират.
+                      Тъй като $|\gamma|_b = |\gamma_1 b a^k b|_b = 2 + |\gamma_1|_b$ и $2|\beta|_a = 2|a \beta_1|_a = 2 + |\beta_1|_a$, имаме $|\gamma_1|_b = 2|\beta_1|_a$, откъдето $\beta_1 \# \gamma_1 \in L$.
+                      Тогава по (ИП), имаме $S \der{*} \beta_1 \# \gamma_1$.
+                      Извода за $\alpha$ е $S \der{} aSbAb \der{*} aSba^kb \der{*} a \beta_1 \# \gamma_1 b a^k b$.
+              \end{itemize}
+    \end{itemize}
+\end{solution}
+
+\begin{problem}
+Да се докаже, че езикът $L = \{ \alpha \# a^{|\beta|_a}  b^{|\alpha|_b} \# \beta \mid \alpha, \beta \in \{a,b\}^\ast \}$ не е безконтекстен.
+\end{problem}
+
+\begin{solution}
+    Нека $p \geq 1$.
+    Тогава $\alpha = b^p \# a^p b^p \# a^p \in L$ и $|\alpha| \geq p$.
+    Нека $xyuvw = \alpha$, като $|yuv| \leq p$ и $|yv| \geq 1$.
+    Понеже $|yuv| \leq p$, думата $yv$ не може да обхваща букви от два несъседни сектора от еднакви букви (без да броим $\#$).
+    Тогава на лице са следните възможности:
+    \begin{itemize}
+        \item[1 сл.] $yv$ съдържа $\#$ - тогава $xy^0uv^0w \notin L$, защото няма да има две срещания на $\#$.
+        \item[2 сл.] $yv = a^{t_1}b^{t_2}$ за някои $t_1, t_2 \in \mathbb{N}$, където $1 \leq t_1 + t_2 \leq p$ - тогава $xy^0uv^0w = b^p \# a^{p - t_1} b^{p - t_2} \# a^p \notin L$, защото $t_1 > 0$ или $t_2 > 0$ т.е. $p \neq p - t_1$ или $p \neq p - t_2$.
+        \item[3 сл.] $yv = b^{t_1}a^{t_2}$ за някои $t_1, t_2 \in \mathbb{N}$, където $1 \leq t_1 + t_2 \leq p$ - тогава в зависимост от местоположението на $yv$ в $xyuvw$, имаме $xy^0uv^0w = b^{p - t_1} \# a^{p - t_2} b^p \# a^p$ или $xy^0uv^0w = b^p \# a^p b^{p - t_1} \# a^{p - t_2}$, но и в двата случая $xuw \notin L$, защото $t_1 > 0$ или $t_2 > 0$ т.е. $p \neq p - t_1$ или $p \neq p - t_2$.
+    \end{itemize}
+    Тъй като $L$ не удовлетворява условията от лемата за покачване, той не е безконтекстен.
+\end{solution}
+
+\end{document}

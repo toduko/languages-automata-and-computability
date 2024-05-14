@@ -1,0 +1,97 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[english, bulgarian]{babel}
+\usepackage{amssymb}
+\usepackage{hyperref, fancyhdr, lastpage, fancyvrb, tcolorbox, titlesec}
+\usepackage{array, tabularx, colortbl}
+\usepackage{tikz}
+\usepackage{venndiagram}
+\usepackage{amsthm, bm}
+\usepackage{relsize}
+\usepackage{amsmath,physics}
+\usepackage{mathtools}
+\usepackage{subcaption}
+\usepackage{theoremref}
+\usepackage{circuitikz}
+\usepackage[a5paper, left=0.50in, right=0.50in, top=0.50in, bottom=1.00in]{geometry}
+\usepackage{stmaryrd}
+\usepackage{forest}
+\usepackage{cancel}
+\usetikzlibrary{automata, arrows, positioning, shapes}
+\useforestlibrary{linguistics}
+
+\ExplSyntaxOn
+\NewDocumentCommand{\opair}{m}
+ {
+  \langle\mspace{2mu}
+  \clist_set:Nn \l_tmpa_clist { #1 }
+  \clist_use:Nn \l_tmpa_clist {,\mspace{3mu plus 1mu minus 1mu}\allowbreak}
+  \mspace{2mu}\rangle
+}
+\ExplSyntaxOff
+
+\hypersetup{
+    colorlinks=true,
+    linktoc=all,
+    linkcolor=blue
+}
+
+\setlength\parindent{0pt}
+
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\calL}{\mathcal{L}}
+
+\theoremstyle{definition}
+\newtheorem*{problem}{Задача}
+\newtheorem*{solution}{Решение}
+\newtheorem*{hint}{Упътване}
+
+\pagenumbering{gobble}
+
+\begin{document}
+
+\begin{center}
+    \Large{Относно едната задача от допълнителното упражнение, проведено на 24.04.2024 г.}
+\end{center}
+
+\vspace*{4mm}
+
+\begin{problem}
+Нека $L = \calL \llbracket 0^{10} 1^* + 0^* 1^{10} \rrbracket$.
+Да се докаже, че не може да се построи недетерминиран краен автомат $\N = \opair{\Sigma, Q, s, \Delta, F}$ с $\calL(\N) = L$ и $|Q| \leq 20$.
+\end{problem}
+
+\begin{solution}
+    Да допуснем, че такъв автомат $\N = \opair{\Sigma, Q, s, \Delta, F}$ съществува.
+    \begin{enumerate}
+        \item За $x \in \{ 0, 1 \}$ знаем, че $x^{10} \in L$, следователно има път от $s$ до някое финално състояние с етикет $x^{10}$.
+              Нека $p^x_0, p^x_1, \dots, p^{x}_{10}$ са състоянията, които се срещат (точно в тази последователност) в този път.
+              Тук отбелязваме, че $p^x_0 = s$ и $p^x_{10} \in F$.
+        \item Нека за $x \in \{ 0, 1 \}$ дефинираме $P_x = \{ p^x_i \mid 0 \leq i \leq 10 \}$.
+              Ясно е, че $|P_x| \leq 11$.
+              Тъй като $|P_0 \cup P_1| \leq |Q| \leq 20$, имаме следните възможности:
+              \begin{itemize}
+                  \item[1 сл.] $|P_x| < 11$ за някое $x \in \{ 0, 1 \}$.
+                        Нека б.о.о. $|P_0| < 11$.
+                        Тогава има $0 \leq i < j \leq 11$, за които $p^0_i = p^0_j$.
+                        Но в такъв случай редицата $p^0_0, \dots, p^0_{i - 1}, p^0_i, p^0_{j + 1}, \dots, p^0_{10}$ ще бъде път от $p^0_0 = s$ до $p^0_{10} \in F$ с етикет $0^{10 - (j - i)}$.
+                        Това ще означава, че $0^{10 - (j - i)} \in \calL(\N) = L$, което е абсурд.
+                  \item[2 сл.] $|P_x| = 11$ за $x \in \{ 0, 1 \}$.
+                        Тогава $(P_0 \cap P_1) \setminus \{ s \} \neq \varnothing$, защото иначе $|Q| \geq |P_0 \cup P_1| = 21 > 20$, което е противоречие.
+                        Ще покажем, че единственият елемент на $(P_0 \cap P_1) \setminus \{ s \}$ е $p^0_{10} = p^1_{10}$.
+                        Тъй като $\N$ не разпознава думи от вида $1^{n}0^{k}$ за $n + k \geq 10$ и $n, k \neq 0$, нямаме преходи със никоя буква от $p^1_i$ до $p^0_j$ за никои $1 \leq i, j \leq 10$.
+                        Тогава $p^1_i \notin \{ p^0_0, \dots, p^0_9 \}$ за $1 \leq i \leq 10$.
+                        Също така понеже $1^t \notin L$ за $t < 10$, за всяко $1 \leq i < 10$ е изпълнено, че $p^1_i \notin F$.
+                        Така $p^1_i \notin P_0$ за $1 \leq i < 10$ и $p^1_{10} \notin P_0 \setminus \{ p^0_{10} \}$.
+                        Тогава остава само възможността $p^1_{10}$ да бъде $p^0_{10}$.
+                        Следователно $P_0 \cup P_1 = Q$, понеже $P_0 \cap P_1 = \{ s, p^0_{10} \}$ и $|P_0| = |P_1| = 11$.
+                        Така в автомата $\N$ ще има единствено финално състояние $f = p^0_{10} = p^1_{10}$.
+                        Тъй като $\N$ разпознава $0^{10}1$, то $f$ има примка с буквата $1$, но тогава $1^{11} \in \calL(\N)$, абсурд.
+              \end{itemize}
+    \end{enumerate}
+    Във всички случаи получихме противоречие, следователно няма как да има такъв автомат.
+\end{solution}
+
+\end{document}

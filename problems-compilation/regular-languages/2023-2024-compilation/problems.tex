@@ -1,0 +1,427 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[english, bulgarian]{babel}
+\usepackage{amssymb}
+\usepackage{hyperref, fancyhdr, lastpage, fancyvrb, tcolorbox, titlesec}
+\usepackage{array, tabularx, colortbl}
+\usepackage{tikz}
+\usepackage{venndiagram}
+\usepackage{amsthm, bm}
+\usepackage{relsize}
+\usepackage{amsmath,physics}
+\usepackage{mathtools}
+\usepackage{subcaption}
+\usepackage{theoremref}
+\usepackage{circuitikz}
+\usepackage[a4paper, left=0.50in, right=0.50in, top=1.0in, bottom=1.0in]{geometry}
+\usepackage{stmaryrd}
+\usepackage{forest}
+\usepackage{cancel}
+\usetikzlibrary{automata, arrows, positioning, shapes}
+\useforestlibrary{linguistics}
+
+\ExplSyntaxOn
+\NewDocumentCommand{\opair}{m}
+ {
+  \langle\mspace{2mu}
+  \clist_set:Nn \l_tmpa_clist { #1 }
+  \clist_use:Nn \l_tmpa_clist {,\mspace{3mu plus 1mu minus 1mu}\allowbreak}
+  \mspace{2mu}\rangle
+}
+\ExplSyntaxOff
+
+\hypersetup{
+    colorlinks=true,
+    linktoc=all,
+    linkcolor=blue
+}
+
+\setlength\parindent{0pt}
+
+\newtheorem{problem}{Задача}[section]
+\newtheorem*{claim}{Твърдение}
+\theoremstyle{definition}
+\newtheorem*{solution}{Решение}
+
+\begin{document}
+\title{Няколко задачи за (не)регулярност}
+\date{2023/2024}
+
+\maketitle
+
+\section{Конструкции с автомати}
+
+\begin{problem}
+Да се докаже, че за всеки два регулярни езика $L_1, L_2$, е регулярен и езикът:
+\begin{center}
+    $L = \{ a_1 b_1 \dots a_n b_n \mid n \in \mathbb{N} \: \& \: a_i, b_i \in \Sigma \: \& \: a_1 \dots a_n \in L_1 \: \& \: b_1 \dots b_n \in L_2 \}$
+\end{center}
+\end{problem}
+
+\begin{solution}
+    Нека вземем ДКА $\mathcal{A}_i = \opair{\Sigma, Q_i, s_i, \delta_i, F_i}$ за $L_i$, където $i = 1, 2$.
+
+    Строим автомат $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$ за $L$:
+
+    \begin{itemize}
+        \item $Q = Q_1 \cross Q_2 \cross \{ 0, 1 \}$
+        \item $s = \opair{s_1, s_2, 0}$
+        \item $\delta(\opair{p_1, p_2, 0}, x) = \opair{\delta_1(p_1, x), p_2, 1}$
+        \item $\delta(\opair{p_1, p_2, 1}, x) = \opair{p_1, \delta_2(p_2, x), 0}$
+        \item $F = F_1 \cross F_2 \cross \{ 0 \}$
+    \end{itemize}
+
+    Сега ще покажем с индукция по $|\alpha|$, че:
+
+    \begin{math}
+        (\star)
+        \begin{cases}
+            \text{1. ако } \alpha = \alpha_1 \dots \alpha_{2n} \text{ за някои } n \in \mathbb{N}, \: \alpha_1, \dots, \alpha_{2n} \in \Sigma \text{ то:}                     \\
+            \delta^*(\opair{s_1, s_2, 0}, \alpha) = \opair{\delta_1^*(s_1, \alpha_1 \alpha_3 \dots \alpha_{2n - 1}), \delta_2^*(s_2, \alpha_2 \alpha_4 \dots \alpha_{2n}), 0} \\
+            \text{2. ако } \alpha = \alpha_1 \dots \alpha_{2n + 1} \text{ за някои } n \in \mathbb{N}, \: \alpha_1, \dots, \alpha_{2n + 1} \in \Sigma, \text{ то:}            \\
+            \delta^*(\opair{s_1, s_2, 0}, \alpha) = \opair{\delta_1^*(s_1, \alpha_1 \alpha_3 \dots \alpha_{2n + 1}), \delta_2^*(s_2, \alpha_2 \alpha_4 \dots \alpha_{2n}), 1} \\
+        \end{cases}
+    \end{math}
+
+    \begin{itemize}
+        \item в базата имаме $\delta^*(\opair{s_1, s_2, 0}, \varepsilon) = \opair{s_1, s_2, \varepsilon} = \opair{\delta_1^*(s_1, \varepsilon), \delta_2^*(s_2, \varepsilon), 0}$
+        \item индукционната стъпка е следната:
+              \begin{align*}
+                  \delta^*(\opair{s_1, s_2, 0},\alpha_1 \dots \alpha_{2n}) \stackrel{\text{деф } \delta^*\phantom{0}}{=} & \delta(\delta^*(\opair{s_1, s_2, 0}, \alpha_1 \dots \alpha_{2n - 1}), \alpha_{2n})                                                                   \\
+                  \stackrel{\phantom{0}\text{(ИП)}\phantom{0}}{=}                                                        & \delta(\opair{\delta_1^*(s_1, \alpha_1 \alpha_3 \dots \alpha_{2n - 1}), \delta_2^*(s_2, \alpha_2 \alpha_4 \dots \alpha_{2n - 2}), 1}, \alpha_{2n})   \\
+                  \stackrel{\text{деф } \delta\phantom{0}}{=}                                                            & \opair{\delta_1^*(s_1, \alpha_1 \alpha_3 \dots \alpha_{2n - 1}), \delta_2(\delta_2^*(s_2, \alpha_2 \alpha_4 \dots \alpha_{2n - 2}), \alpha_{2n}), 0} \\
+                  \stackrel{\text{деф } \delta_2^*}{=}                                                                   & \opair{\delta_1^*(s_1, \alpha_1 \alpha_3 \dots \alpha_{2n - 1}), \delta_2^*(s_2, \alpha_2 \alpha_4 \dots \alpha_{2n}), 0}
+              \end{align*}
+              \begin{align*}
+                  \delta^*(\opair{s_1, s_2, 0},\alpha_1 \dots \alpha_{2n + 1}) \stackrel{\text{деф } \delta^*\phantom{0}}{=} & \delta(\delta^*(\opair{s_1, s_2, 0}, \alpha_1 \dots \alpha_{2n}), \alpha_{2n + 1})                                                                   \\
+                  \stackrel{\phantom{0}\text{(ИП)}\phantom{0}}{=}                                                            & \delta(\opair{\delta_1^*(s_1, \alpha_1 \alpha_3 \dots \alpha_{2n - 1}), \delta_2^*(s_2, \alpha_2 \alpha_4 \dots \alpha_{2n}), 0}, \alpha_{2n + 1})   \\
+                  \stackrel{\text{деф } \delta\phantom{0}}{=}                                                                & \opair{\delta_1(\delta_1^*(s_1, \alpha_1 \alpha_3 \dots \alpha_{2n - 1}), \alpha_{2n + 1}), \delta_2^*(s_2, \alpha_2 \alpha_4 \dots \alpha_{2n}), 1} \\
+                  \stackrel{\text{деф } \delta_1^*}{=}                                                                       & \opair{\delta_1^*(s_1, \alpha_1 \alpha_3 \dots \alpha_{2n + 1}), \delta_2^*(s_2, \alpha_2 \alpha_4 \dots \alpha_{2n}), 1}
+              \end{align*}
+    \end{itemize}
+
+    Имайки $(\star)$, получаваме следните еквивалентности:
+    \begin{align*}
+        \alpha \in \mathcal{L}(\mathcal{A}) & \stackrel{\text{деф } \mathcal{L}(\mathcal{A})}{\iff} \delta^*(\underbrace{\opair{s_1, s_2}}_{s}, \alpha) \in F_1 \cross F_2 \cross \{ 0 \} \text{ // тук 0 казва, че думата е с четна дължина}                                                                                                                                                                                                                           \\
+                                            & \stackrel{\phantom{000}(\star)\phantom{000}}{\iff} \text{има } n \in \mathbb{N} \text{ и } \alpha_1, \dots, \alpha_{2n} \in \Sigma \text{ такива, че } \underbrace{\delta_1^*(s_1, \alpha_1 \alpha_3 \dots \alpha_{2n - 1}) \in F_1}_{\alpha_1 \alpha_3 \dots \alpha_{2n - 1} \in L_1} \text{ и } \underbrace{\delta_2^*(s_2, \alpha_2 \alpha_4 \dots \alpha_{2n}) \in F_2}_{\alpha_2 \alpha_4 \dots \alpha_{2n} \in L_2} \\
+                                            & \stackrel{\text{деф } L \text{\phantom{000}}}{\iff} \alpha_1 \dots \alpha_{2n} \in L
+    \end{align*}
+\end{solution}
+
+\begin{problem}\thlabel{table-method-problem}
+Да се докаже, че за всеки регулярен език $L$, езикът $L' = \{ \alpha \in \Sigma^* \mid \alpha \alpha \in L \}$ също е регулярен.
+\end{problem}
+
+\begin{solution}
+    Нека вземем ДКА $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$ за $L$.
+    Нека $Q = \{ q_1, \dots, q_n \}$ като Б.О.О. $q_1 = s$.
+
+    Строим автомат $\mathcal{A}' = \opair{\Sigma, Q', s', \delta', F'}$ за $L'$:
+
+    \begin{itemize}
+        \item $Q' = Q^n$
+        \item $s' = \opair{q_1, \dots, q_n}$
+        \item $\delta'(\opair{p_1, \dots, p_n}, x) = \opair{\delta(p_1, x), \dots, \delta(p_n, x)}$
+        \item $F' = \{ \opair{p_1, \dots, p_n} \in Q' \mid (\exists i \in \{ 1, \dots, n \}) (p_1 = q_i \: \& \: p_i \in F) \}$
+    \end{itemize}
+
+    Сега ще докажем, че $\underbrace{\delta'^*(\opair{p_1, \dots, p_n}, \alpha) = \opair{\delta^*(p_1, \alpha), \dots, \delta^*(p_n, \alpha)}}_{(\star)}$ с индукция по $|\alpha|$:
+
+    \begin{itemize}
+        \item в базата имаме $\delta'^*(\opair{p_1, \dots, p_n}, \varepsilon) = \opair{p_1, \dots, p_n} = \opair{\delta^*(p_1, \varepsilon), \dots, \delta^*(p_n, \varepsilon)}$
+        \item индукционната стъпка е следната:
+              \begin{align*}
+                  \delta'^*(\opair{p_1, \dots, p_n}, \beta x) & \stackrel{\text{деф } \delta'^*}{=} \delta'(\delta'^*(\opair{p_1, \dots, p_n}, \beta), x) \stackrel{\text{(ИП)}}{=} \delta'(\opair{\delta^*(p_1, \beta), \dots, \delta^*(p_n, \beta)}, x)                                    \\
+                                                              & \stackrel{\text{деф } \delta'\phantom{0}}{=}\opair{\delta(\delta^*(p_1, \beta), x), \dots, \delta(\delta^*(p_n, \beta), x)} \stackrel{\text{деф } \delta^*}{=} \opair{\delta^*(p_1, \beta x), \dots, \delta^*(p_n, \beta x)}
+              \end{align*}
+    \end{itemize}
+
+    Имайки $(\star)$, получаваме следните еквивалентности:
+    \begin{align*}
+        \alpha \in \mathcal{L}(\mathcal{A}') & \stackrel{\text{деф } \mathcal{L}(\mathcal{A}')}{\iff}  \delta'^*(\underbrace{\opair{q_1, \dots, q_n}}_{s'}, \alpha) \in F' \stackrel{(\star)}{\iff} \opair{\delta^*(q_1, \alpha), \dots, \delta^*(q_n, \alpha)} \in F'                                                                         \\
+                                             & \stackrel{\text{деф } F' \text{\phantom{000}}}{\iff} (\exists i \in \{1, \dots, n\}) (\delta^*(\underbrace{s}_{q_1}, \alpha) = q_j \: \& \: \delta^*(q_j, \alpha) \in F) \iff \delta^*(s, \alpha \alpha) \in F \stackrel{\text{деф } \mathcal{L(A)}}{\iff} \alpha \alpha \in \mathcal{L(A)} = L
+    \end{align*}
+\end{solution}
+
+\begin{problem}
+Да се докаже, че за всеки регулярен език $L$, езикът $L' = \{ \alpha \in \Sigma^* \mid \alpha \alpha^{rev} \in L \}$ също е регулярен.
+\end{problem}
+
+\begin{solution}
+    Нека вземем ДКА $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$ за $L$.
+    Строим автомат $\mathcal{A}' = \opair{\Sigma, Q', s', \delta', F'}$ за $L'$:
+
+    \begin{itemize}
+        \item $Q' = Q \cross \mathcal{P}(Q)$
+        \item $s' = \opair{s, F}$
+        \item $\delta'(\opair{p, P}, x) = \opair{\delta(p, x), \{ q \in Q \mid \delta(q, x) \in P \}}$
+        \item $F' = \{ \opair{p, P} \in Q' \mid p \in P \}$
+    \end{itemize}
+
+    Сега ще докажем, че $\underbrace{\delta'^*(\opair{p, P}, \alpha) = \opair{\delta^*(p, \alpha), \{ q \in Q \mid \delta^*(q, \alpha) \in P \}}}_{(\star)}$ с индукция по $|\alpha|$:
+
+    \begin{itemize}
+        \item в базата имаме $\delta'^*(\opair{p, P}, \varepsilon) = \opair{p, P} = \opair{\delta^*(p, \varepsilon), \{ q \in Q \mid \delta^*(q, \varepsilon^{rev}) \in P \}}$
+        \item индукционната стъпка е следната:
+              \begin{align*}
+                  \delta'^*(\opair{p, P}, \beta x) = \opair{p, P} & \stackrel{\text{деф } \delta'^*}{=}  \delta'(\delta'^*(\opair{p, P}, \beta), x) \stackrel{\text{(ИП)}}{=} \delta'(\opair{\delta^*(p, \beta), \{ q \in Q \mid \delta^*(q, \beta^{rev}) \in P \}}, x) \\
+                                                                  & \stackrel{\text{деф } \delta'\phantom{0}}{=} \opair{\delta(\delta^*(p, \beta), x), \{ q \in Q \mid \delta^*(\delta(q, x), \beta^{rev}) \in P \}}                                                    \\
+                                                                  & \stackrel{\text{св } \delta^*\phantom{00}}{=} \opair{\delta^*(p, \beta x), \{ q \in Q \mid \delta^*(q, (\beta x)^{rev}) \in P)}
+              \end{align*}
+    \end{itemize}
+
+    Имайки $(\star)$, получаваме следните еквивалентности:
+    \begin{align*}
+        \alpha \in \mathcal{L}(\mathcal{A}') & \stackrel{\text{деф } \mathcal{L}(\mathcal{A}')}{\iff} \delta'^*(\underbrace{\opair{s, F}}_{s'}, \alpha) \in F' \stackrel{(\star)}{\iff} \opair{\delta^*(s, \alpha), \{ q \in Q \mid \delta^*(q, \alpha^{rev} \in F) \}} \in F'                                    \\
+                                             & \stackrel{\text{деф } F' \phantom{000}}{\iff} \delta^*(\delta^*(s, \alpha), \alpha^{rev}) \in F \stackrel{\text{св } \delta^*}{\iff} \delta^*(s, \alpha \alpha^{rev}) \in F \stackrel{\text{деф } \mathcal{L(A)}}{\iff} \alpha \alpha^{rev} \in \mathcal{L(A)} = L
+    \end{align*}
+\end{solution}
+
+\begin{problem}
+Нека $c, \# \notin \Sigma$ и $c \neq \#$.
+Да се докаже, че за всеки регулярен език $L$ е регулярен езикът
+\[
+    L' = \{ \alpha \# c^n \mid n \in \mathbb{N} \: \& \: \alpha^n \in L \}
+\]
+Упътване: да се използва техниката от \thref{table-method-problem}
+\end{problem}
+
+\begin{problem}\thlabel{count-occurrence}
+Нека за всяко $\alpha, \beta \in \Sigma^*$ с $s(\alpha, \beta)$ да бележим броят на срещания на $\beta$ на $\alpha$.
+Да се докаже, че е регулярен езикът:
+\[
+    L = \{ \alpha \in \Sigma^* \mid s(\alpha, aa) \text{ е четно }\}
+\]
+\end{problem}
+
+\begin{solution}
+    Нека дефинираме функцията $last : \Sigma^* \rightarrow \Sigma^{\leq 2}$ по следния начин:
+
+    \begin{itemize}
+        \item $last(\varepsilon) = \varepsilon$
+        \item $last(x) = x$ за всяко $x \in \Sigma$
+        \item $last(\beta xy) = xy$ за всяко $x, y \in \Sigma$
+    \end{itemize}
+
+    Можем да забележим, че за всяко $\alpha, \beta \in \Sigma^*$ имаме $last(\alpha \beta) = last(last(\alpha) \beta)$.
+
+    Строим $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$ за $L$:
+
+    \begin{itemize}
+        \item $Q = \Sigma^{\leq 2} \cross \{ 0, 1 \}$
+        \item $s = \opair{\varepsilon, 0}$
+        \item $\delta(\opair{\beta, c}, x) = \opair{last(\beta x), c'}$, където
+              $c' = \begin{cases}
+                      1 - c & \text{ако } last(\beta x) = aa \\
+                      c     & \text{иначе}
+                  \end{cases}$
+        \item $F = \Sigma^{\leq 2} \cross \{ 0 \}$
+
+    \end{itemize}
+
+    Сега ще покажем, че $\underbrace{\delta^*(s, \alpha) = \opair{last(\alpha), s(\alpha, aa) \: (\bmod \: 2)}}_{(\star)}$ с индукция по $|\alpha|$:
+    \begin{itemize}
+        \item в базата имаме $\delta^*(s, \alpha) = s = \opair{\varepsilon, 0} = \opair{last(\alpha), s(\alpha, 2)}$
+        \item индукционната стъпка е следната:
+              \begin{align*}
+                  \delta^*(s, \beta x) \stackrel{\text{деф } \delta^*}{=} \delta(\delta^*(s, \beta), x) \stackrel{\text{(ИП)}}{=} \delta(\opair{last(\beta), s(\beta, aa) \: (\bmod \: 2)}, x) \stackrel{\text{деф } \delta}{=} \opair{last(last(\beta)x), c} \stackrel{\text{заб}}{=} \opair{last(\beta x), c} \text{, където}
+              \end{align*}
+              \[
+                  c = \begin{cases}
+                      1 - s(\beta, aa) & \text{ако } last(\beta x) = aa    \\
+                      s(\beta, aa)     & \text{ако } last(\beta x) \neq aa
+                  \end{cases}
+              \]
+              Когато $last(\beta x) = aa$, то тогава ние сме имали ново срещане на $aa$ и наистина трябва да сменим четността.
+              В противен случай ще бъде коректно да не сменяме нищо.
+              Значи нашата конструкция наистина прави това, което искаме.
+    \end{itemize}
+
+    Имайки $(\star)$, получаваме следните еквивалентности:
+    \begin{align*}
+        \alpha \in \mathcal{L(A)} \stackrel{\text{деф } \mathcal{L(A)}}{\iff} \delta^*(s, \alpha) \in F \stackrel{(\star)}{\iff} \opair{last(\alpha), s(\alpha, aa) \: (\bmod \: 2)} \in \Sigma^{\leq 2} \cross \{ 0 \} \iff s(\alpha) \text{ е четно } \stackrel{\text{деф } L}{\iff} \alpha \in L
+    \end{align*}
+\end{solution}
+
+\begin{problem}
+Нека фиксираме $\beta_1, \beta_2 \in \Sigma^*$.
+Да се докаже, че е регулярен езикът
+\[
+    L_{odd}(\beta_1, \beta_2) = \{ \alpha \in \Sigma^* \mid s(\alpha, \beta_1) + s(\alpha, \beta_2) \text{ е нечетно } \}
+\]
+Упътване: да се използва техниката от \thref{count-occurrence}
+\end{problem}
+
+\begin{problem}
+Да се докаже, че езикът $L = \{ \alpha \in \{ 1, 2 \}^* \mid \text{сумата на всички инфикси е четна} \}$ е регулярен.
+\end{problem}
+
+\section{Индукции по строенето на регулярните езици}
+
+\begin{problem}\thlabel{prefix-reg-induction}
+Да се докаже, че за всеки регулярен език $L$, езикът $\operatorname{Prefix}(L)$ също е регулярен.
+\end{problem}
+
+\begin{solution}
+    Доказваме с индукция по строенето на регулярните езици:
+
+    \begin{itemize}
+        \item $\operatorname{Prefix}(\varnothing) = \varnothing$ - регулярен, $\operatorname{Prefix}(\{ \varepsilon \}) = \{ \varepsilon \}$ - регулярен, $\operatorname{Prefix}(\{a\}) = \{ \varepsilon, a \}$ - регулярен
+        \item $\operatorname{Prefix}(L_1 \cup L_2) = \underbrace{\operatorname{Prefix}(L_1)}_{\text{рег по (ИП)}} \cup \underbrace{\operatorname{Prefix}(L_2)}_{\text{рег по (ИП)}}$ - регулярен
+        \item $\operatorname{Prefix}(L_1 \cdot L_2) = \underbrace{\operatorname{Prefix}(L_1)}_{\text{рег по (ИП)}} \cup (L_1 \cdot \underbrace{\operatorname{Prefix}(L_2)}_{\text{рег по (ИП)}})$ - регулярен \\
+              Нека се опитаме да си представим защо това равенство наистина е такова.
+              Нека $\alpha_1 \in L_1$ и $\alpha_2 \in L_2$.
+
+              Тогава имаме две възможности за $\beta$ да бъде префикс на $\alpha_1 \alpha_2$:
+              \begin{itemize}
+                  \item[1 сл.] $\beta$ е префикс само на $\alpha_1$: \\
+                      \begin{tabular}{|c|c|c|c|}
+                          \hline
+                          $\beta$                                           & \multicolumn{3}{|m{1.5cm}|}{\phantom{00}$\dots$} \\ \hline
+                          \multicolumn{2}{|m{1cm}|}{\phantom{00}$\alpha_1$} & \multicolumn{2}{m{1cm}|}{\phantom{00}$\alpha_2$} \\ \hline
+                      \end{tabular}
+                  \item[2 сл.] $\beta$ напълно съдържа $\alpha_1$ заедно с част от $\alpha_2$: \\
+                      \begin{tabular}{|c|c|c|c|}
+                          \hline
+                          \multicolumn{3}{|m{1.5cm}|}{\phantom{0000}$\beta$} & $\dots$                                          \\ \hline
+                          \multicolumn{2}{|m{1cm}|}{\phantom{00}$\alpha_1$}  & \multicolumn{2}{m{1cm}|}{\phantom{00}$\alpha_2$} \\ \hline
+                      \end{tabular}
+              \end{itemize}
+        \item $\operatorname{Prefix}(L^*) = L^* \cdot \underbrace{\operatorname{Prefix}(L)}_{\text{рег по (ИП)}}$ - регулярен \\
+              Тук имаме обобщение на обединението и конкатенацията.
+    \end{itemize}
+\end{solution}
+
+\begin{problem}
+Да се докаже, че за всеки регулярен език $L$, езикът $\operatorname{Suffix}(L)$ също е регулярен.
+
+Упътване: могат да се направят подобни разсъждения на \thref{prefix-reg-induction}
+\end{problem}
+
+\begin{problem}
+Да се докаже, че за всеки регулярен език $L$, езикът $\operatorname{Infix}(L)$ също е регулярен.
+
+Упътване: да се помисли какво общо има операцията $\operatorname{Infix}$ със операциите $\operatorname{Prefix}$ и $\operatorname{Suffix}$
+\end{problem}
+
+\begin{problem}
+Да се докаже, че за всеки регулярен език $L$, езикът $L^{rev}$ също е регулярен.
+\end{problem}
+
+\begin{solution}
+    Доказваме с индукция по строенето на регулярните езици:
+
+    \begin{itemize}
+        \item $\varnothing^{rev} = \varnothing$ - регулярен, $\{ \varepsilon \}^{rev} = \{ \varepsilon \}$ - регулярен, $\{a\}^{rev} = \{ a \}$ - регулярен
+        \item $(L_1 \cup L_2)^{rev} = \underbrace{L_1^{rev}}_{\text{рег по (ИП)}} \cup \underbrace{L_2^{rev}}_{\text{рег по (ИП)}}$ - регулярен
+        \item $(L_1 \cdot L_2)^{rev} = \underbrace{L_2^{rev}}_{\text{рег по (ИП)}} \cdot \underbrace{L_1^{rev}}_{\text{рег по (ИП)}}$ - регулярен \\
+              За да се убеди човек в това равенство може да мисли на ниво думи т.е. за $(\alpha \cdot \beta)^{rev} = \beta^{rev} \cdot \alpha^{rev}$.
+        \item $(L^*)^{rev} = (\underbrace{L^{rev}}_{\text{рег по (ИП)}})^*$ - регулярен \\
+              Тук имаме обобщение на обединението и конкатенацията.
+    \end{itemize}
+\end{solution}
+
+\begin{problem}
+Да се докаже, че за всеки регулярен език $L$, езикът $\operatorname{Subseq}(L)$, съставен от всички подредици на думи от $L$, също е регулярен.
+\end{problem}
+
+\begin{problem}
+Да се докаже, че за всеки регулярен език $L \subseteq \Sigma_1^*$ и хомоморфизъм $h : \Sigma_1^* \rightarrow \Sigma_2^*$, езикът $h[L]$ също е регулярен.
+\end{problem}
+
+\begin{problem}
+Да се докаже, че за всеки регулярен език $L \subseteq \Sigma_1^*$ и регулярен хомоморфизъм $h : \Sigma_1^* \rightarrow \mathcal{P}(\Sigma_2^*)$, е регулярен езикът:
+\[
+    \bigcup\limits_{\alpha \in L} h(\alpha)
+\]
+\end{problem}
+
+\section{Нерегулярни езици}
+
+\begin{problem}
+Да се докаже, че езикът $L = \{ a^{1 + 2 + \dots + n} \mid n \in \mathbb{N} \}$ не е регулярен.
+\end{problem}
+
+\begin{solution}
+    Нека $n, k \in \mathbb{N}$ и $n > k$.
+    Тогава $a^{n+1}a^{1 + \dots + n} = a^{1 + \dots + n + (n + 1)} \in L$,
+    но понеже $k < n$, имаме неравенствата $1 + \dots + n < 1 + \dots + n + (k + 1) < 1 + \dots + n + (n + 1)$, откъдето заключаваме, че $a^{k+1}a^{1 + \dots + n} \notin L$.
+    Така получаваме, че $a^{1 + \dots + n} \in (a^{n + 1})^{-1}(L)$ и $a^{1 + \dots + n} \notin (a^{k + 1})^{-1}(L)$, откъдето $(a^{n + 1})^{-1}(L) \neq (a^{k + 1})^{-1}(L)$.
+    Намерихме безкрайно подмножество $\{ (a^{n + 1})^{-1}(L) \mid n \in \mathbb{N} \}$ на $\{ \alpha^{-1}(L) \mid \alpha \in \Sigma^* \}$, откъдето $L$ не е регулярен.
+\end{solution}
+
+\begin{problem}
+Да се докаже, че езикът $L = \{ a^{n!} \mid n \in \mathbb{N} \}$ не е регулярен.
+\end{problem}
+
+\begin{solution}
+    Нека $n, k \in \mathbb{N}$ и $n > k$.
+    Тогава $a^{n!}a^{n! n} = a^{n! + n! n} = a^{n!(n + 1)} = a^{(n+1)!} \in L$.
+    Обаче понеже $k < n$, имаме неравенствата $n! < k! + n! n < n! + n! n = (n + 1)!$, откъдето $a^{k!}a^{n! n} \notin L$.
+    Така получаваме, че $a^{n! n} \in (a^{n!})^{-1}(L)$ и $a^{n! n} \in (a^{k!})^{-1}(L)$, откъдето $(a^{n!})^{-1}(L) \neq (a^{k!})^{-1}(L)$.
+    Намерихме безкрайно подмножество $\{ (a^{n!})^{-1}(L) \mid n \in \mathbb{N} \}$ на $\{ \alpha^{-1}(L) \mid \alpha \in \Sigma^* \}$, откъдето $L$ не е регулярен.
+\end{solution}
+
+\begin{problem}
+Да се докаже, че езикът $L = \{ a^{F_n} \mid n \in \mathbb{N} \}$ не е регулярен, където $F_n$ е $n$-тото число на Фибоначи.
+\end{problem}
+
+\begin{solution}
+    Нека $n, k \in \mathbb{N}$ са такива, че $2 \leq k < n$. Имаме, че $a^{F_n} a^{F_{n+1}} = a^{F_n + F_{n+1}} = a^{F_{n+2}} \in L$.
+    Понеже $2 \leq k < n$, имаме неравенството $F_k < F_n$, откъдето $F_{n+1} < F_{n+1} + F_k < F_{n+1} + F_n = F_{n+2}$.
+    Така получаваме, че $a^{F_k} a^{F_{n+1}} \notin L$.
+    Следователно $a^{F_{n+1}} \in (a^{F_n})^{-1}(L)$ и $a^{F_{n+1}} \notin (a^{F_k})^{-1}(L)$, откъдето $(a^{F_n})^{-1}(L) \neq (a^{F_k})^{-1}(L)$.
+    Намерихме безкрайно подмножество $\{ (a^{F_n})^{-1}(L) \mid n \in \mathbb{N} \: \& \: n \geq 2 \}$ на $\{ \alpha^{-1}(L) \mid \alpha \in \Sigma^* \}$, откъдето $L$ не е регулярен.
+\end{solution}
+
+\begin{problem}
+Да се докаже, че езикът $L = \{ a^n b^m \mid n, m \in \mathbb{N} \: \& \: \operatorname{GCD}(n, m) = 1 \}$ не е регулярен.
+\end{problem}
+
+\begin{solution}
+    Нека с $p_n$ бележим $n$-тото просто число ($p_0 = 2, p_1 = 3, p_2 = 5$ и така нататък).
+    Нека $n, k \in \mathbb{N}$. Очевидно $\operatorname{GCD}(p_n, p_k) = 1$, откъдето $a^{p_n}b^{p_k} \in L$.
+    Също така понеже $\operatorname{GCD}(p_k, p_k) = p_k \neq 1$, имаме $a^{p_k}b^{p_k} \notin L$.
+    Така получаваме, че $b^{p_k} \in (a^{p_n})^{-1}(L)$ и $b^{p_k} \notin (a^{p_k})^{-1}(L)$, откъдето $(a^{p_n})^{-1}(L) \neq (a^{p_k})^{-1}(L)$.
+    Намерихме безкрайно (понеже простите числа са безброй много) подмножество $\{ (a^{p_n})^{-1}(L) \mid n \in \mathbb{N} \}$ на $\{ \alpha^{-1}(L) \mid \alpha \in \Sigma^* \}$, откъдето $L$ не е регулярен.
+\end{solution}
+
+\begin{problem}
+Да се докаже, че езикът $L = \{ \alpha \alpha \mid \alpha \in \Sigma^* \}$ не е регулярен.
+\end{problem}
+
+\begin{solution}
+    Нека $n, k \in \mathbb{N}$.
+    Нека $a^nba^kb = \alpha \alpha$ за някое $\alpha \in \Sigma^*$.
+    Тъй като $|a^nba^kb|_b = 2$, то $|\alpha|_b = 1$.
+    Също така понеже $a^nba^kb$ завършва на $b$, то $\alpha$ завършва на $b$.
+    Тогава остава само $\alpha = a^nb = a^kb$, откъдето $n = k$.
+    Следователно ако $n \neq k$, имаме $a^nba^nb \in L$ и $a^kba^nb \notin L$.
+    Така $a^nb \in (a^nb)^{-1}(L)$ и $a^nb \notin (a^kb)^{-1}(L)$, откъдето $(a^nb)^{-1}(L) \neq (a^kb)^{-1}(L)$.
+    Намерихме безкрайно подмножество $\{ (a^nb)^{-1}(L) \mid n \in \mathbb{N} \}$ на $\{ \alpha^{-1}(L) \mid \alpha \in \Sigma^* \}$, откъдето $L$ не е регулярен.
+\end{solution}
+
+\begin{problem}
+Да се докаже, че езикът $L = \{ \alpha \alpha^{rev} \mid \alpha \in \Sigma^* \}$ не е регулярен.
+\end{problem}
+
+\begin{solution}
+    Нека $n, k \in \mathbb{N}$.
+    Нека $a^nba^kb = \alpha \alpha^{rev}$ за някое $\alpha \in \Sigma^*$.
+    Тъй като $|a^nba^kb|_b = 2$, то $|\alpha|_b = 1$.
+    Също така понеже двете срещание на $b$ във $a^nbba^k$ са съседни, остава само $\alpha = a^nb$ и $\alpha^{rev} = ba^k$, откъдето $n = k$.
+    Следователно ако $n \neq k$, имаме $a^nbba^n \in L$ и $a^kbba^n \notin L$.
+    Така $ba^n \in (a^nb)^{-1}(L)$ и $ba^n \notin (a^kb)^{-1}(L)$, откъдето $(a^nb)^{-1}(L) \neq (a^kb)^{-1}(L)$.
+    Намерихме безкрайно подмножество $\{ (a^nb)^{-1}(L) \mid n \in \mathbb{N} \}$ на $\{ \alpha^{-1}(L) \mid \alpha \in \Sigma^* \}$, откъдето $L$ не е регулярен.
+\end{solution}
+
+\begin{problem}
+Да се покаже език $L$, за който $\operatorname{Sort}(L) = \{ a^{|\alpha|_a} b^{|\alpha|_b} \mid \alpha \in L \}$ не е регулярен.
+\end{problem}
+
+\begin{problem}
+Да се покаже език $L$, за който $\operatorname{Ord}(L) = \{ a_1 \dots a_n b_1 \dots b_n \mid n \in \mathbb{N} \: \& \: a_i, b_i \in \Sigma \: \& \: a_1 b_1 \dots a_n b_n \in L \}$ не е регулярен.
+\end{problem}
+
+\end{document}

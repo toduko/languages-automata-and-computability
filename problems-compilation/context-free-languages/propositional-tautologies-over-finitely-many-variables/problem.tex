@@ -1,0 +1,122 @@
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[english, bulgarian]{babel}
+\usepackage{amssymb}
+\usepackage{array, tabularx, colortbl}
+\usepackage{amsthm, bm}
+\usepackage{relsize}
+\usepackage{amsmath,physics}
+\usepackage{mathtools}
+\usepackage{subcaption}
+\usepackage[a4paper, left=0.50in, right=0.50in, top=0.0in, bottom=1.0in]{geometry}
+
+\newcommand{\vars}{\operatorname{Vars}}
+\newcommand{\form}{\operatorname{Form}(\vars)}
+\newcommand{\taut}{\operatorname{Taut}(\vars)}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\V}{\mathcal{V}}
+\newcommand{\OV}{\overline{\V}}
+\newcommand{\der}[2]{\stackrel{#1}{\Rightarrow}_{#2}}
+
+\pagenumbering{gobble}
+
+\ExplSyntaxOn
+\NewDocumentCommand{\opair}{m}
+ {
+  \langle\mspace{2mu}
+  \clist_set:Nn \l_tmpa_clist { #1 }
+  \clist_use:Nn \l_tmpa_clist {,\mspace{3mu plus 1mu minus 1mu}\allowbreak}
+  \mspace{2mu}\rangle
+}
+\ExplSyntaxOff
+
+\newtheorem*{definitions}{Дефиниции}
+\newtheorem*{claim}{Твърдение}
+
+\setlength\parindent{0pt}
+
+\begin{document}
+\title{Съждителни тавтологии над крайно много променливи}
+\date{}
+\maketitle
+\begin{definitions}
+    Нека $\vars = \{ x_1, \dots, x_n \}$.
+    Дефинираме множеството $\form$ индуктивно:
+
+    \begin{itemize}
+        \item за всяко $1 \leq i \leq n : x_i \in \form$
+        \item ако $\varphi \in \form$, то $\neg\varphi \in \form$
+        \item ако $\varphi_1, \varphi_2 \in \form$, то $(\varphi_1 \lor \varphi_2) \in \form$
+    \end{itemize}
+
+    Нека $\A_n = \{ \V \mid \V : \vars \rightarrow \{ \top, \bot \} \}$.
+    За $\V \in \A_n$, $\OV : \form \rightarrow \{ \top, \bot \}$ ще бъде единствената функция със:
+
+    \begin{itemize}
+        \item $\OV(x_i) = \V(x_i)$ за $1 \leq i \leq n$
+        \item $\OV(\neg \varphi) = \top \iff \OV(\varphi) = \bot$
+        \item $\OV((\varphi_1 \lor \varphi_2)) = \top \iff \OV(\varphi_1) = \top \text{ или } \OV(\varphi_2) = \top$
+    \end{itemize}
+
+    За $A \subseteq \A_n$ казваме, че $A \models \varphi$, ако за всяко $ \V \in \A, \: \OV(\varphi) = \top$.
+    Накрая нека $\taut = \{ \varphi \in \form \mid \A_n \models \varphi \}$.
+\end{definitions}
+
+\begin{claim}
+    Езикът $\taut$ е безконтекстен.
+\end{claim}
+
+\begin{proof}
+    Нека $V = \{ V_{A, B} \mid A, B \in \mathcal{P}(\A_n) \: \& \: A \cap B = \varnothing \}$, нека $\: S = V_{\A_n, \varnothing}$ и нека $\Sigma = \vars \cup \{ (, ), \neg, \lor \}$.
+    Правилата са следните:
+
+    \begin{itemize}
+        \item Нека $A, B \subseteq \A_n$ са такива, че за $A \models x_i$ и $B \models \neg x_i$.
+              Тогава имаме правилото $V_{A, B} \rightarrow_G x_i$.
+        \item Нека $A, B \subseteq \A_n$ и $A \cap B = \varnothing$.
+              Тогава имаме правилото $V_{A, B} \rightarrow_G \neg V_{B, A}$.
+        \item Нека $A_1, A_2, A, B \subseteq \A_n$ са такива, че $A_1 \cup A_2 = A$ и $A \cap B = \varnothing$.
+              Тогава имаме правилото $V_{A, B} \rightarrow_G ( V_{A_1, B} \lor V_{A_2, B})$.
+    \end{itemize}
+
+    За да докажем, че $\mathcal{L}(G) = \taut$, ще покажем, че за всяко $A$ и $B$ такива, че $A \cap B = \varnothing$:
+    \begin{align*}
+        V_{A, B} \der{*}{G} \: \& \: \varphi \in \Sigma^* \iff \varphi \in \form \: \& \: A \models \varphi \: \& \: B \models \neg \varphi
+    \end{align*}
+
+    $(\Rightarrow)$ Правим индукция по дължината на извода:
+
+    \begin{itemize}
+        \item $V_{A, B} \der{0}{G} \varphi$ : тогава $\varphi = V_{A, B} \notin \Sigma^*$
+        \item $V_{A, B} \der{n + 1}{G} \varphi$: тогава имаме три възможности за прилагане на първото правило:
+
+              \begin{itemize}
+                  \item[1 сл.] $V_{A, B} \rightarrow_G x_i$: тогава $\varphi \equiv x_i$ и $A \models x_i$ и $B \models \neg x_i$ по дефиниция на граматиката
+                  \item[2 сл.] $V_{A, B} \rightarrow_G \neg V_{B, A}$: тогава $\varphi \equiv \neg \psi$ и $V_{B, A} \der{n}{G} \psi$, и по (ИП) $B \models \psi$ (откъдето $B \models \neg \neg \psi \equiv \neg \varphi$) и $A \models \neg \psi \equiv \varphi$
+                  \item[3 сл.] $V_{A, B} \rightarrow_G ( V_{A_1, B} \lor V_{A_2, B})$: тогава $\varphi \equiv (\varphi_1 \lor \varphi_2)$ и $V_{A_i, B} \der{n_i}{G} \varphi_i$ за $i = 1, 2$, като $A_1 \cup A_2 = A$ и $n = n_1 + n_2$.
+                        Тогава по (ИП) $A_i \models \varphi_i$ и $B \models \neg \varphi_i$ за $i = 1, 2$.
+                        Така $A_1 \cup A_2 \models (\varphi_1 \lor \varphi_2)$ и $B \models \neg (\varphi_1 \lor \varphi_2)$
+              \end{itemize}
+    \end{itemize}
+
+    $(\Leftarrow)$ Правим индукция по строенето на формулите:
+
+    \begin{itemize}
+        \item $\varphi \equiv x_i$ : ако $A$ и $B$ са такива, че $A \models \varphi$ и $B \models \neg \varphi$, то по дефиниция на граматиката, имаме правилото $V_{A, B} \rightarrow_G x_i$, откъдето $V_{A, B} \der{*}{G} x_i$
+        \item $\varphi \equiv \neg \psi$ : ако $A$ и $B$ са такива, че $A \models \varphi$ и $B \models \neg \varphi \equiv \neg \neg \psi$, то $B \models \psi$ и по (ИП) $V_{B, A} \der{*}{G} \psi$.
+              Строим следния извод за $\varphi$ : $V_{A, B} \der{*}{G} \neg V_{B, A} \der{*}{G} \neg \psi$
+        \item $\varphi \equiv (\varphi_1 \lor \varphi_2)$ : ако $A$ и $B$ са такива, че $A \models \varphi$ и $B \models \neg \varphi$, то за $i = 1, 2$ и $A_i = \{ \V \in A \mid \OV(\varphi_i) = \top \}$, по (ИП) имаме, че $V_{A_i, B} \der{*}{G} \varphi_i$.
+              Очевидно $A_1 \cup A_2 = A$.
+              Също така по дефиниция на граматиката, имаме правилото $V_{A, B} \rightarrow_G (V_{A_1, B} \lor V_{A_2, B})$.
+              Строим следния извод за $\varphi$ : $V_{A, B} \der{*}{G} (V_{A_1, B} \lor V_{A_2, B}) \der{*}{G} (\varphi_1 \lor V_{A_2, B}) \der{*}{G} (\varphi_1 \lor \varphi_2)$
+    \end{itemize}
+
+    Накрая имаме следната еквивалентност:
+    \begin{align*}
+        \varphi \in \mathcal{L}(G) \iff S \der{*}{G} \varphi \: \& \: \varphi \in \Sigma^* \iff \varphi \in \form \: \& \: \A_n \models \varphi \: \& \: \varnothing \models \neg \varphi \iff \varphi \in \taut
+    \end{align*}
+\end{proof}
+
+\end{document}
