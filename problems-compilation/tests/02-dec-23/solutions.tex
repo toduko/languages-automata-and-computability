@@ -1,0 +1,286 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[english, bulgarian]{babel}
+\usepackage{amssymb}
+\usepackage{hyperref, fancyhdr, lastpage, fancyvrb, tcolorbox, titlesec}
+\usepackage{array, tabularx, colortbl}
+\usepackage{tikz}
+\usepackage{venndiagram}
+\usepackage{amsthm, bm}
+\usepackage{relsize}
+\usepackage{amsmath,physics}
+\usepackage{mathtools}
+\usepackage{subcaption}
+\usepackage{theoremref}
+\usepackage{circuitikz}
+\usepackage[a4paper, left=0.50in, right=0.50in, top=1.0in, bottom=1.0in]{geometry}
+\usepackage{stmaryrd}
+\usepackage{forest}
+\usepackage{cancel}
+\usetikzlibrary{automata, arrows, positioning, shapes}
+\useforestlibrary{linguistics}
+
+\ExplSyntaxOn
+\NewDocumentCommand{\opair}{m}
+ {
+  \langle\mspace{2mu}
+  \clist_set:Nn \l_tmpa_clist { #1 }
+  \clist_use:Nn \l_tmpa_clist {,\mspace{3mu plus 1mu minus 1mu}\allowbreak}
+  \mspace{2mu}\rangle
+}
+\ExplSyntaxOff
+
+\hypersetup{
+    colorlinks=true,
+    linktoc=all,
+    linkcolor=blue
+}
+
+\setlength\parindent{0pt}
+
+\newtheorem{problem}{Задача}
+\newtheorem*{claim}{Твърдение}
+\theoremstyle{definition}
+\newtheorem*{solution}{Решение}
+\newtheorem*{definition}{Дефиниция}
+
+\newcommand{\diff}{\operatorname{diff}}
+\newcommand{\err}{\operatorname{err}}
+\makeatletter
+\newcommand*{\rom}[1]{\expandafter\@slowromancap\romannumeral #1@}
+\makeatother
+
+\begin{document}
+\title{Решения на задачите от контролно 1 по ЕАИ на специалност ``Информатика'', проведено на 2 декември 2023 г.}
+\date{}
+
+\maketitle
+
+\begin{problem}
+Да се построи минимален детерминиран автомат за езика $L = ((\Sigma^* \setminus \{ a \}) \cup \{ ba \})^* \cdot \{ b \}$ като използвате наготово изучавани конструкции или докажете,
+че построеният автомат разпознава точно езикът $L$ и е минимален.
+\end{problem}
+
+\begin{solution}
+    Преди да се прави какъвто и да е било автомат, могат да се направят няколко опростявания:
+    \begin{itemize}
+        \item $(\Sigma^* \setminus \{ a \}) \cup \{ ba \}$ = $\Sigma^* \setminus \{ a \}$, понеже $ba \neq a$ т.е. $ba \in \Sigma^* \setminus \{ a \}$
+        \item $(\Sigma^* \setminus \{ a \})^* = \Sigma^* \setminus \{ a \}$, понеже $\Sigma^* \setminus \{ a \} \subseteq (\Sigma^* \setminus \{ a \})^*$ и $a \notin (\Sigma^* \setminus \{ a \})^*$
+    \end{itemize}
+    Така получаваме, че $L = (\Sigma^* \setminus \{ a \}) \cdot \{ b \}$.
+
+    \subsubsection*{1. Строене на недетерминиран автомат}
+
+    \begin{figure*}[h]
+        \begin{subfigure}[b]{0.5\linewidth}
+            \centering
+            \begin{tikzpicture}[shorten >=1pt,node distance=2.5cm,>=stealth',thick]
+                \node[accepting, initial, state, initial text=] (1) {1};
+                \node[state] [right of=1] (2) {2};
+                \node[accepting, state] [below right of=1] (3) {3};
+                \draw[->] (1) -- node[above] {$a$} (2);
+                \draw[->] (1) -- node[left] {$b$} (3);
+                \draw[->] (2) -- node[right] {$a, b$} (3);
+                \path[->] (3) edge [loop below] node[below] {$a, b$} (3);
+            \end{tikzpicture}
+            \caption*{автомат $\mathcal{N}_1$ за $\Sigma^* \setminus \{ a \}$}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.5\linewidth}
+            \centering
+            \begin{tikzpicture}[shorten >=1pt,node distance=2.5cm,>=stealth',thick]
+                \node[initial, state, initial text=] (1) {1};
+                \node[state] [right of=1] (2) {2};
+                \node[state] [below right of=1] (3) {3};
+                \node[accepting, state] [below left of=1] (4) {4};
+                \draw[->] (1) -- node[above] {$a$} (2);
+                \draw[->] (1) -- node[left] {$b$} (3);
+                \draw[->] (2) -- node[right] {$a, b$} (3);
+                \path[->] (3) edge [loop below] node[below] {$a, b$} (3);
+                \draw[->] (1) -- node[above] {$b$} (4);
+                \draw[->] (3) -- node[below] {$b$} (4);
+            \end{tikzpicture}
+            \caption*{автомат $\mathcal{N}_2$ за $(\Sigma^* \setminus \{ a \}) \cdot \{ b \}$}
+        \end{subfigure}
+    \end{figure*}
+
+    \subsubsection*{2. Детерминизация}
+
+    \begin{figure*}[h]
+        \begin{subfigure}{0.5\linewidth}
+            \centering
+            \begin{tabular}{|c|c|c|}
+                \hline
+                $\mathcal{A}_1$ & $a$ & $b$    \\
+                \hline
+                $\rightarrow 1$ & $2$ & $3, 4$ \\
+                \hline
+                $2$             & $3$ & $3$    \\
+                \hline
+                $3$             & $3$ & $3, 4$ \\
+                \hline
+                $*3,4$          & $3$ & $3, 4$ \\
+                \hline
+            \end{tabular}
+            \caption*{след детерминизация}
+        \end{subfigure}
+        \begin{subfigure}{0.5\linewidth}
+            \centering
+            \begin{tabular}{|c|c|c|}
+                \hline
+                $\mathcal{A}_2$ & $a$ & $b$ \\
+                \hline
+                $\rightarrow 1$ & $2$ & $4$ \\
+                \hline
+                $2$             & $3$ & $3$ \\
+                \hline
+                $3$             & $3$ & $4$ \\
+                \hline
+                $*4$            & $3$ & $4$ \\
+                \hline
+            \end{tabular}
+            \caption*{след преименуване}
+        \end{subfigure}
+    \end{figure*}
+
+    \subsubsection*{3. Минимизация}
+
+    \begin{figure*}[h]
+        \begin{subfigure}{0.5\linewidth}
+            \centering
+            \begin{tabular}{|c|c|c|}
+                \hline
+                $A_1$ & $a$   & $b$   \\
+                \hline
+                $1$   & $A_1$ & $A_2$ \\
+                \hline
+                $2$   & $A_1$ & $A_1$ \\
+                \hline
+                $3$   & $A_1$ & $A_2$ \\
+                \hline
+            \end{tabular}
+            \caption*{$A_1 = \{ 1, 2, 3\}$ и $A_2 = \{ 4 \}$}
+            \caption*{$2$ се разделя от $1$ и $3$}
+        \end{subfigure}
+        \begin{subfigure}{0.5\linewidth}
+            \centering
+            \begin{tabular}{|c|c|c|}
+                \hline
+                $B_1$ & $a$   & $b$   \\
+                \hline
+                $1$   & $B_2$ & $B_3$ \\
+                \hline
+                $3$   & $B_1$ & $B_3$ \\
+                \hline
+            \end{tabular}
+            \caption*{$B_1 = \{ 1, 3\}, B_2 = \{ 2 \}$ и $B_3 = \{ 4 \}$}
+            \caption*{$1$ и $3$ се разделят}
+        \end{subfigure}
+    \end{figure*}
+
+    Така заключаваме, че автоматът $\mathcal{A}_2$ е минимален.
+\end{solution}
+
+\begin{definition}
+    Казваме, че $\beta$ е \textbf{префикс} на $\alpha$ и бележим ${\beta \preceq \alpha}$, ако има дума $\omega$, такава че $\beta \cdot \omega = \alpha$.
+    Ако знаем още, че $\alpha \neq \beta$, $\beta$ наричаме \textbf{строг префикс} на $\alpha$ и бележим $\beta \prec \alpha$.
+    Отбелязваме, че префикс на префикс на $\alpha$ е префикс на $\alpha$ и за всеки два префикса на $\alpha$, един от тях е префикс на другия.
+    При $\alpha = \beta \cdot \omega$ въвеждаме означението $\diff(\beta, \alpha) = \omega$.
+\end{definition}
+
+\begin{definition}
+    Нека $L$ е език и $\alpha$ е произволна дума. Казваме, че $\opair{\beta, \gamma}$ е \textbf{$L$-двойка} в $\alpha$, ако $\beta, \gamma \in L$, $\beta \prec \gamma \preceq \alpha$, и няма дума $\omega \in L$, такава че $\beta \prec \omega \prec \gamma$.
+    ($\beta$ и $\gamma$ са различни префикси на $\alpha$ от езикът $L$ и няма друг префикс на $\alpha$ от $L$, завършващ между техните краища)
+\end{definition}
+
+\begin{problem}
+Да се докаже, че е регулярен следният език:
+\begin{center}
+    $L = \{ \alpha \in \Sigma^* \mid \text{броят } (\Sigma^* \cdot \{ b \}) \text{-двойки в }\alpha \text{ е четен}\}$
+\end{center}
+\end{problem}
+
+\begin{solution}
+    Ако се разпишат няколко примера, лесно може да се види, че броят на $(\Sigma^* \cdot \{ b \})$-двойките в една дума $\alpha \in \Sigma^*$ зависи само от $|\alpha|_b$.
+    За да има поне една $(\Sigma^* \cdot \{ b \})$-двойка, трябва да има поне две на брой букви $b$.
+    След първата $(\Sigma^* \cdot \{ b \})$-двойка, за всяко срещане на $b$ се добавя по една $(\Sigma^* \cdot \{ b \})$-двойка.
+
+    Така можем да заключим, че броят на $(\Sigma^* \cdot \{ b \})$-двойките е четен, тогава и само тогава, когато броят на срещанията на $b$ е нечетен, или е нула (защото тогава нямаме $(\Sigma^* \cdot \{ b \})$-двойки).
+    Следователно
+    \[
+        L = \{ \alpha \in \Sigma^* \mid |\alpha|_b \text{ е нечетно или } |\alpha|_b = 0 \} = \underbrace{\{ a \}^*}_{L_1} \cup \underbrace{\{ \alpha \in \Sigma^* \mid |\alpha|_b \text{ е нечетно} \}}_{L_2}.
+    \]
+    $L_1$ е очевидно регулярен, а автомат за $L_2$ или подобен на него е правен на упражнения.
+    Тогава и $L$ е регулерен.
+\end{solution}
+
+\begin{problem}
+Да се докаже, че не е регулярен следният език:
+\begin{center}
+    $L = \{\alpha \in \Sigma^* \mid |\gamma| = 2 |\beta| \text{ за всички } (\Sigma^* \cdot \{ b \})\text{-двойки } \opair{\beta, \gamma} \text{ в } \alpha \}$
+\end{center}
+\end{problem}
+
+\begin{solution}
+    Нека $n, k \in \mathbb{N}$ и $k < n$.
+    Тогава:
+    \begin{itemize}
+        \item $a^nba^nb \in L$, защото $\opair{a^nb, a^nba^nb}$ е единствентата $(\Sigma^* \cdot \{ b \})$-двойка в тази дума и $|a^nba^nb| = 2|a^nb|$
+        \item $a^kba^nb \notin L$, защото $\opair{a^kb, a^kba^nb}$ е единствентата $(\Sigma^* \cdot \{ b \})$-двойка в тази дума и $|a^kba^nb| > 2|a^kb|$
+    \end{itemize}
+    От тук можем да заключим, че $a^nb \not\approx_L a^kb$ за $n \neq k$.
+    Така $\{ [a^nb]_{\approx_L} \mid n \in \mathbb{N} \} \subseteq \{ [\alpha]_{\approx_L} \mid \alpha \in \Sigma^* \}$ е безкрайно, откъдето $L$ не е регулярен.
+\end{solution}
+
+\pagebreak
+
+\begin{problem}
+Да се докаже, че винаги когато $L_1$ и $L_2$ са регулярни, регулярен е и следният език:
+\begin{center}
+    $L = \{\alpha \in \Sigma^* \mid \diff(\beta, \gamma) \in L_2 \text{ за всяка }L_{1} \text{-двойка } \opair{\beta,\gamma} \text{ в } \alpha \}$
+\end{center}
+\end{problem}
+
+\begin{solution}
+    Нека $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$ е автомат за $L_1$.
+
+    Да помислим какво се случва в една дума $\alpha \notin L$.
+    Знаем за нея, че има $L_1$-двойка $\opair{\beta, \beta \omega}$, за която и $\omega \notin L_2$.
+    Цялата дума $\alpha$ е от вида $\beta \omega \gamma$ за някое $\gamma \in \Sigma^*$.
+    Нека $L(p, q) = \{ \alpha \in \Sigma^* \mid \delta^*(p, \alpha) = q \}$.
+    Този език очевидно е регулярен за произволни $p, q \in Q$.
+    Понеже $\opair{\beta, \beta \omega}$ е $L_1$-двойка, то няма $\varepsilon \prec \omega' \prec \omega$, за което $\beta \omega' \in L_1$.
+    Това означава, че като четем в $\mathcal{A}$, между $\beta$ и $\beta \omega$ не срещаме никакви финални състояния.
+    Знаем, че $\delta^*(s, \beta) = f_1$ и $\delta^*(f_1, \omega) = f_2$ за някои $f_1, f_2 \in F$.
+    Тогава
+    \[
+        \omega \in (L(f_1, f_2) \setminus \{ \varepsilon \}) \cap \overline{L_2} \cap \overline{\left(\bigcup\limits_{f \in F}[(L(f_1, f) \setminus \{ \varepsilon \}) \cdot (L(f, f_2) \setminus \{ \varepsilon \})]\right)},
+    \]
+    защото нито може $\omega \in L_2$, нито може да има междинно състояние $f \in F$ докато четем $\omega$.
+    Освен $\omega$, можем и лесно да изразим $\beta$, то ще принадлежи на $L(s, f_1)$.
+    Накрая получаваме, че
+    \[
+        \alpha \in \underbrace{L(s, f_1)}_{\beta \in} \cdot \underbrace{\left((L(f_1, f_2) \setminus \{ \varepsilon \}) \cap \overline{L_2} \cap \overline{\left(\bigcup\limits_{f \in F}[(L(f_1, f) \setminus \{ \varepsilon \}) \cdot (L(f, f_2) \setminus \{ \varepsilon \}))]\right)}\right)}_{\omega \in} \cdot \underbrace{\Sigma^*}_{\gamma \in}.
+    \]
+    Следователно ако $\alpha \in \overline{L}$, то
+    \[
+        \alpha \in \underbrace{\bigcup\limits_{f_1, f_2 \in F}\left(L(s, f_1) \cdot \left((L(f_1, f_2) \setminus \{ \varepsilon \}) \cap \overline{L_2} \cap \overline{\left(\bigcup\limits_{f \in F}[(L(f_1, f) \setminus \{ \varepsilon \}) \cdot (L(f, f_2) \setminus \{ \varepsilon \}))]\right)}\right) \cdot \Sigma^*\right)}_{L'}.
+    \]
+
+    Обратно, ако $\alpha \in L'$, то има $f_1, f_2 \in F$, за които
+    \[
+        \alpha \in L(s, f_1) \cdot \left((L(f_1, f_2) \setminus \{ \varepsilon \}) \cap \overline{L_2} \cap \overline{\left(\bigcup\limits_{f \in F}[(L(f_1, f) \setminus \{ \varepsilon \}) \cdot (L(f, f_2) \setminus \{ \varepsilon \}))]\right)}\right) \cdot \Sigma^*.
+    \]
+    Тогава има $\beta, \omega, \gamma \in \Sigma^*$, за които $\alpha = \beta \omega \gamma$ и
+    \[
+        \beta \in L(s, f_1) \text{ и } \omega \in (L(f_1, f_2) \setminus \{ \varepsilon \}) \cap \overline{L_2} \cap \overline{\left(\bigcup\limits_{f \in F}[(L(f_1, f) \setminus \{ \varepsilon \}) \cdot (L(f, f_2) \setminus \{ \varepsilon \}))]\right)}.
+    \]
+    Лесно може да се види, че $\opair{\beta, \beta \omega}$ е $L_1$-двойка в $\beta \omega \gamma = \alpha$ и $\omega \notin L_2$.
+    Така $\alpha \notin L$.
+
+    Получихме, че $\alpha \notin L \iff \alpha \in L'$, откъдето $L' = \overline{L}$.
+    Ние използвахме само операции, запазващи регулярност, и ги прилагахме крайно много пъти, откъдето $L'$ е регулярен.
+    Така и $\overline{L'} = L$ също е регулярен.
+\end{solution}
+
+\end{document}
