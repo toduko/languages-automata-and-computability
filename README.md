@@ -3,7 +3,7 @@
 Тук може да намерите:
 
 - кода на [моите](https://github.com/toduko) записки (заедно със самите [тях](https://raw.githubusercontent.com/toduko/languages-automata-and-computability/master/notes.pdf)) за упражнения по _ЕАИ / ДСТР-2_ курса, който се води във [ФМИ СУ](https://fmi.uni-sofia.bg/);
-- компилация от интересни задачи.
+- [компилация от интересни задачи](problems-compilation/).
 
 ## :thought_balloon: Какво има (и/или ще има) в записките?
 
