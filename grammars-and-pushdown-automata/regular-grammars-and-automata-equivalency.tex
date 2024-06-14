@@ -32,8 +32,8 @@
         \item Ако $q_i \in F$, то $P_i \rightarrow \varepsilon$
     \end{itemize}
 
-    Твърдението, което трябва да покажем е, че за всяко $\alpha \in \Sigma^*, \: \delta^*(q_i, \alpha) = q_j \iff P_i \tri{|\alpha|} \alpha P_j$.
-    И в двете посоки се прави индукция по дължината на $|\alpha|$, като в посоката $(\Rightarrow)$ се кара по дефиниция на $\delta^*$, а в посоката $(\Leftarrow)$ - на $\tri{*}$.
+    Твърдението, което трябва да покажем е, че за всяко $\alpha \in \Sigma^*, \: \delta^*(q_i, \alpha) \in F \iff P_i \tri{*} \alpha $.
+    В посоката $(\Rightarrow)$ се прави индукция по дължината на $|\alpha|$, а в посоката $(\Leftarrow)$ се прави индукция по дефиницията на $\tri{n}$.
     Това остава за читателя.
     Остават само довършителни разсъждения:
     \begin{align*}
@@ -68,9 +68,9 @@
     \end{itemize}
 
     Ще формулираме само помощното твърдение и ще оставим всичко останало на читателя:
-    \begin{center}
-        $q_j \in \Delta^*(q_i, \alpha) \iff A_i \tri{|\alpha|} \alpha A_j$
-    \end{center}
+    \[
+        \Delta^*({q_i}, \alpha) \cap F \neq \varnothing \iff A_i \tri{*} \alpha \: \& \: \alpha \in \Sigma^*
+    \]
 \end{proof}
 
 С тези две твърдения не направихме много.
@@ -115,9 +115,10 @@
     \end{itemize}
 
     Трябва да се покаже, че:
-    \begin{center}
-        $\delta^*(q_i, \alpha) = q_j \iff P_i \tri{n + m} a^{n} P_j b^{m}$, където $n = |\alpha|_a$ и $m = |\alpha|_b$
-    \end{center}
+    \begin{itemize}
+        \item $\delta^*(q_i, \alpha) \in F \Rightarrow P_i \tri{*} a^{|\alpha|_a} b^{|\alpha|_b}$
+        \item $P_i \tri{*} \alpha \: \& \: \alpha \in \Sigma^* \Rightarrow (\exists \beta \in \Sigma^*) (\delta^*(s, \beta) \in F \: \& \: \alpha = a^{|\beta|_a} b^{|\beta|_b})$
+    \end{itemize}
 \end{proof}
 
 \begin{problem}

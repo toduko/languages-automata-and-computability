@@ -62,7 +62,7 @@
     \end{center}
     Искаме сега да докажем, че $\mathcal{L}(G) = L$.
 
-    В посоката $\mathcal{L}(G) \subseteq L$ ще трябва да покажем, че ако $S \tri{l} \alpha \in \Sigma^*$, то $\alpha \in L$.
+    В посоката $\mathcal{L}(G) \subseteq L$ ще трябва да покажем, че ако $S \tri{l} \alpha$ и $\alpha \in \Sigma^*$, то $\alpha \in L$.
     Правим индукция по $l$:
     \begin{itemize}
         \item $S \tri{0} S \notin \Sigma^*$ \checkmark
@@ -70,11 +70,11 @@
               Тогава сме приложили някое правило.
               \begin{itemize}
                   \item[1 сл.] Приложили сме правилото $S \rightarrow \varepsilon$.
-                      Тогава $\alpha = \varepsilon = a^0b^0 \in L$.
+                        Тогава $\alpha = \varepsilon = a^0b^0 \in L$.
                   \item[2 сл.] Приложили сме правилото $S \rightarrow aSb$.
-                      Тогава $S \tri{l} \beta$ за някое $\beta \in \Sigma^*$ и $\alpha = a \beta b$.
-                      По ИП $\beta \in L$, откъдето $\beta = a^nb^n$ за някое $n \in \mathbb{N}$.
-                      Така $\alpha = a \beta b = a \cdot a^nb^n \cdot b = a^{n+1}b^{n+1} \in L$.
+                        Тогава $S \tri{l} \beta$ за някое $\beta \in \Sigma^*$ и $\alpha = a \beta b$.
+                        По ИП $\beta \in L$, откъдето $\beta = a^nb^n$ за някое $n \in \mathbb{N}$.
+                        Така $\alpha = a \beta b = a \cdot a^nb^n \cdot b = a^{n+1}b^{n+1} \in L$.
               \end{itemize}
     \end{itemize}
 
@@ -109,7 +109,7 @@
         $S \rightarrow aSa \mid bSb \mid \varepsilon$
     \end{center}
 
-    Ще покажем, че ако $S \tri{l} \beta \in \Sigma^*$, то $\beta = \alpha \alpha^{rev}$ за някое $\alpha \in \Sigma^*$.
+    Ще покажем, че ако $S \tri{l} \beta$ и $\beta \in \Sigma^*$, то $\beta = \alpha \alpha^{rev}$ за някое $\alpha \in \Sigma^*$.
     Правим индукция по $l$:
     \begin{itemize}
         \item $S \tri{0} S \notin \Sigma^*$ \checkmark
@@ -117,13 +117,13 @@
               Тогава сме приложили някое правило.
               \begin{itemize}
                   \item[1 сл.] Приложили сме правилото $S \rightarrow \varepsilon$.
-                      Тогава $\alpha = \varepsilon = \varepsilon \varepsilon^{rev}$.
+                        Тогава $\alpha = \varepsilon = \varepsilon \varepsilon^{rev}$.
                   \item[2 сл.] Приложили сме правилото $S \rightarrow aSa$.
-                      Тогава $S \tri{l} \gamma$ за някое $\gamma \in \Sigma^*$ и $\beta = a \gamma a$.
-                      По ИП има $\alpha \in \Sigma^*$ такова, че $\gamma = \alpha \alpha^{rev}$.
-                      Така $\beta = a \gamma a = a \alpha \alpha^{rev} a = a \alpha (a \alpha)^{rev}$.
+                        Тогава $S \tri{l} \gamma$ за някое $\gamma \in \Sigma^*$ и $\beta = a \gamma a$.
+                        По ИП има $\alpha \in \Sigma^*$ такова, че $\gamma = \alpha \alpha^{rev}$.
+                        Така $\beta = a \gamma a = a \alpha \alpha^{rev} a = a \alpha (a \alpha)^{rev}$.
                   \item[3 сл.] Приложили сме правилото $S \rightarrow bSb$.
-                      Той е аналогичен на 2 сл.
+                        Той е аналогичен на 2 сл.
               \end{itemize}
     \end{itemize}
 
@@ -180,13 +180,13 @@
     Следните твърдения са верни:
     \begin{itemize}
         \item $S \rightarrow_G S_1 \mid S_2$ заедно с правилата $R_1, R_2$ ще генерира езикът $\mathcal{L}(G_1) \cup \mathcal{L}(G_2)$. \\
-              Ако $S \tri{*}_G \alpha$, то тогава очевидно понеже $S \rightarrow_G S_i$ ($i = 1, 2$) са единствените правила, $S_1 \tri{*}_G \alpha$ или $S_2 \tri{*}_G \alpha$.
+              Ако $S \tri{*}_G \alpha$ и $\alpha \in \Sigma^*$, то тогава очевидно понеже $S \rightarrow_G S_i$ ($i = 1, 2$) са единствените правила, $S_1 \tri{*}_G \alpha$ или $S_2 \tri{*}_G \alpha$.
               Но понеже не добавяме други правила с $V_1$ и $V_2$, тогава $S_1 \tri{*}_{G_1} \alpha$ или $S_2 \tri{*}_{G_2} \alpha$.
               Така $\alpha = \alpha_1 \alpha_2 \in \mathcal{L}(G_1) \cup \mathcal{L}(G_2)$.
               Обратно, ако $\alpha \in \mathcal{L}(G_1) \cup \mathcal{L}(G_2)$ то $S_1 \tri{*}_{G_1} \alpha$ или $S_2 \tri{*}_{G_2} \alpha$, откъдето $S_1 \tri{*}_G \alpha$ или $S_2 \tri{*}_G \alpha$, и понеже $S \rightarrow_G S_1 \mid S_2$, $S \tri{*} \alpha$.
               Получаваме, че $\mathcal{L}(G) = \mathcal{L}(G_1) \cup \mathcal{L}(G_2)$.
         \item $S \rightarrow_G S_1 S_2$ заедно с правилата $R_1, R_2$ ще генерира езикът $\mathcal{L}(G_1) \cdot \mathcal{L}(G_2)$. \\
-              Ако $S \tri{*}_G \alpha$, то тогава очевидно понеже $S \rightarrow_G S_1 S_2$ е единственото правило, $S_i \tri{*}_G \alpha_i$ ($i = 1, 2$) и $\alpha = \alpha_1 \alpha_2$.
+              Ако $S \tri{*}_G \alpha$ и $\alpha \in \Sigma^*$, то тогава очевидно понеже $S \rightarrow_G S_1 S_2$ е единственото правило, $S_i \tri{*}_G \alpha_i$ ($i = 1, 2$) и $\alpha = \alpha_1 \alpha_2$.
               Но понеже не добавяме други правила с $V_1$ и $V_2$, $S_i \tri{*}_{G_i} \alpha_i$ за $i = 1, 2$.
               Така $\alpha = \alpha_1 \alpha_2 \in \mathcal{L}(G_1) \cdot \mathcal{L}(G_2)$.
               Обратно, ако $\alpha_i \in \mathcal{L}(G_i)$ за $i = 1, 2$, то $S_i \tri{*}_{G_i} \alpha_i$, откъдето понеже $S \rightarrow_G S_1 S_2$, $S \tri{*} \alpha_1 \alpha_2$.
