@@ -1,0 +1,225 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[english, bulgarian]{babel}
+\usepackage{amssymb}
+\usepackage{hyperref, fancyhdr, lastpage, fancyvrb, tcolorbox, titlesec}
+\usepackage{array, tabularx, colortbl}
+\usepackage{tikz}
+\usepackage{venndiagram}
+\usepackage{amsthm, bm}
+\usepackage{relsize}
+\usepackage{amsmath,physics}
+\usepackage{mathtools}
+\usepackage{subcaption}
+\usepackage{theoremref}
+\usepackage{circuitikz}
+\usepackage{geometry}
+\usepackage{stmaryrd}
+\usepackage{forest}
+\usepackage{cancel}
+\usepackage{faktor}
+\usetikzlibrary{automata, arrows, positioning, shapes}
+\useforestlibrary{linguistics}
+
+\ExplSyntaxOn
+\NewDocumentCommand{\opair}{m}
+ {
+  \langle\mspace{2mu}
+  \clist_set:Nn \l_tmpa_clist { #1 }
+  \clist_use:Nn \l_tmpa_clist {,\mspace{3mu plus 1mu minus 1mu}\allowbreak}
+  \mspace{2mu}\rangle
+}
+\ExplSyntaxOff
+
+\hypersetup{
+    colorlinks=true,
+    linktoc=all,
+    linkcolor=blue
+}
+
+\setlength\parindent{0pt}
+
+\newtheorem{problem}{Задача}[section]
+\newtheorem*{claim}{Твърдение}
+\newtheorem*{hint}{Упътване}
+\theoremstyle{definition}
+\newtheorem*{solution}{Решение}
+
+\begin{document}
+
+\begin{center}
+    \LARGE{Задачи върху (не)безконтекстни езици}
+
+    \LARGE{2023/2024}
+\end{center}
+
+\section{Безконтекстни езици}
+
+\begin{problem}\thlabel{diff-leq-n}
+Да се докаже, че за всеки безконтекстен език $L$ и за всяко $n \in \mathbb{N}$ е безконтекстен езикът:
+\begin{align*}
+    \operatorname{Diff}_{\leq n}(L) = \{ \alpha_0 \overline{x_1} \alpha_1 \overline{x_2} \alpha_2 \dots \overline{x_k} \alpha_k  \mid k \leq n \:  \& \: \alpha_i \in \Sigma^* \: & \& \: x_i \in \Sigma                                                  \\
+                                                                                                                                                                                  & \& \: \alpha_0 x_1 \alpha_1 x_2 \alpha_2 \dots x_k \alpha_k \in L \},
+\end{align*}
+където $\overline{a} = b$ и $\overline{b} = a$.
+\end{problem}
+
+\begin{hint}
+    Могат да се направят следните неща:
+    \begin{enumerate}
+        \item Да се съобрази, че:
+              \[
+                  \operatorname{Diff}_{\leq 0}(L) = L \text{ и }\operatorname{Diff}_{\leq n + 1}(L) = \operatorname{Diff}_{\leq n}(L) \cup \operatorname{Diff}_1(\operatorname{Diff}_{\leq n}(L)).
+              \]
+        \item Да се вземе граматика $G = \opair{\Sigma, V, S, R}$ в НФЧ за $L$ и да се направи следната граматика $G_{diff}$ за $\operatorname{Diff}_1(L)$:
+              \begin{itemize}
+                  \item променливите са $V \: \dot \cup \: \{ \dot A \mid A \in V \}$;
+                  \item началната променлива е $\dot S$;
+                  \item за всяко правило в $G$ от вида $A \rightarrow BC$ имаме същото правило в $G_{diff}$ заедно с правилата $\dot A \rightarrow \dot B C \mid B \dot C$;
+                  \item за всяко правило в $G$ от вида $A \rightarrow x$ имаме същото правило в $G_{diff}$ заедно с правилото $\dot A \rightarrow \overline{x}$.
+              \end{itemize}
+        \item Да се докаже, че $\mathcal{L}_{G_{diff}}(\dot A) = \operatorname{Diff}_1(\mathcal{L}_G(A))$.
+    \end{enumerate}
+\end{hint}
+
+\begin{problem}
+Да се докаже, че за всеки безконтекстен език $L$ и за всяко $n \in \mathbb{N}$ е безконтекстен езикът:
+\begin{align*}
+    \operatorname{Rem}_n(L) = \{ \alpha_0 \alpha_1 \dots \alpha_n  \mid \alpha_i \in \Sigma^* & \text{ и има } x_1, \dots, x_n \in \Sigma ,                                       \\
+                                                                                              & \text{ за които } \alpha_0 x_1 \alpha_1 x_2 \alpha_2 \dots x_n \alpha_n \in L \}.
+\end{align*}
+\end{problem}
+
+\begin{hint}
+    Да се адаптира конструкцията от \thref{diff-leq-n}.
+\end{hint}
+
+\begin{problem}
+Да се докаже, че за всеки $x, y \in \Sigma$ и за всеки безконтекстен език $L$ е безконтекстен езикът:
+\[
+    \operatorname{SwapNeighbours}_{x, y}(L) = \{ \alpha x y \beta \in \Sigma^* \mid \alpha, \beta \in \Sigma^* \: \& \: \alpha y x \beta \in L \}.
+\]
+\end{problem}
+
+\begin{hint}
+    Да се вземе граматика $G = \opair{\Sigma, V, S, R}$ в НФЧ за $L$ и да се направи следната граматика $G_{swap(x, y)}$ за $\operatorname{SwapNeighbours}_{x, y}(L)$:
+    \begin{itemize}
+        \item променливите са $V \: \dot \cup \: \{ \dot A \mid A \in V \} \: \dot \cup \: \{ \overrightarrow{A}_{x \rightarrow y} \mid A \in V \} \: \dot \cup \: \{ \overleftarrow{A}_{y \rightarrow x} \mid A \in V \}$;
+        \item началната променлива е $\dot S$;
+        \item за всяко правило в $G$ от вида $A \rightarrow BC$ имаме същото правило в $G_{swap(x, y)}$ заедно с правилата:
+              \begin{itemize}
+                  \item $\dot A \rightarrow \dot B C \mid B \dot C \mid \overrightarrow{B}_{x \rightarrow y} \overleftarrow{C}_{y \rightarrow x}$,
+                  \item $\overrightarrow{A}_{x \rightarrow y} \rightarrow B \overrightarrow{C}_{x \rightarrow y}$,
+                  \item $\overleftarrow{A}_{x \rightarrow y} \rightarrow \overleftarrow{B}_{y \rightarrow x} C$;
+              \end{itemize}
+        \item за всяко правило в $G$ от вида $A \rightarrow x$ имаме същото правило в $G_{swap(x, y)}$ заедно с правилото $\overrightarrow{A}_{x \rightarrow y} \rightarrow y$;
+        \item за всяко правило в $G$ от вида $A \rightarrow y$ имаме същото правило в $G_{swap(x, y)}$ заедно с правилото $\overleftarrow{A}_{x \rightarrow y} \rightarrow x$.
+    \end{itemize}
+    След това да се докаже, че:
+    \begin{itemize}
+        \item $\mathcal{L}_{G_{swap(x, y)}}(\dot A) = \operatorname{SwapNeighbours}(\mathcal{L}_G(A))$;
+        \item $\mathcal{L}_{G_{swap(x, y)}}(\overrightarrow{A}_{x \rightarrow y}) = \{ \alpha y \in \Sigma^* \mid \alpha x \in \mathcal{L}_G(A) \}$;
+        \item $\mathcal{L}_{G_{swap(x, y)}}(\overleftarrow{A}_{y \rightarrow x}) = \{ x \alpha \in \Sigma^* \mid y \alpha \in \mathcal{L}_G(A) \}$.
+    \end{itemize}
+\end{hint}
+
+\begin{problem}
+Да се докаже, че за всеки безконтекстен език $L$ и регулярен език $M$ е безконтекстен езикът:
+\[
+    \faktor{L}{M} = \{ \alpha \in \Sigma^* \mid (\exists \beta \in M) (\alpha \beta \in L) \}.
+\]
+\end{problem}
+
+\begin{hint}
+    Да се адаптира конструкциятата за сечение на безконтекстен език с регулярен, като в листата вместо да генерираме съответните букви генерираме $\varepsilon$.
+\end{hint}
+
+\begin{problem}
+Нека с $\|\alpha\|_L$ бележим броят префикси на думата $\alpha$ от езика $L$.
+Да се докаже, че за всеки регулярен език $L$ е безконтекстен езикът:
+\[
+    \operatorname{EqualPref}(L) = \{ \alpha \# \beta \mid \alpha, \beta \in \Sigma^* \: \& \: \|\alpha\|_L = \|\beta^{rev}\|_L \}.
+\]
+\end{problem}
+
+\begin{hint}
+    Да се вземе детерминиран краен автомат $\mathcal{A} = \opair{\Sigma, Q, s, \delta, F}$ за езика $L$ и да се построи следната безконтекстна граматика $G$ за $\operatorname{EqualPref}(L)$:
+    \begin{itemize}
+        \item променливите са $\{ \left[ p, q \right] \mid p, q \in Q \}$;
+        \item началната променлива е $\left[ s, s \right]$;
+        \item за всяко $\opair{p, q} \in (F \cross F) \cup ((Q \setminus F) \cross (Q \setminus F))$ и $x, y \in \Sigma$ имаме правилата $\left[ p, q \right] \rightarrow \# \mid x \left[ \delta(p, x), \delta(q, y) \right] y$;
+        \item за всяко $\opair{f, p} \in F \cross (Q \setminus F)$ и $x \in \Sigma$ имаме правилото $\left[ f, p \right] \rightarrow  \left[ f, \delta(p, x) \right] x$;
+        \item за всяко $\opair{p, f} \in (Q \setminus F) \cross F$ и $x \in \Sigma$ имаме правилото $\left[ p, f \right] \rightarrow  x \left[ \delta(p, x), f \right]$.
+    \end{itemize}
+    Нека дефинираме:
+    \[
+        \mathcal{L_A}(p) = \{ \alpha \in \Sigma^* \mid \delta^*(p, \alpha) \in F \}.
+    \]
+    Да се докаже, че:
+    \[
+        \mathcal{L}_G( \left[ p, q \right] ) = \{ \alpha \# \beta \mid \alpha, \beta \in \Sigma^* \: \& \: \|\alpha\|_{\mathcal{L_A}(p)} = \|\beta^{rev}\|_{\mathcal{L_A}(q)} \}.
+    \]
+\end{hint}
+
+\newpage
+
+\section{Небезконтекстни езици}
+
+\begin{problem}
+Да се докаже, че не е безконтекстен езикът:
+\[
+    L_{suff} = \{ \alpha \# \beta \in \Sigma^* \mid \alpha, \beta \in \Sigma^* \text{ и } \alpha \text{ е суфикс на } \beta \}.
+\]
+\end{problem}
+
+\begin{hint}
+    Да се разгледат думите от вида $a^p b^p \# a^p b^p$, където $p \geq 1$.
+\end{hint}
+
+\begin{problem}
+Да се докаже, че съществува безконтекстен език $L$, за който не е безконтекстен езикът:
+\[
+    \operatorname{GraphCount}_a(L) = \{ \alpha \# a^{|\alpha|_a} \mid \alpha \in L \}.
+\]
+\end{problem}
+
+\begin{hint}
+    Да се разгледа езика $L = \{ a^n b^n \mid n \in \mathbb{N} \}$.
+\end{hint}
+
+\begin{problem}
+Да се докаже, че съществува безконтекстен език $L$, за който не е безконтекстен езикът:
+\[
+    \operatorname{HalfRev}(L) = \{ \alpha \beta^{rev} \in \Sigma^* \mid \alpha \beta \in L \: \& \: |\alpha| = |\beta| \}.
+\]
+\end{problem}
+
+\begin{hint}
+    Да се разгледа езика $L = \{ a^n b^m c^m a^n \mid n, m \in \mathbb{N} \}$.
+\end{hint}
+
+\begin{problem}
+Да се докаже, че съществува безконтекстен език $L$, за който не е безконтекстен езикът:
+\[
+    \operatorname{Both}(L) = \{ \alpha \beta \gamma \in \Sigma^* \mid \alpha \beta \in L \: \& \: \beta \gamma \in L \: \& \: |\alpha| = |\beta| = |\gamma| \}.
+\]
+\end{problem}
+
+\begin{hint}
+    Да се разгледа езика $L = \{ a^n b^n \mid n \in \mathbb{N} \} \cup \{ b^n a^n \mid n \in \mathbb{N} \}$.
+\end{hint}
+
+\begin{problem}
+За две думи $\alpha, \beta \in \Sigma^*$ казваме, че $\alpha$ се $(L_1, L_2)$-разширява до $\beta$ от ляво и пишем $\alpha \mathrel{\substack{(L_1, L_2) \\ \longmapsto \\ left}} \beta$, ако $\alpha = \alpha_1 \gamma \alpha_2$ за някои $\alpha_1, \alpha_2 \in \Sigma^*, \gamma \in L_1$ и $\beta = \delta \alpha$ за някое $\delta \in L_2$ със $|\delta| = |\gamma|$.
+Да се докаже, че съществува безконтекстен език $L$ и регулярни езици $L_1, L_2$, за които не е безконтекстен езикът:
+\[
+    \operatorname{ExpandLeft}_{L_1, L_2}(L) = \{ \beta \in \Sigma^* \mid (\exists \alpha \in L)(\alpha \mathrel{\substack{(L_1, L_2) \\ \longmapsto \\ left}} \beta) \}.
+\]
+\end{problem}
+
+\begin{hint}
+    Да се разгледат езиците $L_1 = \{ b \}^*, L_2 = \{ a \}^*$ и $L = \{ b^n a^n \mid n \in \mathbb{N} \}$.
+\end{hint}
+
+\end{document}

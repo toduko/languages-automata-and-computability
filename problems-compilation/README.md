@@ -12,5 +12,6 @@
 ## Други задачи
 
 - [Регулярни и нерегулярни езици 2023-2024](regular-languages/2023-2024-compilation/problems.pdf)
+- [Безконтекстни и небезконтекстни езици 2023-2024](context-free-languages/2023-2024-compilation/problems.pdf)
 - [Задача от допълнително упражнение на КН на 24.04.2024 г.](regular-languages/24-april-24/problem.pdf)
 - [Съждителни тавтологии над крайно много променливи](context-free-languages/propositional-tautologies-over-finitely-many-variables/problem.pdf)
