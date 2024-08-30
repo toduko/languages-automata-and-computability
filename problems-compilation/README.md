@@ -5,9 +5,10 @@
 - Информатика 2023-2024
   - [Контролно 1](tests/02-dec-23/solutions.pdf)
   - [Контролно 2](tests/13-jan-24/solutions.pdf)
-  - [Писмен изпит](tests/23-jan-24/solutions.pdf)
+  - [Писмен изпит (редовен)](tests/23-jan-24/solutions.pdf)
 - Компютърни науки 2023-2024
   - [Семестриално контролно](tests/28-apr-24/solutions.pdf)
+  - [Писмен изпит (редовен)](tests/18-jun-24/solutions.pdf)
 
 ## Други задачи
 

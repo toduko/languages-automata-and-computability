@@ -1,0 +1,186 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[english, bulgarian]{babel}
+\usepackage{amssymb}
+\usepackage{hyperref, fancyhdr, lastpage, fancyvrb, tcolorbox, titlesec}
+\usepackage{array, tabularx, colortbl}
+\usepackage{tikz}
+\usepackage{venndiagram}
+\usepackage{amsthm, bm}
+\usepackage{relsize}
+\usepackage{amsmath,physics}
+\usepackage{mathtools}
+\usepackage{subcaption}
+\usepackage{theoremref}
+\usepackage{circuitikz}
+\usepackage[a4paper, left=0.50in, right=0.50in, top=1.0in, bottom=1.0in]{geometry}
+\usepackage{stmaryrd}
+\usepackage{forest}
+\usepackage{cancel}
+\usepackage{stackrel}
+\usetikzlibrary{automata, arrows, positioning, shapes}
+\useforestlibrary{linguistics}
+
+\ExplSyntaxOn
+\NewDocumentCommand{\opair}{m}
+{
+    \langle\mspace{2mu}
+    \clist_set:Nn \l_tmpa_clist { #1 }
+    \clist_use:Nn \l_tmpa_clist {,\mspace{3mu plus 1mu minus 1mu}\allowbreak}
+    \mspace{2mu}\rangle
+}
+\ExplSyntaxOff
+
+\hypersetup{
+    colorlinks=true,
+    linktoc=all,
+    linkcolor=blue
+}
+
+\setlength\parindent{0pt}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Задача}
+\newtheorem*{claim}{Твърдение}
+\newtheorem*{solution}{Решение}
+\newtheorem*{remark}{Забележка}
+
+\begin{document}
+\title{Решения на задачите от писмения изпит по ЕАИ на специалност ``Компютърни науки'', проведен на 18 юни 2024 г.}
+\date{}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\calL}{\mathcal{L}}
+\newcommand{\cnt}{\operatorname{Count}}
+\newcommand{\tri}[1]{\stackrel{#1}{\vartriangleleft}}
+
+
+\maketitle
+
+\begin{problem}[{\bf 10 точки}]
+За една дума $\omega = a_0 a_1 \cdots a_{n - 1}$ над азбуката $\{a,b\}$
+да означим за $i < n$, $\omega\texttt{[i:]} = a_i\cdots a_{n-1}$
+и $\omega\texttt{[i:]} = \$$ за $i \geq n$, където $\$\not\in \{a,b\}$.
+    Нека $L$ и $M$ са регулярни езици над азбуката $\{a,b\}$.
+Докажете, че езикът
+\[
+    K = \{ \omega \in \{a,b\}^\star \mid (\exists i) [\omega\texttt{[2i:]} \in L\ \&\ \omega\texttt{[2i+1:]} \in M] \}
+\]
+е регулярен.
+\end{problem}
+
+\begin{remark}
+    Няма как $\omega\texttt{[i:]} = \varepsilon$.
+    Доста хора бяха изпуснали това в решенията си, но не сме им отнемали точки.
+\end{remark}
+
+\begin{solution}
+    Ще покажем, че:
+    \[
+        K = \underbrace{(\{ a, b \}^2)^* \cdot \biggl[ L \cap \Bigl(\{ a, b \} \cdot (M \setminus \{ \varepsilon \})\Bigr) \biggr]}_{K'}
+    \]
+    \begin{itemize}
+        \item[$(\subseteq)$] Нека $\omega \in K$.
+              Тогава има $i$, за което $\omega\texttt{[2i:]} \in L$ и $\omega\texttt{[2i+1:]} \in M$.
+              Нека $\omega = a_0 \cdots a_{n - 1}$.
+              Ако положим $\alpha = a_0 \cdots a_{2i - 1}, x = a_{2i}$ и $\beta = a_{2i + 1} \dots a_{n - 1}$, то тогава:
+              \begin{itemize}
+                  \item $\alpha \in (\{ a, b \}^2)^*$, понеже $|\alpha| = 2i$ е четно;
+                  \item $x \beta = \omega\texttt{[2i:]} \in L$;
+                  \item $\beta = \omega\texttt{[2i+1:]} \in M \setminus \{ \varepsilon \}$.
+              \end{itemize}
+              Така $\omega \in K'$.
+        \item[$(\supseteq)$] Обратно, нека $\omega \in K'$.
+              Тогава има $\alpha \in (\{ a, b \}^2)^*, \gamma \in L \cap \Bigl(\{ a, b \} \cdot (M \setminus \{ \varepsilon \})\Bigr)$, за които $\omega = \alpha \gamma$, откъдето $\gamma \in L$ и $\gamma = x \beta$ за някои $x \in \{ a, b \}$ и $\beta \in M \setminus \{ \varepsilon \}$.
+              Ако положим $i = \frac{|\alpha|}{2}$ (това е добре дефинирано, защото $|\alpha|$ е четно по допускане), то тогава $\omega\texttt{[2i:]} = \omega\texttt{[}|\alpha|\texttt{:]} = \gamma$ и $\omega\texttt{[2i+1:]} = \omega\texttt{[}|\alpha|\texttt{+1:]} = \beta$ (понеже $\omega = \alpha \gamma = \alpha x \beta$).
+              Следователно:
+              \begin{itemize}
+                  \item $\omega\texttt{[2i:]} \in L$;
+                  \item $\omega\texttt{[2i+1:]} \in M \setminus \{ \varepsilon \} \subseteq M$.
+              \end{itemize}
+              Така $\omega \in K$.
+    \end{itemize}
+    Тъй като изразихме $K$, използвайки само регулярни езици и операции, които запазват регулярност, получаваме, че $K$ е регулярен.
+\end{solution}
+
+\newpage
+
+\begin{problem}[{\bf 25 точки}]
+За произволна дума $\omega$, да означим с $|\omega|_a$ броя на срещанията на буквата $a$ в думата $\omega$. За произволен език $L$ над азбуката $\{a,b\}$ дефинираме:
+\[\cnt(L) = \{\omega \sharp a^{|\omega|_a} \mid \omega \in L\}.\]
+Вярно ли следното:
+\begin{enumerate}
+    \item[а)] Ако $L$ е регулярен, то $\cnt(L)$ е регулярен? {\bf (7 т.)}
+    \item[б)] Ако $L$ е регулярен, то $\cnt(L)$ е безконтекстен? {\bf (10 т.)}
+    \item[в)] Ако $L$ е безконтекстен, то $\cnt(L)$ е безконтекстен? {\bf (8 т.)}
+\end{enumerate}
+Обосновете отговорите си като приложите доказателства!
+\end{problem}
+
+\begin{solution}
+    \phantom{}
+    \begin{itemize}
+        \item[а)] Ако $L = \{ a \}^*$, то тогава:
+              \[
+                  \cnt(L) = \{ \omega \sharp a^{|\omega|_a} \mid \omega \in L \} = \{ a^n \sharp a^{|a^n|_a} \mid n \in \N \} = \{ a^n \sharp a^n \mid n \in \N \}.
+              \]
+              От тук нататък трябва да се докаже, че $\cnt(L)$ не е регулярен, но тук ще бъде спестено, понеже подобни на $\cnt(L)$ езици сме доказвали на упражнения, че не са регулярни.
+        \item[б)]
+              Нека $\overline{a} = a$ и $\overline{b} = \varepsilon$.
+              Можем да забележим, че за всяко $\omega \in \{ a, b \}^*$ и $x \in \{ a, b \}$:
+              \[
+                  a^{|\omega|_a} \overline{x} = a^{|x \omega|_a}.
+              \]
+              Нека $\A = \opair{\{ a, b \}, Q, s, \delta, F}$ е ДКА за езика $L$.
+              Строим граматика $G = \opair{\{ a, b \}, V, S, R}$ за $\cnt(L)$:
+              \begin{itemize}
+                  \item на всяко $q \in Q$ съответства променлива $X_q \in V$;
+                  \item началната променлива е $X_s$;
+                  \item на всеки преход $\delta(p, x) = q$ съответства правилото $X_p \rightarrow x X_q \overline{x}$;
+                  \item на всяко $f \in F$ съответства прехода $X_f \rightarrow \sharp$.
+              \end{itemize}
+              Ще покажем, че за всяко $q \in Q$ е изпълнено, че $\calL_G(X_q) = \underbrace{\{ \omega \# a^{|\omega|_a} \mid \delta^*(q, \omega) \in F \}}_{L_q}$.
+              След това ако приложим твърдението за $q = s$, сме готови.
+              \begin{itemize}
+                  \item[$(\subseteq)$] Ще покажем с индукция по $n \in \N$, че ако $\alpha \in \calL_G(X_q)$, тоест $X_q \tri{n}_G \alpha$ и $\alpha \in \{ a, b, \sharp \}^*$, то тогава $\alpha = \omega \sharp a^{|\omega|_a}$ за някое $\omega \in \{ a, b \}^*$, където $\delta^*(q, \omega) \in F$, тоест $\alpha \in L_q$.
+
+                        В базата $n = 0$, следователно $\alpha \notin \{ a, b, \sharp \}^*$, с което базата е тривиално изпълнена.
+
+                        Нека сега $n > 0$.
+                        Тогава в този извод прилагаме някое правило.
+                        Разглеждаме двата възможни случая за първото приложено правило:
+                        \begin{itemize}
+                            \item[1 сл.] правило от вида $X_q \rightarrow \sharp$ -- тогава по конструкция $q \in F$, откъдето $\delta^*(q, \varepsilon) \in F$.
+                                  Тъй като това е първото приложено правило в извода, то $\alpha = \sharp = \varepsilon \sharp \varepsilon = \varepsilon \sharp a^0 = \varepsilon \sharp a^{|\varepsilon|_a} \in L_q$.
+                            \item[2 сл.] правило от вида $X_q \rightarrow x X_{q'} \overline{x}$ -- тогава по конструкция $\delta(q, x) = q'$.
+                                  Тъй като това е първото приложено правило в извода, то $\alpha = x \alpha' \overline{x}$, където $X_{q'} \tri{n - 1} \alpha'$.
+                                  Тогава от индуктивното предположение за $n - 1$ и $q'$ получаваме, че $\alpha' = \omega \sharp a^{|\omega|_a}$ за някое $\omega \in \{ a, b \}^*$, където $\delta^*(q', \omega) \in F$.
+                                  Тъй като $\delta(q, x) = q'$ и $\delta^*(q', \omega) \in F$, то тогава $\delta^*(q, x \omega) \in F$, откъдето $\alpha = x \omega \sharp a^{|\omega|_a} \overline{x} = x \omega \sharp a^{|x \omega|_a} \in L_q$.
+                        \end{itemize}
+                  \item[$(\supseteq)$] Ще покажем с индукция по $|\omega|$, че ако $\delta^*(q, \omega) \in F$, то $X_q \tri{*}_G \omega \sharp a^{|\omega|_a}$.
+
+                        В базата ако $\omega = \varepsilon$ и $\delta^*(q, \omega) \in F$, то $q \in F$, откъдето имаме правилото $X_q \rightarrow \sharp$, следователно:
+                        \[
+                            X_q \tri{*}_G \sharp = \varepsilon \sharp \varepsilon = \varepsilon \sharp a^0 = \varepsilon \sharp a^{|\varepsilon|_a}.
+                        \]
+                        Нека сега $\omega = x \omega'$, където $\delta^*(q, x \omega') \in F$ и $x \in \{ a, b \}$.
+                        Тогава за $q' = \delta(q, x)$ е изпълнено, че $\delta^*(q', \omega') \in F$.
+                        Тогава от индуктивното предположение за $\omega'$ и $q'$ получаваме, че $X_{q'} \tri{*} \omega' \sharp a^{|\omega'|_a}$.
+                        Тъй като $\delta(q, x) = q'$, то по конструкция имаме правилото $X_q \rightarrow x X_q' \overline{x}$, откъдето
+                        \[
+                            X_q \tri{*}_G x \omega' \sharp a^{|\omega|_a} \overline{x} = x \omega' \sharp a^{|x \omega'|_a} = \omega \sharp a^{|\omega|_a}.
+                        \]
+                        Ако $\alpha \in L_q$, то $\alpha = \omega \sharp a^{|\omega|_a}$ за някое $\omega \in \{ a, b \}^*$, където $\delta^*(q, \omega) \in F$.
+                        Прилагайки сегашното твърдение получаваме, че $X_q \tri{*}_G \alpha$, откъдето $\alpha \in \calL_G(X_q)$.
+              \end{itemize}
+        \item[в)] Ако $L = \{ a^n b^n \mid n \in \N \}$, то тогава:
+              \[
+                  \cnt(L) = \{ \omega \sharp a^{|\omega|_a} \mid \omega \in L \} = \{ a^n b^n \sharp a^{|a^n b^n|_a} \mid n \in \N \} = \{ a^n b^n \sharp a^n \mid n \in \N \}.
+              \]
+              От тук нататък трябва да се докаже, че $\cnt(L)$ не е безконтекстен, но тук ще бъде спестено, понеже подобни на $\cnt(L)$ езици сме доказвали на упражнения, че не са безконтекстни.
+    \end{itemize}
+\end{solution}
+
+\end{document}
