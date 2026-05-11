@@ -1,0 +1,234 @@
+\documentclass[12pt]{article}
+\usepackage[english, bulgarian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage{amssymb}
+\usepackage{hyperref, fancyhdr, lastpage, fancyvrb, tcolorbox, titlesec}
+\usepackage{array, tabularx, colortbl}
+\usepackage{tikz}
+\usepackage{venndiagram}
+\usepackage{amsthm, bm}
+\usepackage{relsize}
+\usepackage{amsmath,physics}
+\usepackage{mathtools}
+\usepackage{subcaption}
+\usepackage{scalerel}
+\usepackage{theoremref}
+\usepackage{circuitikz}
+\usepackage{geometry}
+\usepackage{stmaryrd}
+\usepackage{forest}
+\usepackage{cancel}
+\usepackage{faktor}
+\usepackage{gensymb}
+\usepackage[shortlabels]{enumitem}
+\usepackage[symbol]{footmisc}
+\usetikzlibrary{automata, arrows, positioning, shapes}
+\useforestlibrary{linguistics}
+
+\ExplSyntaxOn
+\NewDocumentCommand{\opair}{m}
+ {
+  \langle\mspace{2mu}
+  \clist_set:Nn \l_tmpa_clist { #1 }
+  \clist_use:Nn \l_tmpa_clist {,\mspace{3mu plus 1mu minus 1mu}\allowbreak}
+  \mspace{2mu}\rangle
+}
+\ExplSyntaxOff
+
+\hypersetup{
+    colorlinks=true,
+    linktoc=all,
+    linkcolor=blue
+}
+
+\setlength\parindent{0pt}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+
+\newcommand{\vars}{\operatorname{Vars}}
+\newcommand{\free}{\operatorname{Free}}
+
+\newcommand{\logand}{\; \& \;}
+
+\newcommand{\calA}{\mathcal{A}}
+\newcommand{\calS}{\mathcal{S}}
+\newcommand{\calD}{\mathcal{D}}
+\newcommand{\calL}{\mathcal{L}}
+\newcommand{\calZ}{\mathcal{Z}}
+\newcommand{\calQ}{\mathcal{Q}}
+\newcommand{\calR}{\mathcal{R}}
+\newcommand{\calN}{\mathcal{N}}
+\newcommand{\calM}{\mathcal{M}}
+\newcommand{\calF}{\mathcal{F}}
+\newcommand{\calP}{\mathcal{P}}
+\newcommand{\calC}{\mathcal{C}}
+\newcommand{\calG}{\mathcal{G}}
+\newcommand{\calB}{\mathcal{B}}
+
+\newcommand{\dequiv}{\stackrel{\text{деф.}}{\longleftrightarrow}}
+
+\newcommand{\db}[1]{\llbracket #1 \rrbracket}
+
+\DeclareMathOperator*{\bigand}{\scalerel*{\&}{\prod}}
+\DeclareMathOperator*{\bigor}{\scalerel*{\lor}{\sum}}
+
+\newtheorem*{definition}{Дефиниция}
+\newtheorem*{claim}{Твърдение}
+\newtheorem*{property}{Свойство}
+\newtheorem*{hint}{Упътване}
+\theoremstyle{definition}
+\newtheorem{problem}{Задача}
+\newtheorem*{solution}{Решение}
+\newtheorem*{notation}{Нотация}
+
+\begin{document}
+
+\title{Кратки решения на задачите от семестриалното контролно по ЕАИ на специалност ``Компютърни науки'', проведено на 26 април 2026 г.}
+\date{}
+
+\maketitle
+
+\begin{problem}[{\bf 5 точки}]
+Постройте минимален ДКА за езика:
+\[
+  L = \{ a, b \}^\star \cdot \{ abb, ab \}.
+\]
+\end{problem}
+
+\begin{solution}
+Строим ДКА по метода на Бжозовски, като започваме с началното състояние:
+\begin{align*}
+  L_0 := L & = \calL \db{(a + b)^\star (abb + ab)} = \calL \db{((a + b)(a + b)^\star + \varepsilon) (abb + ab)} \\ 
+           & = \calL \db{(a + b)(a + b)^\star (abb + ab) + abb + ab} \\
+           & = \calL \db{a (a + b)^\star (abb + ab) + abb + ab + b (a + b)^\star (abb + ab)}.
+\end{align*}
+Пресмятаме преходите на $L_0$:
+\begin{align*}
+  a^{-1}(L_0) & = \calL \db{(a + b)^\star (abb + ab) + bb + b} := L_1, \text{ и } \\
+  b^{-1}(L_0) & = \calL \db{(a + b)^\star (abb + ab)} = L_0.
+\end{align*}
+Тъй като $b \in L_1$ и $b \not\in L_0$, получаваме $L_1 \neq L_0$.
+
+Сега пресмятаме преходите на $L_1$:
+\begin{align*}
+  a^{-1}(L_1) & = a^{-1}(\calL \db{(a + b)^\star (abb + ab) + bb + b}) \\ 
+              & = a^{-1}(L_0) \cup a^{-1}(\calL \db{bb + b}) = L_1 \cup \varnothing = L_1, \text{ и } \\
+  b^{-1}(L_1) & = b^{-1}(\calL \db{(a + b)^\star (abb + ab) + bb + b}) \\ 
+              & = b^{-1}(L_0) \cup b^{-1}(\calL \db{bb + b}) \\ 
+              & = \calL \db{(a + b)^\star (abb + ab) + b + \varepsilon} := L_2.
+\end{align*}
+Тъй като $\varepsilon \in L_2$ и $\varepsilon \not\in L_0, L_1$, имаме $L_2 \neq L_1, L_0$.
+
+След това пресмятаме преходите на $L_2$:
+\begin{align*}
+  a^{-1}(L_2) & = a^{-1}(\calL \db{(a + b)^\star (abb + ab) + b + \varepsilon}) \\ 
+              & = a^{-1}(L_0) \cup a^{-1}(\calL \db{b + \varepsilon}) = L_1 \cup \varnothing = L_1, \text{ и } \\
+  b^{-1}(L_2) & = b^{-1}(\calL \db{(a + b)^\star (abb + ab) + b + \varepsilon}) \\ 
+              & = b^{-1}(L_0) \cup b^{-1}(\calL \db{b + \varepsilon}) \\ 
+              & = \calL \db{(a + b)^\star (abb + ab) + \varepsilon} := L_3.
+\end{align*}
+Понеже $\varepsilon \in L_3$ и $\varepsilon \not\in L_0, L_1$, имаме $L_3 \neq L_0, L_1$.
+Освен това, тъй като $b \in L_2$ и $b \not\in L_3$, получаваме $L_3 \neq L_2$.
+
+Остава да сметнем преходите на $L_3$:
+\begin{align*}
+  a^{-1}(L_3) & = a^{-1}(\calL \db{(a + b)^\star (abb + ab) + \varepsilon}) \\ 
+              & = a^{-1}(L_0) \cup a^{-1}(\calL \db{\varepsilon}) = L_1 \cup \varnothing = L_1, \text{ и } \\
+  b^{-1}(L_3) & = b^{-1}(\calL \db{(a + b)^\star (abb + ab) + \varepsilon}) \\ 
+              & = b^{-1}(L_0) \cup b^{-1}(\calL \db{\varepsilon}) \\ 
+              & = \calL \db{(a + b)^\star (abb + ab) + \varnothing} := L_0.
+\end{align*}
+Получаваме следния автомат:
+\begin{center}
+    \begin{tikzpicture}[shorten >=1pt,node distance=2.5cm,>=stealth',thick]
+        \node[initial, state, initial text=] (1) {$L_0$};
+        \node[state] [right of=1] (2) {$L_1$};
+        \node[accepting, state] [below of=2] (3) {$L_2$};
+        \node[accepting, state] [below of=1] (4) {$L_3$};
+        \path[->] (1) edge [loop above] node[above] {$b$} (1);
+        \path[->] (1) edge node[above] {$a$} (2);
+        \path[->] (2) edge [loop above] node[above] {$a$} (2);
+        \path[->] (2) edge [bend left] node[right] {$b$} (3);
+        \path[->] (3) edge node[left] {$a$} (2);
+        \path[->] (3) edge node[above] {$b$} (4);
+        \path[->] (4) edge node[above] {$a$} (2);
+        \path[->] (4) edge node[left] {$b$} (1);
+    \end{tikzpicture}
+\end{center}
+\end{solution}
+
+\newpage
+
+\begin{problem}
+За две думи $\alpha$ и $\beta$ с равна дължина над азбуката $\Sigma = \{ 0, 1 \}$, дефинираме операцията $\texttt{diff}(\alpha,\beta)$ по следния начин:
+\begin{align*}
+  & \texttt{diff}(\varepsilon, \varepsilon) = 0\\
+  & \texttt{diff}(x \alpha, y \beta) = (x-y) + \texttt{diff}(\alpha, \beta).
+\end{align*}
+Например, $\texttt{diff}(010, 101) = -1$.
+Сега дефинираме операцията върху езици над азбуката $\Sigma = \{ 0, 1 \}$ по следния начин:
+\[
+  \texttt{diff}(L) = \{ \alpha \in \Sigma^\star \mid (\exists \beta \in L)[|\alpha| = |\beta| \logand \texttt{diff}(\alpha,\beta) = 0] \}.
+\]
+
+\begin{enumerate}[(a)]
+  \item Дайте пример за безкраен регулярен език $L$, за който езикът $\texttt{diff}(L)$ е регулярен. {\bf (2 точки)}
+  \item Дайте пример за регулярен език $L$, за който езикът $\texttt{diff}(L)$ не е регулярен. {\bf (3 точки)}
+\end{enumerate}
+\end{problem}
+
+\begin{solution}
+Първо можем да забележим, че за всяко $\alpha, \beta \in \Sigma^\star$ с $|\alpha| = |\beta| = n$:
+\begin{align*}
+  \texttt{diff}(\alpha, \beta) & = \sum\limits_{i = 1}^n (\alpha[i] - \beta[i]) \\ 
+                               & = \sum\limits_{i = 1}^n \alpha[i] - \sum\limits_{i = 1}^n \beta[i] = |\alpha|_1 - |\beta|_1.
+\end{align*}
+Тогава, ако $\texttt{diff}(\alpha, \beta) = 0$, то $|\alpha|_1 = |\beta|_1$. Тъй като $|\alpha| = |\beta|$, имаме и $|\alpha|_0 = |\beta|_0$.
+В частност:
+\begin{itemize}
+  \item ако $\texttt{diff}(\alpha, 0^n) = 0$, то $\alpha = 0^n$;
+  \item ако $\texttt{diff}(\alpha, (01)^n) = 0$, то $|\alpha|_0 = |\alpha|_1 = n$.
+\end{itemize}
+Така:
+\begin{enumerate}[(a)]
+  \item $\texttt{diff}(\underbrace{\{ 0 \}^\star}_{\text{безкраен регулярен}}) = \underbrace{\{ 0 \}^\star}_{\text{регулярен}}$;
+  \item $\texttt{diff}(\underbrace{\{ 01 \}^\star}_{\text{регулярен}}) = \underbrace{\{ \alpha \in \Sigma^\star \mid |\alpha|_0 = |\alpha|_1 \}}_{\text{класически нерегулярен}}$ \footnote[2]{Ако пресечем $\{ \alpha \in \Sigma^\star \mid |\alpha|_0 = |\alpha|_1 \}$ с регулярния $\{ 0 \}^\star \cdot \{ 1 \}^\star$, ще получим $\{ 0^n 1^n \mid n \in \N \}$, който е нерегулярен. Затова $\{ \alpha \in \Sigma^\star \mid |\alpha|_0 = |\alpha|_1 \}$ не е регулярен.}.
+\end{enumerate}
+\end{solution}
+
+\newpage
+
+\begin{problem}[{\bf 5 точки}]
+За произволен език $L$ над азбуката $\Sigma = \{ a, b \}$ дефинираме операцията:
+\[
+  \texttt{Part}(L) = \{ \beta \in \Sigma^\star \mid (\exists \alpha \in \Sigma^\star)[\alpha \beta \cdot \alpha \beta \in L] \}.
+\]
+Докажете, че ако $L$ е регулярен език, то $\texttt{Part}(L)$ е регулярен език.
+\end{problem}
+
+\begin{solution}
+Този език много напомня на разглеждания на лекции/упражнения език (полагайки $\gamma = \alpha \beta$):
+\[
+  \texttt{Half}(L) = \{ \gamma \in \Sigma^\star \mid \gamma \gamma \in L \}.
+\]
+Разликата е в това $\alpha$, което махаме от $\gamma$, за да получим $\beta$.
+Оказва се, че:
+\[
+  \texttt{Part}(L) = \texttt{Suff}(\texttt{Half}(L))\footnote[2]{Напомням, че $\texttt{Suff}(L) = \{ \gamma \in \Sigma^\star \mid (\exists \omega \in \Sigma^\star)(\omega \gamma \in L) \}$.}.
+\]
+Нека проверим това:
+\begin{align*}
+  \beta \in \texttt{Part}(L) \longleftrightarrow & (\exists \alpha \in \Sigma^\star)[\alpha \beta \cdot \alpha \beta \in L] \\ 
+                             \longleftrightarrow & (\exists \alpha \in \Sigma^\star)[\alpha \beta \in \texttt{Half}(L)] \\ 
+                             \longleftrightarrow & \beta \in \texttt{Suff}(\texttt{Half}(L)).
+\end{align*}
+Фактът, че $\texttt{Suff}$ запазва регулярност, може да се използва наготово.
+Това, че $\texttt{Half}$ запазва регулярност, очакваме да се докаже, но тук ще бъде спестено, понеже е правено на упражнения и го има в лекционните записки.
+\end{solution}
+
+\end{document}
