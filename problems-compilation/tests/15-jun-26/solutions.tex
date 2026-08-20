@@ -1,0 +1,326 @@
+\documentclass[12pt]{article}
+\usepackage[english, bulgarian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage{amssymb}
+\usepackage{hyperref, fancyhdr, lastpage, fancyvrb, tcolorbox, titlesec}
+\usepackage{array, tabularx, colortbl}
+\usepackage{tikz}
+\usepackage{venndiagram}
+\usepackage{amsthm, bm}
+\usepackage{relsize}
+\usepackage{amsmath}
+\usepackage{physics}
+\usepackage{mathtools}
+\usepackage{subcaption}
+\usepackage{scalerel}
+\usepackage{theoremref}
+\usepackage{circuitikz}
+\usepackage{geometry}
+\usepackage{stmaryrd}
+\usepackage{forest}
+\usepackage{cancel}
+\usepackage{faktor}
+\usepackage{gensymb}
+\usepackage[shortlabels]{enumitem}
+\usepackage[symbol]{footmisc}
+\usetikzlibrary{automata, arrows, positioning, shapes}
+\useforestlibrary{linguistics}
+
+\ExplSyntaxOn
+\NewDocumentCommand{\opair}{m}
+ {
+  \langle\mspace{2mu}
+  \clist_set:Nn \l_tmpa_clist { #1 }
+  \clist_use:Nn \l_tmpa_clist {,\mspace{3mu plus 1mu minus 1mu}\allowbreak}
+  \mspace{2mu}\rangle
+}
+\ExplSyntaxOff
+
+\hypersetup{
+    colorlinks=true,
+    linktoc=all,
+    linkcolor=blue
+}
+
+\setlength\parindent{0pt}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+
+\newcommand{\vars}{\operatorname{Vars}}
+\newcommand{\free}{\operatorname{Free}}
+
+\newcommand{\logand}{\; \& \;}
+
+\newcommand{\calA}{\mathcal{A}}
+\newcommand{\calS}{\mathcal{S}}
+\newcommand{\calD}{\mathcal{D}}
+\newcommand{\calL}{\mathcal{L}}
+\newcommand{\calZ}{\mathcal{Z}}
+\newcommand{\calQ}{\mathcal{Q}}
+\newcommand{\calR}{\mathcal{R}}
+\newcommand{\calN}{\mathcal{N}}
+\newcommand{\calM}{\mathcal{M}}
+\newcommand{\calF}{\mathcal{F}}
+\newcommand{\calP}{\mathcal{P}}
+\newcommand{\calC}{\mathcal{C}}
+\newcommand{\calG}{\mathcal{G}}
+\newcommand{\calB}{\mathcal{B}}
+
+\newcommand{\dequiv}{\stackrel{\text{деф.}}{\longleftrightarrow}}
+\newcommand{\df}{\stackrel{\text{деф.}}{=}}
+
+\newcommand{\db}[1]{\llbracket #1 \rrbracket}
+\newcommand{\tri}[1]{\stackrel{#1}{\vartriangleleft}}
+
+\DeclareMathOperator*{\bigand}{\scalerel*{\&}{\prod}}
+\DeclareMathOperator*{\bigor}{\scalerel*{\lor}{\sum}}
+
+\newtheorem*{definition}{Дефиниция}
+\newtheorem*{claim}{Твърдение}
+\newtheorem*{property}{Свойство}
+\newtheorem*{hint}{Упътване}
+\theoremstyle{definition}
+\newtheorem{problem}{Задача}
+\newtheorem*{solution}{Решение}
+\newtheorem*{notation}{Нотация}
+
+\begin{document}
+
+\title{Кратки решения на задачите от писмения изпит по ЕАИ на специалност ``Компютърни науки'', проведен на 15 юни 2026 г.}
+\date{}
+
+\maketitle
+
+\begin{problem}
+  Да се докаже, че следните езици са безконтекстни:
+  \begin{enumerate}[(a)]
+    \item $L_1 \df \{ a^n b^k c^t \mid n + k = 2t \}$. {\bf (5 точки)}
+    \item $L_2 \df \{ a^{2n} b^k c^t \mid n+k \geq 2t \}$. {\bf (5 точки)}
+  \end{enumerate}
+\end{problem}
+
+\begin{solution}
+  Преди да строим граматики, ще се опитаме да опростим езиците.
+
+  (а) Нека вземем една дума $\alpha \in L_1$.
+  Тогава знаем, че съществуват $n, k, t \in \N$, за които $2t = n + k$.
+  Тъй като $n + k$ е четно, то възможностите са следните:
+  \begin{itemize}
+    \item[1 сл.] $n, k$ са четни, тоест $n = 2n_1$ и $k = 2k_1$ за някои $n_1, k_1 \in \N$.
+                 Тогава $t = n_1 + k_1$.
+    \item[2 сл.] $n, k$ са нечетни, тоест $n = 2n_1 + 1$ и $k = 2k_1 + 1$ за някои $n_1, k_1 \in \N$.
+                 Тогава $t = n_1 + k_1 + 1$.
+  \end{itemize}
+  Тогава:
+  \begin{align*}
+    L_1 &\subseteq \underbrace{\{ a^{2n_1} b^{2k_1} c^{n_1 + k_1} \mid n_1, k_1 \in \N \}}_{L_{1, 0}} &&\cup \phantom{aa} \underbrace{\{ a^{2n_1 + 1} b^{2k_1 + 1} c^{n_1 + k_1 + 1} \mid n_1, k_1 \in \N \}}_{L_{1, 1}} \\
+        &=  \phantom{aaaaaaaaaa}L_{1, 0}                                                                                  &&\cup \{ a \} \cdot \underbrace{\{ a^{2n_1} b^{2k_1 + 1} c^{n_1 + k_1} \mid n_1, k_1 \in \N \}}_{L'_{1, 1}} \cdot \{ c \}.
+  \end{align*}
+  Обратното включване може да се провери директно:
+  \begin{itemize}
+    \item $L_{1, 0} \subseteq L$, понеже $2n_1 + 2k_1 = 2(n_1 + k_1)$;
+    \item $L_{1, 1} \subseteq L$, понеже $(2n_1 + 1) + (2k_1 + 1) = 2(n_1 + k_1 + 1)$.
+  \end{itemize}
+  За $L_{1, 0}$ следната граматика върши работа:
+  \begin{align*}
+    S & \longrightarrow aa S c \mid A \\
+    A & \longrightarrow bb A c \mid \varepsilon.
+  \end{align*}
+  Доказателство за коректност ще бъде пропуснато, понеже подобни граматики са правени на упражнения\footnote[2]{Със сигурност на упражнения са показвани $\{ a^n b^m c^{n + m} \mid n, m \in \N\}$ и $\{ a^{2n} b^n \mid n \in \N \}$.}, но се очаква да бъдат направени от студента.
+
+  За $L'_{1, 1}$ е достатъчно да се вземе горната граматика и $\varepsilon$ да се смени с $b$.
+  От там нататък доказателството е аналогично (и съответно не се изисква от студента).
+
+  Накрая, тъй като $\{ a \}, \{ c \}$ са безконтекстни и безконтекстните езици са затворени относно конкатенация и обединение, то $L_1$ е безконтекстен.
+
+  (б) Езикът $L_2$ е аналогичен на $L_1$, с разликата, че $a$-тата трябва да идват по двойки и си позволяваме допълнителни срещания на $a$ и на $b$.
+  Формално, нека $\alpha \in L_2$.
+  Нека $n, k, t \in \N$ са такива, че $\alpha = a^{2n} b^k c^t$ и $n + k \geq 2t$.
+  Тогава има $n', n'', k', k'' \in \N$, за които $n = n' + n'', k = k' + k''$ и $n' + k' = 2t$.
+  Имаме две възможности:
+  \begin{itemize}
+    \item[1 сл.] $n', k'$ са четни, тоест $n' = 2n_1$ и $k' = 2k_1$ за някои $n_1, k_1 \in \N$.
+                 Тогава $t = n_1 + k_1$.
+    \item[2 сл.] $n', k'$ са нечетни, тоест $n' = 2n_1 + 1$ и $k' = 2k_1 + 1$ за някои $n_1, k_1 \in \N$.
+                 Тогава $t = n_1 + k_1 + 1$.
+  \end{itemize}
+  Ще излезе, че:
+  \begin{align*}
+  L_2 = & \underbrace{\{ aa \}^\star}_{\substack{\text{допълнителните } 2n'' \\ \text{срещания на } a}} \cdot \phantom{aaaaaaa} \underbrace{\{ a^{4n_1} b^{2k_1 + k''} c^{n_1 + k_1} \mid n_1, k_1, k'' \in \N \}}_{L'_{2, 0}} \\ 
+          & \phantom{aaaaaaaaaaaaaaaaaaaaa} \cup                                                                                                                                                                                      \\         
+          & \underbrace{\{ aa \}^\star}_{\substack{\text{допълнителните } 2n'' \\ \text{срещания на } a}} \cdot \phantom{aa} \{ aa \} \cdot \underbrace{\{ a^{4n_1} b^{2k_1 + 1 + k''} c^{n_1 + k_1} \mid n_1, k_1, k'' \in \N \}}_{L'_{2, 1}} \cdot \{ c \}.
+  \end{align*}
+  За $L'_{2, 0}$ следната граматика върши работа:
+  \begin{align*}
+    S & \longrightarrow aaaa S c \mid A \\
+    A & \longrightarrow bb A c \mid B   \\
+    B & \longrightarrow bB \mid \varepsilon.
+  \end{align*}
+  Както горе, доказателството за коректност ще бъде пропуснато.
+
+  За $L'_{2, 1}$ заменяме в горната граматика $\varepsilon$ с $b$.
+\end{solution}
+
+\newpage
+
+\begin{problem}[{\bf 10 точки}]
+  Вярно ли е, че за всеки безконтекстен език $L$ над азбуката $\Sigma = \{ a, b \}^\star$, езикът $\texttt{Pal}(L)$ също е безконтекстен, където
+  \[
+    \texttt{Pal}(L) \df \{ \alpha \in L \mid \alpha = \alpha^{rev} \logand |\alpha| \text{ е нечетно}\}?
+  \]
+\end{problem}
+
+\begin{solution}
+  Нека положим:
+  \[
+    L = \{ a^n b^n \mid n > 0 \} \cdot \{ a \}^+.
+  \]
+  Ясно е, че $L$ е безконтекстен.
+  Една дума $\alpha \in L$ има вида $a^n b^n a^k$, за някои $n, k > 0$.
+  Ако изискаме $\alpha = \alpha^{rev}$, то тогава:
+  \[
+    a^n b^n a^k = a^k b^n a^n.
+  \]
+  В този случай, ще имаме $n = k$.
+  Така $\alpha = a^n b^n a^n$.
+  Ако допълнително искаме и $|\alpha|$ да бъде нечетно, то тогава $n$ ще бъде нечетно, тоест $n = 2t + 1$ за някое $t \in \N$.
+  Следователно $\alpha = a^{2t + 1} b^{2t + 1} a^{2t + 1}$.
+  Така:
+  \[
+    \texttt{Pal}(L) = \{ a^{2t + 1} b^{2t + 1} a^{2t + 1} \mid t \in \N \}.
+  \]
+  Няма нужда от доказателство, че езикът не е безконтекстен, понеже е напълно аналогично на това за:
+  \[
+    \{ a^n b^n c^n \mid n \in \N \},
+  \]
+  което може да се ползва наготово (за $p \geq 1$ избираме $\alpha = a^{2p + 1} b^{2p + 1} a^{2p + 1}$ и $i = 0$ върши работа за всяко разбиване на $\alpha$ от лемата за покачване).
+\end{solution}
+
+\newpage
+
+\begin{problem}
+  За произволен език $L$ над азбуката $\Sigma = \{a,b\}^\star$, да разгледаме операцията:
+  \[
+    \texttt{Switch}(L) \df \{ x_1 x_2 \dots x_n y_n \dots y_2 y_1 \mid x_1 y_1 x_2 y_2 \dots x_n y_n \in L \},
+  \]
+  където с $x_i$ и $y_i$ означаваме букви от $\Sigma$.
+  \begin{enumerate}[(a)]
+    \item Вярно ли е, че ако езикът $L$ е регулярен, тогава и езикът $\texttt{Switch}(L)$ е регулярен? {\bf (5 точки)}
+    \item Вярно ли е, че ако езикът $L$ е регулярен, тогава езикът $\texttt{Switch}(L)$ е безконтекстен? {\bf (5 точки)}
+    \item Да се докаже, че при $L \df \{ a^n b^n \mid n \in \N \}$, езикът $\texttt{Switch}(L)$ {\bf не е} безконтекстен. {\bf (5 точки)}
+  \end{enumerate}
+\end{problem}
+
+\begin{solution}
+  \phantom{0}
+
+  (а) Ако $(ab)^n = x_1 y_1 x_2 y_2 \dots x_n y_n$, то тогава $x_i = a$ и $y_i = b$ за всяко $1 \leq i \leq n$.
+  Следователно $x_1 x_2 \dots x_n y_n \dots y_2 y_1 = a^n b^n$, откъдето:
+  \[
+    \texttt{Switch}(\underbrace{\{ ab \}^\star}_{\text{регулярен}}) = \underbrace{\{ a^n b^n \mid n \in \N \}}_{\text{класически нерегулярен}}.
+  \]
+
+  (б) За тази задача ще вземем вдъхновение от конструкцията, която прави регулярна граматика от ДКА.
+  Искаме една дума, която бихме прочели в автомата буква по буква от ляво надясно, в граматиката да редуваме една буква отляво и една отдясно.
+  По-формално, нека $\calA = \opair{\Sigma, Q, s, \delta, F}$ е ДКА за езика $L$.
+  Строим граматика $G = \opair{\Sigma, V, S, R}$ по следния начин:
+  \begin{itemize}
+    \item за всяко състояние $q \in Q$ ще имаме съответно променливата $A_q$ в $G$ (все пак искаме да кодираме информация от $\calA$);
+    \item $S = A_s$ (започваме както бихме започнали и в $\calA$);
+    \item за всяко $p, q \in Q$ и $x, y \in \Sigma$, ако $\delta^\star(p, xy) = q$, то добавяме правилото $A_p \longrightarrow x A_q y$ (тук се случва това редуване отляво и отдясно);
+    \item за всяко $f \in F$ добавяме правилото $A_f \longrightarrow \varepsilon$ (приключваме когато $\calA$ би приел думата).
+  \end{itemize}
+  Хипотезата ни е следната:
+  \[
+    \calL_G(A_p) = \{ x_1 x_2 \dots x_n y_n \dots y_2 y_1 \mid \delta^\star(p, x_1 y_1 x_2 y_2 \dots x_n y_n) \in F \} \text{ за всяко } p \in Q.
+  \]
+  За по-кратък запис в доказателството ще използваме следните означения:
+  \begin{itemize}
+    \item за дума $\alpha = x_1 y_1 x_2 y_2 \dots x_n y_n$ дефинираме $\texttt{sw}(\alpha) = x_1 x_2 \dots x_n y_n \dots y_2 y_1$;
+    \item за дума $\alpha = x_1 x_2 \dots x_n y_n \dots y_2 y_1$ дефинираме $\texttt{unsw}(\alpha) = x_1 y_1 x_2 y_ 2 \dots x_n y_n$.
+  \end{itemize}
+  Нека забележим, че:
+  \[
+    \alpha = \texttt{sw}(\texttt{unsw}(\alpha)) = \texttt{unsw}(\texttt{sw}(\alpha)).
+  \]
+  За да верифицираме хипотезата, ще покажем следните неща:
+  \begin{itemize}
+    \item[$(1)$] за всяко $n \in \N, p \in Q, \alpha \in \Sigma^\star$, ако $A_p \tri{n}_G \alpha$, то $\delta^\star(p, \texttt{unsw}(\alpha)) \in F$;
+    \item[$(2)$] за всяко $\alpha \in (\Sigma^2)^\star, p \in Q$, ако $\delta^\star(p, \alpha) \in F$, то $A_p \tri{\star}_G \texttt{sw}(\alpha)$.
+  \end{itemize}
+  Доказателство на $(1)$ протича с индукция относно $n$:
+  \begin{itemize}
+    \item[(База)] Ако $A_p \tri{0}_G \alpha$, то $\alpha = A_p \notin \Sigma^\star$, откъдето импликацията е тривиално изпълнена.
+    \item[(ИС)] Нека $A_p \tri{n + 1}_G \alpha \in \Sigma^\star$.
+                Тогава сме приложили някое правило.
+                Имаме следните възможности за първо приложено правило:
+                \begin{itemize}
+                  \item[1 сл.] приложили сме правилото $A_p \rightarrow \varepsilon$ -- тогава $\alpha = \varepsilon$ и $p \in F$ (понеже правилото е в граматиката), следователно:
+                               \[
+                                 \delta^\star(p, \texttt{unsw}(\alpha)) = \delta^\star(p, \texttt{unsw}(\varepsilon)) = \delta^\star(p, \varepsilon) = p \in F.
+                               \]
+                  \item[2 сл.] приложили сме правило от вида $A_p \rightarrow x A_q y$ -- тогава $\delta^\star(p, xy) = q$ и има $\beta \in \Sigma^\star$, за което $\alpha = x \beta y$ и $A_q \tri{n}_G \beta$.
+                               Тогава по (ИП) имаме, че $\delta^\star(q, \texttt{unsw}(\beta)) \in F$, откъдето:
+                               \begin{align*}
+                                 \delta^\star(p, \texttt{unsw}(\alpha)) &= \delta^\star(p, \texttt{unsw}(x \beta y)) \\ 
+                                                                        &= \delta^\star(p, x y \cdot \texttt{unsw}(\beta)) \\ 
+                                                                        &= \delta^\star(\delta^\star(p, x y), \texttt{unsw}(\beta)) \\ 
+                                                                        &= \delta^\star(q, \texttt{unsw}(\beta)) \in F.
+                               \end{align*}
+                \end{itemize}
+  \end{itemize}
+
+  \newpage
+  Доказателство на $(2)$ протича с индукция относно $|\alpha|$:
+  \begin{itemize}
+    \item[(База)] Ако $|\alpha| = 0$, то $\alpha = \varepsilon$.
+                  Ако $\delta^\star(p, \alpha) \in F$, то тогава $p = \delta^\star(p, \varepsilon) = \delta^\star(p, \alpha) \in F$.
+                  Така $A_p \rightarrow \varepsilon$ е правило в граматиката, откъдето $A_p \tri{\star}_G \varepsilon = \alpha$.
+    \item[(ИС)] Нека сега $|\alpha| > 0$ и $\delta^\star(p, \alpha) \in F$.
+                Тъй като $|\alpha| > 0$ и $\alpha \in (\Sigma^2)^\star$, то има $x, y \in \Sigma$ и $\beta \in \Sigma^\star$, за които $\alpha = x y \beta$.
+                Нека положим $q := \delta^\star(p, xy)$.
+                Тогава имаме правилото $A_p \rightarrow x A_q y$.
+                Освен това $\delta^\star(q, \beta) = \delta^\star(p, x y \beta) = \delta^\star(p, \alpha) \in F$ и значи можем да приложим (ИП).
+                Тогава $A_q \tri{\star}_G \texttt{sw}(\beta)$ и заради наличието на горното правило, $A_p \tri{\star}_G x \texttt{sw}(\beta) y = \texttt{sw}(\alpha)$.
+  \end{itemize}
+  Сега остава да приложим $(1)$ и $(2)$ за $p = s$, за да покажем:
+  \[
+    \calL(G) = \texttt{Switch}(L).
+  \]
+  $(\subseteq)$ Нека $\alpha \in \calL(G)$, то тогава $A_s \tri{\star}_G \alpha$, откъдето $\delta^\star(s, \texttt{unsw}(\alpha)) \in F$.
+  Така $\texttt{unsw}(\alpha) \in \calL(\calA) = L$.
+  Освен това $\alpha = \texttt{sw}(\texttt{unsw}(\alpha))$, следователно $\alpha \in \texttt{Switch}(L)$.
+
+  $(\supseteq)$ Нека $\alpha \in \texttt{Switch}(L)$.
+  Тогава има $\beta \in L$, за което $\alpha = \texttt{sw}(\beta)$.
+  Със сигурност $\beta \in (\Sigma^2)^\star$ (иначе $\texttt{sw}(\beta)$ нямаше да е дефинирано).
+  Тъй като $\beta \in L$, то $\delta^\star(s, \beta) \in F$, откъдето по $(2$) имаме $A_s \tri{\star}_G \texttt{sw}(\beta) = \alpha$.
+  Така $\alpha \in \calL(G)$.
+
+  (в) Ще покажем, че $\texttt{Switch}(L) \cap (\Sigma^4)^\star$ не е безконтекстен.
+  Тъй като езикът $(\Sigma^4)^\star$ е регулярен и сечението на регулярен с безконтекстен е безконтекстен, от там ще следва и, че $\texttt{Switch}(L)$\footnote[2]{На когото му е интересно, $\texttt{Switch}(L) = \{ a^{\lceil \frac{n}{2} \rceil} b^n a^{\lfloor \frac{n}{2} \rfloor} \mid n \in \N \}$.} не е безконтекстен.
+  Нека $\alpha \in \texttt{Switch(L)} \cap (\Sigma^4)^\star$ се получава от $\beta \in L$.
+  Тогава $\beta$ има вида $a^{2n} b^{2n}$.
+  Нека $\beta = x_1 y_1 x_2 y_2 \dots x_{2n} y_{2n}$.
+  Тогава:
+  \begin{itemize}
+    \item $x_i = y_i = a$ за $1 \leq i \leq n$;
+    \item $x_i = y_i = b$ за $n + 1 \leq i \leq 2n$.
+  \end{itemize}
+  Така:
+  \[
+    \alpha = \underbrace{x_1 \dots x_n}_{\text{само } a} \underbrace{x_{n + 1} \dots x_{2n}}_{\text{само } b} \underbrace{y_{2n} \dots y_{n + 1}}_{\text{само } b} \underbrace{y_n \dots y_1}_{\text{само } a} = a^n b^{2n} a^n,
+  \]
+  следователно:
+  \[
+    \texttt{Switch}(L) \cap (\Sigma^4)^\star = \{ a^n b^{2n} a^n \mid n \in \N \}.
+  \]
+  Както в предната задача, доказателството за това, че езикът не е безконтекстен, ще бъде спестено, поради фактът, че то е аналогично с показвани неща (за $p \geq 1$ избираме $\alpha = a^p b^{2p} a^p$ и $i = 0$ върши работа за всяко разбиване на $\alpha$ от лемата за покачване).
+\end{solution}
+
+\end{document}
